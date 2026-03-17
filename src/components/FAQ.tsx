@@ -45,21 +45,30 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-28 bg-subtle">
+    <section className="py-24 lg:py-36 bg-subtle">
       <div ref={ref} className="container mx-auto px-4 lg:px-8 max-w-3xl">
-        <div className={`text-center mb-14 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-primary tracking-wider">
+        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Dúvidas', 'Questions')}</p>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6">
             {t('Perguntas Frequentes', 'Frequently Asked Questions')}
           </h2>
+          <div className="section-divider" />
         </div>
 
         <Accordion type="single" collapsible className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {faqs.map((faq, i) => (
-            <AccordionItem key={i} value={`item-${i}`} className="border-border/50">
-              <AccordionTrigger className="font-serif text-lg font-normal text-foreground hover:text-primary hover:no-underline py-5">
-                {faq.q}
+            <AccordionItem
+              key={i}
+              value={`item-${i}`}
+              className="border-b-0 mb-3 bg-card rounded-lg shadow-sm overflow-hidden group data-[state=open]:shadow-md transition-shadow"
+            >
+              <AccordionTrigger className="font-serif text-base md:text-lg font-light text-foreground hover:text-foreground hover:no-underline px-6 py-5 [&[data-state=open]]:text-primary">
+                <div className="flex items-center gap-4 text-left">
+                  <span className="w-1 h-6 rounded-full bg-border group-data-[state=open]:bg-gold transition-colors duration-300 shrink-0" />
+                  {faq.q}
+                </div>
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
+              <AccordionContent className="text-muted-foreground leading-relaxed px-6 pb-6 pl-11 text-pretty">
                 {faq.a}
               </AccordionContent>
             </AccordionItem>
