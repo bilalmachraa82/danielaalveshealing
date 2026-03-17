@@ -35,7 +35,7 @@ const About = () => {
       </svg>
 
       {/* Ambient landscape background layer */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.03]" style={{
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.05]" style={{
         backgroundImage: `url("https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
