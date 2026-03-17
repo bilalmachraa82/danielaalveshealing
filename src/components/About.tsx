@@ -65,9 +65,11 @@ const About = () => {
             {/* Handwritten signature SVG */}
             <div className="mt-10 flex items-center gap-4">
               <div className="h-px flex-1 bg-gradient-to-r from-gold/30 to-transparent" />
-              <svg viewBox="0 0 200 60" className="w-36 h-12 text-primary/40" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10 45 C20 20, 35 15, 45 30 C50 38, 40 48, 35 42 C30 36, 40 25, 55 28 C65 30, 60 42, 70 35 C78 28, 72 22, 82 28 C88 32, 85 38, 95 32" />
-                <path d="M105 40 C110 20, 120 18, 125 30 C128 38, 118 45, 115 38 C112 30, 120 22, 135 25 C142 27, 138 40, 148 35 C155 30, 150 22, 160 28 C168 34, 162 42, 175 34 C182 28, 178 22, 190 30" />
+              <svg viewBox="0 0 120 40" className="w-28 h-10 text-gold/40" fill="none" stroke="currentColor" strokeWidth="0.8">
+                <path d="M10 20 Q30 5 60 20 Q90 35 110 20" />
+                <path d="M20 20 Q40 10 60 20 Q80 30 100 20" />
+                <circle cx="60" cy="20" r="3" fill="currentColor" opacity="0.3" />
+                <path d="M50 20 L55 15 M70 20 L65 15 M50 20 L55 25 M70 20 L65 25" />
               </svg>
               <div className="h-px flex-1 bg-gradient-to-l from-gold/30 to-transparent" />
             </div>
