@@ -140,8 +140,8 @@ const Services = () => {
                 <div className="w-16 h-16 rounded-full border border-gold/30 flex items-center justify-center mb-8 group-hover:border-gold/60 group-hover:shadow-[0_0_20px_hsl(var(--gold)/0.15)] transition-all duration-500 relative z-10 bg-background/50 backdrop-blur-sm">
                   <s.icon className="h-6 w-6 text-gold" strokeWidth={1.5} />
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl font-light text-foreground mb-5 tracking-wider">{s.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-5 flex-grow text-pretty">{s.desc}</p>
+                <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-5 tracking-wider">{s.title}</h3>
+                <p className="text-muted-foreground text-base leading-relaxed mb-5 flex-grow text-pretty">{s.desc}</p>
                 <p className="font-serif italic text-sm text-primary/60 mb-8 leading-relaxed">{s.quote}</p>
                 <Button
                   variant="ghost"
