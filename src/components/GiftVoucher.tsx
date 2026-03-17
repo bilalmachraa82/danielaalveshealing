@@ -16,16 +16,19 @@ const GiftVoucher = () => {
   return (
     <section className="py-24 lg:py-36 bg-gradient-to-br from-cream via-mist to-background relative overflow-hidden">
       {/* Atmospheric background — soft floral/nature texture */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: `url("https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=1200&q=40")`,
+      {/* Atmospheric background — soft floral nature */}
+      <div className="absolute inset-0 opacity-[0.10]" style={{
+        backgroundImage: `url("https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=1400&q=60")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        filter: 'blur(25px) saturate(0.3)',
+        filter: 'blur(6px) saturate(0.5)',
       }} />
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cream/50 via-transparent to-mist/50 pointer-events-none" />
 
       {/* Radial gold glow */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.04] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.04] rounded-full blur-3xl pointer-events-none" />
 
       {/* Floating gold accents */}
       <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />
