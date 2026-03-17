@@ -22,7 +22,7 @@ const About = () => {
 
   return (
     <section id="sobre" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--section-warm) / 0.72) 45%, hsl(var(--section-lilac)) 100%)' }}>
-      {/* Botanical SVG pattern — different motif from SpaceHarmony */}
+      {/* Botanical SVG pattern */}
       <div className="absolute inset-0 opacity-[0.025]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='20' fill='none' stroke='%23985F97' stroke-width='0.4'/%3E%3Ccircle cx='40' cy='40' r='35' fill='none' stroke='%23985F97' stroke-width='0.3'/%3E%3Cpath d='M40 5 L40 75 M5 40 L75 40' stroke='%23985F97' stroke-width='0.2'/%3E%3C/svg%3E")`,
         backgroundSize: '80px 80px',
@@ -34,7 +34,7 @@ const About = () => {
         <circle cx="80" cy="80" r="25" />
       </svg>
 
-      {/* Ambient landscape background layer */}
+      {/* Ambient background layer */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.05]" style={{
         backgroundImage: `url("https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg")`,
         backgroundSize: 'cover',
@@ -61,14 +61,23 @@ const About = () => {
                 </p>
               ))}
             </div>
+
+            {/* Handwritten signature SVG */}
+            <div className="mt-10 flex items-center gap-4">
+              <div className="h-px flex-1 bg-gradient-to-r from-gold/30 to-transparent" />
+              <svg viewBox="0 0 200 60" className="w-36 h-12 text-primary/40" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 45 C20 20, 35 15, 45 30 C50 38, 40 48, 35 42 C30 36, 40 25, 55 28 C65 30, 60 42, 70 35 C78 28, 72 22, 82 28 C88 32, 85 38, 95 32" />
+                <path d="M105 40 C110 20, 120 18, 125 30 C128 38, 118 45, 115 38 C112 30, 120 22, 135 25 C142 27, 138 40, 148 35 C155 30, 150 22, 160 28 C168 34, 162 42, 175 34 C182 28, 178 22, 190 30" />
+              </svg>
+              <div className="h-px flex-1 bg-gradient-to-l from-gold/30 to-transparent" />
+            </div>
+            <p className="text-center text-[10px] tracking-[0.3em] uppercase text-muted-foreground/50 mt-3">Daniela Alves</p>
           </div>
 
           {/* Photo with artistic double frame */}
           <div className="order-1 md:order-2 flex justify-center">
             <div className="relative">
-              {/* Outer transparent gap frame */}
               <div className="absolute -inset-4 border border-gold/15 rounded-t-[140px] rounded-b-3xl" />
-              {/* Inner image with gold border */}
               <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
                 <img
                   src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
@@ -77,12 +86,10 @@ const About = () => {
                   loading="lazy"
                 />
               </div>
-              {/* Decorative botanical element */}
               <svg className="absolute -bottom-8 -right-8 w-24 h-24 text-gold/10 z-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.5">
                 <path d="M50 5C50 30 30 50 5 50C30 50 50 70 50 95C50 70 70 50 95 50C70 50 50 30 50 5Z" />
                 <circle cx="50" cy="50" r="15" />
               </svg>
-              {/* Gold glow behind photo */}
               <div className="absolute -inset-8 bg-gold/[0.04] rounded-full blur-3xl -z-10" />
             </div>
           </div>
