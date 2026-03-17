@@ -78,13 +78,15 @@ const Services = () => {
 
   return (
     <section id="servicos" className="py-24 lg:py-36 bg-gradient-to-b from-background via-mist to-cream relative overflow-hidden noise-overlay">
-      {/* Ambient lifestyle image band */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: `url("https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg")`,
+      {/* Ambient nature/wellness background */}
+      <div className="absolute inset-0 opacity-[0.06]" style={{
+        backgroundImage: `url("https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=1200&q=40")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        filter: 'blur(40px) saturate(0.3)',
+        filter: 'blur(20px) saturate(0.4)',
       }} />
+      {/* Extra radial depth */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
 
       {/* Botanical SVG decoration */}
       <svg className="absolute top-20 right-0 w-64 h-64 text-gold/[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.5">

@@ -6,19 +6,39 @@ import { MessageCircle } from 'lucide-react';
 const WA_LINK = 'https://wa.me/351914173445?text=' + encodeURIComponent('Olá Daniela, gostaria de adquirir um Cheque-Oferta.');
 
 const GiftVoucher = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { ref, isVisible } = useScrollAnimation();
+
+  const voucherImage = lang === 'pt'
+    ? 'https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-pt.jpg'
+    : 'https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-en.jpg';
 
   return (
     <section className="py-24 lg:py-36 bg-gradient-to-br from-cream via-mist to-background relative overflow-hidden">
+      {/* Atmospheric background — soft floral/nature texture */}
+      <div className="absolute inset-0 opacity-[0.04]" style={{
+        backgroundImage: `url("https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=1200&q=40")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        filter: 'blur(25px) saturate(0.3)',
+      }} />
+
+      {/* Radial gold glow */}
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.03] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
+
       {/* Floating gold accents */}
       <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />
       <div className="absolute bottom-1/4 left-10 w-1.5 h-1.5 rounded-full bg-gold/20 animate-float-gentle" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-1/5 left-1/3 w-1 h-1 rounded-full bg-gold/25 animate-float-gentle" style={{ animationDelay: '3s' }} />
 
-      {/* Radial glow */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-gold/[0.02] rounded-full blur-3xl pointer-events-none" />
+      {/* Botanical SVG */}
+      <svg className="absolute bottom-16 right-0 w-48 h-48 text-gold/[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.4">
+        <path d="M100 20C100 60 60 100 20 100C60 100 100 140 100 180C100 140 140 100 180 100C140 100 100 60 100 20Z" />
+        <circle cx="100" cy="100" r="30" />
+      </svg>
 
-      <div ref={ref} className="container mx-auto px-4 lg:px-8">
+      <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Image with gold border effect — editorial overlap */}
           <div className="relative md:-mr-8 lg:-mr-12">
@@ -28,7 +48,7 @@ const GiftVoucher = () => {
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
             <div className="rounded-2xl overflow-hidden shadow-2xl relative z-10">
               <img
-                src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-pt.jpg"
+                src={voucherImage}
                 alt={t('Cheque-Oferta', 'Gift Voucher')}
                 className="w-full h-auto"
                 loading="lazy"
