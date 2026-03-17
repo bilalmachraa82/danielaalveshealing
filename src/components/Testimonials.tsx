@@ -136,12 +136,12 @@ const Testimonials = () => {
 
           {/* Google badge */}
           <div className="text-center mt-10">
-            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground/60">
-              <span className="font-medium">5.0</span>
-              <div className="flex text-gold">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-2.5 w-2.5 fill-current" />)}
+            <div className="inline-flex items-center gap-2.5 text-xs text-foreground/80 bg-background/70 backdrop-blur-sm px-5 py-2.5 rounded-full border border-gold/20 shadow-sm">
+              <span className="font-serif font-medium text-gold">5.0</span>
+              <div className="flex text-gold drop-shadow-sm">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
               </div>
-              <span className="tracking-wide">23 {t('avaliações no Google', 'reviews on Google')}</span>
+              <span className="tracking-wide font-medium">23 {t('avaliações no Google', 'reviews on Google')}</span>
             </div>
           </div>
         </div>

@@ -171,23 +171,28 @@ const Services = () => {
       {/* Modals */}
       {services.map((s, i) => (
         <Dialog key={i} open={openModal === i} onOpenChange={() => setOpenModal(null)}>
-          <DialogContent className="max-w-lg border-0 shadow-2xl">
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-gold via-gold/50 to-transparent rounded-l-lg" />
-            <DialogHeader className="pl-4">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{t('Terapia', 'Therapy')}</p>
+          <DialogContent className="max-w-lg border-0 shadow-2xl overflow-hidden" style={{ background: 'linear-gradient(170deg, hsl(var(--background)) 0%, hsl(var(--cream)) 40%, hsl(var(--mist)) 100%)' }}>
+            {/* Top gold accent line */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
+            {/* Left gold bar with glow */}
+            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gold via-gold/40 to-transparent rounded-l-lg shadow-[2px_0_12px_hsl(var(--gold)/0.15)]" />
+            {/* Decorative quote */}
+            <span className="absolute top-4 right-6 font-serif text-7xl text-gold/[0.06] select-none pointer-events-none leading-none">"</span>
+            <DialogHeader className="pl-5">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{ROMAN[i]} — {t('Terapia', 'Therapy')}</p>
               <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">{s.title}</DialogTitle>
               <DialogDescription className="sr-only">{s.title}</DialogDescription>
             </DialogHeader>
-            <div className="pl-4">
+            <div className="pl-5">
               <p className="text-muted-foreground text-sm leading-relaxed text-pretty">{s.modal.text}</p>
               {(s.modal.duration || s.modal.price) && (
-                <div className="flex gap-6 text-sm mt-4 pt-4 border-t border-border/50">
-                  {s.modal.duration && <span className="text-foreground/80 tracking-wide">{s.modal.duration}</span>}
-                  {s.modal.price && <span className="text-gold font-medium tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</span>}
+                <div className="flex gap-6 text-sm mt-5 pt-4 border-t border-gold/10">
+                  {s.modal.duration && <span className="text-foreground/70 tracking-wide font-light">{s.modal.duration}</span>}
+                  {s.modal.price && <span className="font-serif text-lg text-gold tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</span>}
                 </div>
               )}
               <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 block">
-                <Button className="w-full bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground gap-2 rounded-full text-xs tracking-wider">
+                <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
                   <MessageCircle className="h-4 w-4" />
                   {t('Agendar via WhatsApp', 'Book via WhatsApp')}
                 </Button>
