@@ -42,7 +42,7 @@ const Testimonials = () => {
   const initials = item.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-primary/[0.08] via-primary/[0.12] to-primary/[0.06] relative overflow-hidden noise-overlay">
+    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-primary/[0.12] via-primary/[0.18] to-primary/[0.10] relative overflow-hidden noise-overlay">
       {/* Decorative large quote */}
       <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.06] select-none pointer-events-none">"</span>
 
