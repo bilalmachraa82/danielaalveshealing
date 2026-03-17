@@ -41,21 +41,13 @@ const Navigation = () => {
       >
         <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img
               src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/logo.png"
               alt="Daniela Alves Healing & Wellness"
-              className={`h-9 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
+              className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
               loading="eager"
             />
-            <div className="hidden sm:block">
-              <span className={`font-serif text-lg font-light tracking-[0.1em] transition-colors duration-300 ${scrolled ? 'text-primary' : 'text-white'}`}>
-                Daniela Alves
-              </span>
-              <span className={`block text-[9px] tracking-[0.25em] uppercase transition-colors duration-300 ${scrolled ? 'text-muted-foreground' : 'text-white/60'}`}>
-                Healing & Wellness
-              </span>
-            </div>
           </a>
 
           {/* Desktop links */}
