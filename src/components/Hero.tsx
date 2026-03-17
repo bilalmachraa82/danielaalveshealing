@@ -1,7 +1,8 @@
+import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
   const { t } = useLanguage();
