@@ -77,18 +77,11 @@ const Services = () => {
   ];
 
   return (
-    <section id="servicos" className="py-24 lg:py-36 bg-gradient-to-b from-background via-mist to-cream relative overflow-hidden noise-overlay">
-      {/* Ambient nature/wellness background — visible warm texture */}
-      <div className="absolute inset-0 opacity-[0.12]" style={{
-        backgroundImage: `url("https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=1400&q=60")`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        filter: 'blur(8px) saturate(0.5)',
-      }} />
-      {/* Gradient overlay to soften edges */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-cream/60 pointer-events-none" />
-      {/* Extra radial depth */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.04] rounded-full blur-3xl pointer-events-none" />
+    <section id="servicos" className="py-24 lg:py-36 bg-gradient-to-b from-[hsl(300_30%_95%)] via-[hsl(300_25%_96%)] to-[hsl(40_40%_95%)] relative overflow-hidden noise-overlay">
+      {/* Radial depth glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary/[0.08] rounded-full blur-3xl pointer-events-none" />
+      {/* Secondary warm glow */}
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/[0.05] rounded-full blur-3xl pointer-events-none" />
 
       {/* Botanical SVG decoration */}
       <svg className="absolute top-20 right-0 w-64 h-64 text-gold/[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.5">

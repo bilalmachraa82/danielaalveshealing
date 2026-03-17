@@ -45,7 +45,7 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-36 bg-gradient-to-b from-mist via-background to-cream relative overflow-hidden">
+    <section className="py-24 lg:py-36 bg-gradient-to-b from-[hsl(300_25%_96%)] via-[hsl(300_20%_97%)] to-[hsl(40_40%_96%)] relative overflow-hidden">
       {/* Radial gradient accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/[0.02] rounded-full blur-3xl pointer-events-none" />
 
