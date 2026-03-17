@@ -42,12 +42,12 @@ const Testimonials = () => {
   const initials = item.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-mist via-primary/[0.04] to-mist relative overflow-hidden noise-overlay">
+    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-primary/[0.08] via-primary/[0.12] to-primary/[0.06] relative overflow-hidden noise-overlay">
       {/* Decorative large quote */}
-      <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.04] select-none pointer-events-none">"</span>
+      <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.06] select-none pointer-events-none">"</span>
 
       {/* Radial glow accent */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/[0.05] rounded-full blur-3xl pointer-events-none" />
 
       {/* Floating gold accents */}
       <div className="absolute top-1/4 right-16 w-2 h-2 rounded-full bg-gold/20 animate-float-gentle" />
@@ -63,25 +63,25 @@ const Testimonials = () => {
         </div>
 
         <div className={`max-w-2xl mx-auto transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <Card className="border-0 shadow-xl glass-card overflow-hidden">
+          <Card className="border border-gold/20 shadow-2xl bg-card overflow-hidden">
             <CardContent className="p-10 md:p-14 text-center relative">
               {/* Gold top line */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
 
               {/* Avatar with gold ring */}
               <div className="w-16 h-16 rounded-full border-2 border-gold/40 flex items-center justify-center mx-auto mb-5 bg-gradient-to-br from-mist to-cream shadow-inner">
-                <span className="font-serif text-lg text-primary/70">{initials}</span>
+                <span className="font-serif text-lg text-primary">{initials}</span>
               </div>
               <h4 className="font-serif text-lg font-light text-foreground tracking-wider">{item.name}</h4>
-              <p className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground/60 mb-4">{item.loc}</p>
+              <p className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground mb-4">{item.loc}</p>
               <div className="flex justify-center mb-6 text-gold">
                 {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
               </div>
-              <p className="font-serif italic text-foreground/75 leading-relaxed text-lg md:text-xl">
+              <p className="font-serif italic text-foreground leading-relaxed text-lg md:text-xl">
                 "{lang === 'pt' ? item.text.pt : item.text.en}"
               </p>
 
-              <span className="inline-block text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 mt-6 border border-border/50 px-3 py-1 rounded-full">
+              <span className="inline-block text-[9px] tracking-[0.2em] uppercase text-muted-foreground mt-6 border border-border px-3 py-1 rounded-full">
                 Google Review
               </span>
             </CardContent>

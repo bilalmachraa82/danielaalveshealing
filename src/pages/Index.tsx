@@ -10,7 +10,6 @@ import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import CookieConsent from '@/components/CookieConsent';
-import SectionDivider from '@/components/SectionDivider';
 
 const Index = () => (
   <>
@@ -18,17 +17,11 @@ const Index = () => (
     <main>
       <Hero />
       <TrustStrip />
-      <SectionDivider fromColor="hsl(var(--background))" toColor="hsl(var(--mist))" />
       <Services />
-      <SectionDivider fromColor="hsl(var(--cream))" toColor="hsl(276, 8%, 17%)" />
       <SpaceHarmony />
-      <SectionDivider fromColor="hsl(276, 8%, 17%)" toColor="hsl(var(--cream))" flip />
       <GiftVoucher />
-      <SectionDivider fromColor="hsl(var(--background))" toColor="hsl(var(--cream))" />
       <About />
-      <SectionDivider fromColor="hsl(var(--mist))" toColor="hsl(var(--mist))" />
       <Testimonials />
-      <SectionDivider fromColor="hsl(var(--mist))" toColor="hsl(var(--background))" flip />
       <FAQ />
     </main>
     <Footer />
