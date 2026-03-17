@@ -42,6 +42,10 @@
     --mist: 300 43% 97%;
     --subtle: 0 0% 98%;
 
+    --gold: 37 45% 64%;
+    --gold-light: 37 55% 78%;
+    --gold-dark: 37 40% 48%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -73,6 +77,9 @@
     --border: 276 20% 18%;
     --input: 276 20% 18%;
     --ring: 301 28% 62%;
+    --gold: 37 45% 64%;
+    --gold-light: 37 55% 78%;
+    --gold-dark: 37 40% 48%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -123,23 +130,131 @@
     @apply bg-background/60 backdrop-blur-lg border border-border/50;
   }
 
+  .glass-premium {
+    background: hsla(0, 0%, 100%, 0.12);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid hsla(0, 0%, 100%, 0.15);
+  }
+
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-light;
   }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .gold-underline {
+    position: relative;
+  }
+  .gold-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: hsl(var(--gold));
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateX(-50%);
+  }
+  .gold-underline:hover::after {
+    width: 100%;
+  }
+
+  .drop-cap::first-letter {
+    float: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem;
+    line-height: 0.8;
+    padding-right: 0.5rem;
+    padding-top: 0.15rem;
+    color: hsl(var(--primary));
+    font-weight: 300;
+  }
+
+  .noise-overlay {
+    position: relative;
+  }
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .section-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold)), transparent);
+    margin: 0 auto;
+  }
 }
 
+/* Keyframes */
 @keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 hsl(var(--whatsapp) / 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 12px hsl(var(--whatsapp) / 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 hsl(var(--whatsapp) / 0);
-  }
+  0% { box-shadow: 0 0 0 0 hsl(var(--whatsapp) / 0.5); }
+  70% { box-shadow: 0 0 0 12px hsl(var(--whatsapp) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--whatsapp) / 0); }
 }
 
 .animate-pulse-ring {
   animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+@keyframes text-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes gold-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fade-in-up-premium {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scroll-hint {
+  0%, 100% { opacity: 0.4; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(8px); }
+}
+
+.animate-text-reveal {
+  animation: text-reveal 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.animate-gold-shimmer {
+  background-size: 200% auto;
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--gold-dark)) 0%,
+    hsl(var(--gold-light)) 50%,
+    hsl(var(--gold-dark)) 100%
+  );
+  animation: gold-shimmer 3s linear infinite;
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.animate-scroll-hint {
+  animation: scroll-hint 2s ease-in-out infinite;
 }
