@@ -21,7 +21,7 @@ const Testimonials = () => {
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [animating, setAnimating] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<number | undefined>(undefined);
 
   const changeTo = useCallback((next: number) => {
     setAnimating(true);
