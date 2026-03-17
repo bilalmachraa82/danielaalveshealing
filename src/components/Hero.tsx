@@ -7,6 +7,15 @@ import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 const Hero = () => {
   const { t } = useLanguage();
   const { ref, isVisible } = useScrollAnimation(0.05);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
 
   const words = [
     { pt: 'Serenar', en: 'Soothe' },
