@@ -77,39 +77,49 @@ const Services = () => {
   ];
 
   return (
-    <section id="servicos" className="py-20 lg:py-28 bg-mist">
+    <section id="servicos" className="py-24 lg:py-36 bg-background">
       <div ref={ref} className="container mx-auto px-4 lg:px-8">
-        <div className={`text-center mb-14 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-primary tracking-wider mb-4">
+        {/* Section header */}
+        <div className={`text-center mb-20 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Terapias', 'Therapies')}</p>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6 text-balance">
             {t('Cuidar de Ti', 'Caring for You')}
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <div className="section-divider mb-6" />
+          <p className="text-muted-foreground max-w-lg mx-auto text-sm leading-relaxed text-pretty">
             {t('Sessões para uma Harmonia profunda do Ser, de Corpo e Alma!', 'Sessions for a deep Harmony of Being, Body and Soul!')}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        {/* Editorial asymmetric grid */}
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-10">
           {services.map((s, i) => (
             <Card
               key={i}
-              className={`group relative overflow-hidden bg-card hover:shadow-xl transition-all duration-500 hover:-translate-y-1 border-border/50 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              className={`group relative overflow-hidden bg-card hover:shadow-2xl transition-all duration-700 hover:-translate-y-2 border-0 shadow-lg ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
               }`}
-              style={{ transitionDelay: isVisible ? `${i * 100}ms` : '0ms' }}
+              style={{
+                transitionDelay: isVisible ? `${i * 150}ms` : '0ms',
+                marginTop: i === 1 ? '2rem' : '0',
+              }}
             >
-              <CardContent className="p-8 flex flex-col items-center text-center h-full">
-                <div className="w-16 h-16 rounded-full bg-secondary/15 flex items-center justify-center mb-6">
-                  <s.icon className="h-7 w-7 text-secondary" />
+              {/* Gold accent line */}
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-gold to-transparent" />
+
+              <CardContent className="p-10 lg:p-12 flex flex-col items-center text-center h-full">
+                <div className="w-16 h-16 rounded-full border border-gold/30 flex items-center justify-center mb-8 group-hover:border-gold/60 transition-colors duration-500">
+                  <s.icon className="h-6 w-6 text-gold" strokeWidth={1.5} />
                 </div>
-                <h3 className="font-serif text-xl md:text-2xl font-normal text-foreground mb-4 tracking-wide">{s.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-grow">{s.desc}</p>
-                <p className="font-serif italic text-sm text-primary/70 mb-6">{s.quote}</p>
+                <h3 className="font-serif text-xl md:text-2xl font-light text-foreground mb-5 tracking-wider">{s.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-5 flex-grow text-pretty">{s.desc}</p>
+                <p className="font-serif italic text-sm text-primary/60 mb-8 leading-relaxed">{s.quote}</p>
                 <Button
-                  variant="outline"
-                  className="rounded-full border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                  variant="ghost"
+                  className="rounded-full text-xs tracking-[0.15em] uppercase text-foreground/60 hover:text-foreground hover:bg-muted transition-all"
                   onClick={() => setOpenModal(i)}
                 >
-                  {t('Saber mais', 'Learn more')}
+                  {t('Saber mais', 'Learn more')} →
                 </Button>
               </CardContent>
             </Card>
@@ -120,24 +130,30 @@ const Services = () => {
       {/* Modals */}
       {services.map((s, i) => (
         <Dialog key={i} open={openModal === i} onOpenChange={() => setOpenModal(null)}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle className="font-serif text-2xl font-light text-primary tracking-wide">{s.title}</DialogTitle>
+          <DialogContent className="max-w-lg border-0 shadow-2xl">
+            {/* Gold left accent */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-gold via-gold/50 to-transparent rounded-l-lg" />
+
+            <DialogHeader className="pl-4">
+              <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{t('Terapia', 'Therapy')}</p>
+              <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">{s.title}</DialogTitle>
               <DialogDescription className="sr-only">{s.title}</DialogDescription>
             </DialogHeader>
-            <p className="text-muted-foreground text-sm leading-relaxed">{s.modal.text}</p>
-            {(s.modal.duration || s.modal.price) && (
-              <div className="flex gap-4 text-sm font-medium text-foreground mt-2">
-                {s.modal.duration && <span>{s.modal.duration}</span>}
-                {s.modal.price && <span>{s.modal.price}</span>}
-              </div>
-            )}
-            <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-4 block">
-              <Button className="w-full bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground gap-2 rounded-full">
-                <MessageCircle className="h-4 w-4" />
-                {t('Agendar via WhatsApp', 'Book via WhatsApp')}
-              </Button>
-            </a>
+            <div className="pl-4">
+              <p className="text-muted-foreground text-sm leading-relaxed text-pretty">{s.modal.text}</p>
+              {(s.modal.duration || s.modal.price) && (
+                <div className="flex gap-6 text-sm mt-4 pt-4 border-t border-border/50">
+                  {s.modal.duration && <span className="text-foreground/80 tracking-wide">{s.modal.duration}</span>}
+                  {s.modal.price && <span className="text-gold font-medium tracking-wide">{s.modal.price}</span>}
+                </div>
+              )}
+              <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 block">
+                <Button className="w-full bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground gap-2 rounded-full text-xs tracking-wider">
+                  <MessageCircle className="h-4 w-4" />
+                  {t('Agendar via WhatsApp', 'Book via WhatsApp')}
+                </Button>
+              </a>
+            </div>
           </DialogContent>
         </Dialog>
       ))}
