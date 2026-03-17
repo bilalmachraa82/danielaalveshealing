@@ -5,11 +5,20 @@ const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer id="contacto" className="relative bg-gradient-to-b from-foreground to-foreground/95 text-primary-foreground pt-20 pb-10 overflow-hidden">
+    <footer id="contacto" className="relative bg-gradient-to-b from-foreground via-foreground/98 to-foreground/90 text-primary-foreground pt-20 pb-10 overflow-hidden noise-overlay">
       {/* Gold top line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
-      <div className="container mx-auto px-4 lg:px-8">
+      {/* Decorative botanical SVG */}
+      <svg className="absolute top-16 right-8 w-32 h-32 text-gold/[0.04] pointer-events-none" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="0.4">
+        <path d="M60 10C60 40 40 60 10 60C40 60 60 80 60 110C60 80 80 60 110 60C80 60 60 40 60 10Z" />
+        <circle cx="60" cy="60" r="18" />
+      </svg>
+
+      {/* Subtle radial glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gold/[0.02] rounded-full blur-3xl pointer-events-none" />
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="grid md:grid-cols-3 gap-12 lg:gap-20">
           {/* Brand */}
           <div>

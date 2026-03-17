@@ -21,8 +21,28 @@ const About = () => {
   ];
 
   return (
-    <section id="sobre" className="py-24 lg:py-36 bg-background">
-      <div ref={ref} className="container mx-auto px-4 lg:px-8">
+    <section id="sobre" className="py-24 lg:py-36 bg-gradient-to-b from-cream via-cream to-mist relative overflow-hidden">
+      {/* Botanical SVG pattern — different motif from SpaceHarmony */}
+      <div className="absolute inset-0 opacity-[0.025]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='20' fill='none' stroke='%23985F97' stroke-width='0.4'/%3E%3Ccircle cx='40' cy='40' r='35' fill='none' stroke='%23985F97' stroke-width='0.3'/%3E%3Cpath d='M40 5 L40 75 M5 40 L75 40' stroke='%23985F97' stroke-width='0.2'/%3E%3C/svg%3E")`,
+        backgroundSize: '80px 80px',
+      }} />
+
+      {/* Decorative botanical SVG */}
+      <svg className="absolute top-12 left-0 w-40 h-40 text-gold/[0.05] pointer-events-none" viewBox="0 0 160 160" fill="none" stroke="currentColor" strokeWidth="0.5">
+        <path d="M80 10C80 50 50 80 10 80C50 80 80 110 80 150C80 110 110 80 150 80C110 80 80 50 80 10Z" />
+        <circle cx="80" cy="80" r="25" />
+      </svg>
+
+      {/* Ambient landscape background layer */}
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.03]" style={{
+        backgroundImage: `url("https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg")`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        filter: 'blur(30px) saturate(0.2)',
+      }} />
+
+      <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Text */}
           <div className="order-2 md:order-1">
@@ -62,6 +82,8 @@ const About = () => {
                 <path d="M50 5C50 30 30 50 5 50C30 50 50 70 50 95C50 70 70 50 95 50C70 50 50 30 50 5Z" />
                 <circle cx="50" cy="50" r="15" />
               </svg>
+              {/* Gold glow behind photo */}
+              <div className="absolute -inset-8 bg-gold/[0.04] rounded-full blur-3xl -z-10" />
             </div>
           </div>
         </div>

@@ -10,13 +10,22 @@ const GiftVoucher = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="py-24 lg:py-36 bg-gradient-to-br from-cream via-background to-mist relative overflow-hidden">
+    <section className="py-24 lg:py-36 bg-gradient-to-br from-cream via-mist to-background relative overflow-hidden">
+      {/* Floating gold accents */}
+      <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />
+      <div className="absolute bottom-1/4 left-10 w-1.5 h-1.5 rounded-full bg-gold/20 animate-float-gentle" style={{ animationDelay: '1.5s' }} />
+
+      {/* Radial glow */}
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-gold/[0.02] rounded-full blur-3xl pointer-events-none" />
+
       <div ref={ref} className="container mx-auto px-4 lg:px-8">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Image with gold border effect */}
-          <div className="relative">
+          {/* Image with gold border effect — editorial overlap */}
+          <div className="relative md:-mr-8 lg:-mr-12">
             {/* Outer decorative frame */}
             <div className="absolute -inset-3 border border-gold/20 rounded-2xl" />
+            {/* Gold gradient shadow */}
+            <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
             <div className="rounded-2xl overflow-hidden shadow-2xl relative z-10">
               <img
                 src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-pt.jpg"
@@ -26,13 +35,13 @@ const GiftVoucher = () => {
               />
             </div>
             {/* Overlap accent */}
-            <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-gold/5 rounded-full blur-2xl" />
+            <div className="absolute -bottom-6 -right-6 w-40 h-40 bg-gold/[0.06] rounded-full blur-2xl" />
           </div>
 
           {/* Text */}
           <div className="relative">
             {/* Large decorative quote mark */}
-            <span className="absolute -top-8 -left-6 font-serif text-[10rem] leading-none text-gold/5 select-none pointer-events-none">"</span>
+            <span className="absolute -top-8 -left-6 font-serif text-[10rem] leading-none text-gold/[0.06] select-none pointer-events-none">"</span>
 
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4 relative z-10">{t('Oferta Especial', 'Special Gift')}</p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-8 relative z-10 text-balance">
@@ -50,7 +59,7 @@ const GiftVoucher = () => {
               )}
             </p>
             <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="relative z-10 inline-block">
-              <Button className="bg-gold hover:bg-gold-dark text-white gap-2 rounded-full px-8 text-xs tracking-[0.12em] uppercase shadow-lg">
+              <Button className="bg-gold hover:bg-gold-dark text-white gap-2 rounded-full px-8 text-xs tracking-[0.12em] uppercase shadow-lg hover:shadow-xl transition-all">
                 <MessageCircle className="h-4 w-4" />
                 {t('Adquirir Cheque-Oferta', 'Get Gift Voucher')}
               </Button>
