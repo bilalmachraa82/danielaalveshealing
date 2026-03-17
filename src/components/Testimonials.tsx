@@ -30,7 +30,6 @@ const Testimonials = () => {
     setCurrent(c => (c === testimonials.length - 1 ? 0 : c + 1));
   }, []);
 
-  // Auto-play
   useEffect(() => {
     if (!isAutoPlaying) return;
     const timer = setInterval(() => {
@@ -43,9 +42,16 @@ const Testimonials = () => {
   const initials = item.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-mist via-background to-mist relative overflow-hidden">
+    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-mist via-primary/[0.04] to-mist relative overflow-hidden noise-overlay">
       {/* Decorative large quote */}
-      <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.03] select-none pointer-events-none">"</span>
+      <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.04] select-none pointer-events-none">"</span>
+
+      {/* Radial glow accent */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/[0.03] rounded-full blur-3xl pointer-events-none" />
+
+      {/* Floating gold accents */}
+      <div className="absolute top-1/4 right-16 w-2 h-2 rounded-full bg-gold/20 animate-float-gentle" />
+      <div className="absolute bottom-1/3 left-12 w-1.5 h-1.5 rounded-full bg-gold/15 animate-float-gentle" style={{ animationDelay: '1.5s' }} />
 
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -57,13 +63,13 @@ const Testimonials = () => {
         </div>
 
         <div className={`max-w-2xl mx-auto transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm overflow-hidden">
+          <Card className="border-0 shadow-xl glass-card overflow-hidden">
             <CardContent className="p-10 md:p-14 text-center relative">
               {/* Gold top line */}
               <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
 
               {/* Avatar with gold ring */}
-              <div className="w-16 h-16 rounded-full border-2 border-gold/40 flex items-center justify-center mx-auto mb-5 bg-mist">
+              <div className="w-16 h-16 rounded-full border-2 border-gold/40 flex items-center justify-center mx-auto mb-5 bg-gradient-to-br from-mist to-cream shadow-inner">
                 <span className="font-serif text-lg text-primary/70">{initials}</span>
               </div>
               <h4 className="font-serif text-lg font-light text-foreground tracking-wider">{item.name}</h4>
