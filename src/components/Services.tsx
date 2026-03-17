@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Flower2, Sun, Leaf, MessageCircle } from 'lucide-react';
 
 const WA_BASE = 'https://wa.me/351914173445?text=';
+const ROMAN = ['I', 'II', 'III'];
 
 const Services = () => {
   const { t } = useLanguage();
@@ -86,7 +87,6 @@ const Services = () => {
     >
       {/* Radial depth glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary/[0.14] rounded-full blur-3xl pointer-events-none" />
-      {/* Secondary warm glow */}
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/[0.10] rounded-full blur-3xl pointer-events-none" />
 
       {/* Botanical SVG decoration */}
@@ -123,26 +123,35 @@ const Services = () => {
           {services.map((s, i) => (
             <Card
               key={i}
-              className={`group relative overflow-hidden glass-card hover:shadow-2xl transition-all duration-700 hover:-translate-y-2 border-0 ${
+              className={`group relative overflow-hidden border-0 transition-all duration-700 hover:-translate-y-3 hover:shadow-[0_25px_60px_-15px_hsl(var(--primary)/0.2)] ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
               }`}
               style={{
-                transitionDelay: isVisible ? `${i * 150}ms` : '0ms',
+                transitionDelay: isVisible ? `${i * 200}ms` : '0ms',
                 marginTop: i === 1 ? '2rem' : '0',
+                background: 'linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--mist)) 50%, hsl(var(--cream)) 100%)',
               }}
             >
-              {/* Gold accent line */}
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-gold to-transparent" />
+              {/* Gold accent line — thicker */}
+              <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-gold to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
 
               {/* Hover gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-gold/0 to-gold/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-b from-gold/0 to-gold/[0.05] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               <CardContent className="p-10 lg:p-12 flex flex-col items-center text-center h-full relative">
-                {/* Decorative ring behind icon */}
-                <div className="absolute top-8 w-24 h-24 rounded-full border border-gold/[0.06] group-hover:scale-110 transition-transform duration-700" />
-                <div className="w-16 h-16 rounded-full border border-gold/30 flex items-center justify-center mb-8 group-hover:border-gold/60 group-hover:shadow-[0_0_20px_hsl(var(--gold)/0.15)] transition-all duration-500 relative z-10 bg-background/50 backdrop-blur-sm">
+                {/* Roman numeral — editorial detail */}
+                <span className="absolute top-6 right-8 font-serif text-5xl font-extralight text-primary/[0.06] select-none pointer-events-none group-hover:text-primary/[0.12] transition-colors duration-700">
+                  {ROMAN[i]}
+                </span>
+
+                {/* Icon with gradient background */}
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_30px_hsl(var(--gold)/0.2)]" style={{
+                  background: 'linear-gradient(135deg, hsl(var(--gold) / 0.15), hsl(var(--primary) / 0.1))',
+                  border: '1px solid hsl(var(--gold) / 0.3)',
+                }}>
                   <s.icon className="h-6 w-6 text-gold" strokeWidth={1.5} />
                 </div>
+
                 <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-5 tracking-wider">{s.title}</h3>
                 <p className="text-muted-foreground text-base leading-relaxed mb-5 flex-grow text-pretty">{s.desc}</p>
                 <p className="font-serif italic text-sm text-primary/60 mb-8 leading-relaxed">{s.quote}</p>
@@ -174,7 +183,7 @@ const Services = () => {
               {(s.modal.duration || s.modal.price) && (
                 <div className="flex gap-6 text-sm mt-4 pt-4 border-t border-border/50">
                   {s.modal.duration && <span className="text-foreground/80 tracking-wide">{s.modal.duration}</span>}
-                  {s.modal.price && <span className="text-gold font-medium tracking-wide">{s.modal.price}</span>}
+                  {s.modal.price && <span className="text-gold font-medium tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</span>}
                 </div>
               )}
               <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 block">

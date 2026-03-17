@@ -7,12 +7,15 @@ import GiftVoucher from '@/components/GiftVoucher';
 import About from '@/components/About';
 import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
+import CTABanner from '@/components/CTABanner';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import CookieConsent from '@/components/CookieConsent';
+import LoadingScreen from '@/components/LoadingScreen';
 
 const Index = () => (
   <>
+    <LoadingScreen />
     <Navigation />
     <main>
       <Hero />
@@ -23,6 +26,7 @@ const Index = () => (
       <About />
       <Testimonials />
       <FAQ />
+      <CTABanner />
     </main>
     <Footer />
     <WhatsAppFloat />
