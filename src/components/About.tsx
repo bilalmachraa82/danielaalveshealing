@@ -21,25 +21,35 @@ const About = () => {
   ];
 
   return (
-    <section id="sobre" className="py-20 lg:py-28 bg-background">
+    <section id="sobre" className="py-24 lg:py-36 bg-background">
       <div ref={ref} className="container mx-auto px-4 lg:px-8">
-        <div className={`grid md:grid-cols-2 gap-10 lg:gap-16 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {/* Text */}
           <div className="order-2 md:order-1">
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-primary tracking-wider mb-8">
+            <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('A Terapeuta', 'The Therapist')}</p>
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-10 text-balance">
               {t('Sobre Mim', 'About Me')}
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-6">
               {paragraphs.map((p, i) => (
-                <p key={i} className="text-muted-foreground leading-relaxed text-sm md:text-base">{p}</p>
+                <p
+                  key={i}
+                  className={`text-muted-foreground leading-relaxed text-sm md:text-base text-pretty ${i === 0 ? 'drop-cap' : ''} transition-all duration-700`}
+                  style={{ transitionDelay: isVisible ? `${(i + 1) * 150}ms` : '0ms' }}
+                >
+                  {p}
+                </p>
               ))}
             </div>
           </div>
 
-          {/* Photo */}
+          {/* Photo with artistic double frame */}
           <div className="order-1 md:order-2 flex justify-center">
             <div className="relative">
-              <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-secondary/40 shadow-xl max-w-sm">
+              {/* Outer transparent gap frame */}
+              <div className="absolute -inset-4 border border-gold/15 rounded-t-[140px] rounded-b-3xl" />
+              {/* Inner image with gold border */}
+              <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
                 <img
                   src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
                   alt="Daniela Alves"
@@ -47,6 +57,11 @@ const About = () => {
                   loading="lazy"
                 />
               </div>
+              {/* Decorative botanical element */}
+              <svg className="absolute -bottom-8 -right-8 w-24 h-24 text-gold/10 z-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.5">
+                <path d="M50 5C50 30 30 50 5 50C30 50 50 70 50 95C50 70 70 50 95 50C70 50 50 30 50 5Z" />
+                <circle cx="50" cy="50" r="15" />
+              </svg>
             </div>
           </div>
         </div>

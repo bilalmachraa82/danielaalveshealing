@@ -1,7 +1,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
-import { ArrowDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -14,67 +14,80 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-mist via-background to-cream">
-      {/* Organic shape decorations */}
-      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-0 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay">
+      {/* Video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/hero-video.mp4" type="video/mp4" />
+      </video>
 
-      <div ref={ref} className="container mx-auto px-4 lg:px-8 pt-24 pb-12">
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
-          {/* Video — Left 3 cols */}
-          <div className={`lg:col-span-3 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="relative rounded-t-[120px] rounded-b-2xl overflow-hidden shadow-2xl max-w-lg mx-auto lg:mx-0 aspect-[3/4]">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
-                className="w-full h-full object-cover"
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-foreground/50" />
+
+      {/* Gradient fade at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
+
+      {/* Content */}
+      <div ref={ref} className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        {/* S.E.R. words — oversized serif */}
+        <div className="space-y-1 mb-10">
+          {words.map((w, i) => {
+            const word = t(w.pt, w.en);
+            return (
+              <p
+                key={i}
+                className={`font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight tracking-[0.15em] text-white/90 transition-all duration-1000 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+                }`}
+                style={{ transitionDelay: `${i * 200}ms` }}
               >
-                <source src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/hero-video.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
-            </div>
-          </div>
-
-          {/* Text — Right 2 cols */}
-          <div className={`lg:col-span-2 text-center lg:text-left transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            {/* S.E.R. words */}
-            <div className="space-y-2 mb-8">
-              {words.map((w, i) => {
-                const word = t(w.pt, w.en);
-                return (
-                  <p key={i} className="font-serif italic text-3xl md:text-4xl lg:text-5xl font-light tracking-wider text-foreground/80"
-                     style={{ animationDelay: `${i * 150}ms` }}>
-                    <span className="text-primary text-4xl md:text-5xl lg:text-6xl font-normal not-italic">{word[0]}</span>
-                    {word.slice(1)}...
-                  </p>
-                );
-              })}
-            </div>
-
-            {/* Quote */}
-            <blockquote className="relative pl-4 border-l-2 border-secondary/60 mb-8">
-              <p className="font-serif text-base md:text-lg italic text-muted-foreground leading-relaxed">
-                {t(
-                  '"Quando o corpo relaxa e harmoniza, o Ser cria condições para regressar à sua mais genuína Expressão."',
-                  '"When the body relaxes and harmonizes, the Being creates conditions to return to its most genuine Expression."'
-                )}
+                <span className="text-gold font-light">{word[0]}</span>
+                <span className="italic">{word.slice(1)}</span>
+                {i < words.length - 1 && <span className="text-gold/40">.</span>}
               </p>
-              <footer className="mt-3 text-sm font-medium text-primary tracking-wide">— Daniela Alves</footer>
-            </blockquote>
-
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 gap-2"
-              onClick={() => document.querySelector('#servicos')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              {t('Descobrir Terapias', 'Discover Therapies')}
-              <ArrowDown className="h-4 w-4" />
-            </Button>
-          </div>
+            );
+          })}
         </div>
+
+        {/* Decorative gold divider */}
+        <div className={`section-divider mb-8 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`} />
+
+        {/* Quote */}
+        <p
+          className={`font-serif text-sm sm:text-base md:text-lg italic text-white/70 max-w-xl mx-auto leading-relaxed tracking-wide transition-all duration-1000 delay-500 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
+        >
+          {t(
+            '"Quando o corpo relaxa e harmoniza, o Ser cria condições para regressar à sua mais genuína Expressão."',
+            '"When the body relaxes and harmonizes, the Being creates conditions to return to its most genuine Expression."'
+          )}
+        </p>
+        <p className={`text-xs tracking-[0.3em] uppercase text-gold/80 mt-4 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          — Daniela Alves
+        </p>
+
+        {/* CTA */}
+        <div className={`mt-12 transition-all duration-1000 delay-[900ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <Button
+            size="lg"
+            className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full px-10 py-6 text-sm tracking-[0.15em] uppercase backdrop-blur-sm transition-all duration-300"
+            onClick={() => document.querySelector('#servicos')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            {t('Descobrir Terapias', 'Discover Therapies')}
+          </Button>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-scroll-hint">
+        <ChevronDown className="h-6 w-6 text-white/50" />
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,69 +19,96 @@ const Testimonials = () => {
   const { lang, t } = useLanguage();
   const { ref, isVisible } = useScrollAnimation();
   const [current, setCurrent] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const prev = useCallback(() => setCurrent(c => (c === 0 ? testimonials.length - 1 : c - 1)), []);
-  const next = useCallback(() => setCurrent(c => (c === testimonials.length - 1 ? 0 : c + 1)), []);
+  const prev = useCallback(() => {
+    setIsAutoPlaying(false);
+    setCurrent(c => (c === 0 ? testimonials.length - 1 : c - 1));
+  }, []);
+  const next = useCallback(() => {
+    setIsAutoPlaying(false);
+    setCurrent(c => (c === testimonials.length - 1 ? 0 : c + 1));
+  }, []);
+
+  // Auto-play
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    const timer = setInterval(() => {
+      setCurrent(c => (c === testimonials.length - 1 ? 0 : c + 1));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isAutoPlaying]);
 
   const item = testimonials[current];
   const initials = item.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <section id="testemunhos" className="py-20 lg:py-28 bg-mist">
-      <div ref={ref} className="container mx-auto px-4 lg:px-8">
-        <div className={`text-center mb-14 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-primary tracking-wider">
-            {t('Testemunhos', 'Testimonials')}
+    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-mist via-background to-mist relative overflow-hidden">
+      {/* Decorative large quote */}
+      <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.03] select-none pointer-events-none">"</span>
+
+      <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
+        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Testemunhos', 'Testimonials')}</p>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6">
+            {t('Palavras que Aquecem', 'Words that Warm')}
           </h2>
+          <div className="section-divider" />
         </div>
 
         <div className={`max-w-2xl mx-auto transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <Card className="glass-card overflow-hidden">
-            <CardContent className="p-8 md:p-10 text-center">
-              {/* Avatar */}
-              <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4 font-serif text-lg">
-                {initials}
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm overflow-hidden">
+            <CardContent className="p-10 md:p-14 text-center relative">
+              {/* Gold top line */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" />
+
+              {/* Avatar with gold ring */}
+              <div className="w-16 h-16 rounded-full border-2 border-gold/40 flex items-center justify-center mx-auto mb-5 bg-mist">
+                <span className="font-serif text-lg text-primary/70">{initials}</span>
               </div>
-              <h4 className="font-medium text-foreground">{item.name}</h4>
-              <p className="text-xs text-muted-foreground mb-3">{item.loc}</p>
-              <div className="flex justify-center mb-4 text-secondary">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
+              <h4 className="font-serif text-lg font-light text-foreground tracking-wider">{item.name}</h4>
+              <p className="text-[11px] tracking-[0.2em] uppercase text-muted-foreground/60 mb-4">{item.loc}</p>
+              <div className="flex justify-center mb-6 text-gold">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
               </div>
-              <span className="inline-block text-[10px] tracking-wider uppercase bg-muted px-2 py-0.5 rounded mb-4 text-muted-foreground">Google</span>
-              <p className="font-serif italic text-foreground/80 leading-relaxed">
+              <p className="font-serif italic text-foreground/75 leading-relaxed text-lg md:text-xl">
                 "{lang === 'pt' ? item.text.pt : item.text.en}"
               </p>
+
+              <span className="inline-block text-[9px] tracking-[0.2em] uppercase text-muted-foreground/50 mt-6 border border-border/50 px-3 py-1 rounded-full">
+                Google Review
+              </span>
             </CardContent>
           </Card>
 
           {/* Controls */}
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <Button variant="ghost" size="icon" onClick={prev} className="rounded-full" aria-label="Previous">
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <Button variant="ghost" size="icon" onClick={prev} className="rounded-full w-10 h-10 text-foreground/40 hover:text-foreground" aria-label="Previous">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               {testimonials.map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`w-2 h-2 rounded-full transition-all ${i === current ? 'bg-primary w-6' : 'bg-border'}`}
+                  onClick={() => { setIsAutoPlaying(false); setCurrent(i); }}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${i === current ? 'bg-gold w-8' : 'bg-border w-1.5'}`}
                   aria-label={`Testimonial ${i + 1}`}
                 />
               ))}
             </div>
-            <Button variant="ghost" size="icon" onClick={next} className="rounded-full" aria-label="Next">
+            <Button variant="ghost" size="icon" onClick={next} className="rounded-full w-10 h-10 text-foreground/40 hover:text-foreground" aria-label="Next">
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
 
           {/* Google badge */}
-          <div className="text-center mt-8">
-            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="text-center mt-10">
+            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground/60">
               <span className="font-medium">5.0</span>
-              <div className="flex text-secondary">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+              <div className="flex text-gold">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-2.5 w-2.5 fill-current" />)}
               </div>
-              <span>23 {t('avaliações no Google', 'reviews on Google')}</span>
+              <span className="tracking-wide">23 {t('avaliações no Google', 'reviews on Google')}</span>
             </div>
           </div>
         </div>

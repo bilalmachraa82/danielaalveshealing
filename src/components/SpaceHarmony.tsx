@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Home, MessageCircle } from 'lucide-react';
@@ -14,55 +13,81 @@ const SpaceHarmony = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <section id="espaco" className="py-20 lg:py-28 bg-cream">
-      <div ref={ref} className="container mx-auto px-4 lg:px-8">
-        <div className={`text-center mb-14 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-primary tracking-wider mb-4">
+    <section id="espaco" className="py-24 lg:py-36 bg-cream relative overflow-hidden">
+      {/* Botanical pattern background */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5c0 15-10 25-25 25C20 30 30 40 30 55c0-15 10-25 25-25C40 30 30 20 30 5z' fill='none' stroke='%23985F97' stroke-width='0.5'/%3E%3C/svg%3E")`,
+        backgroundSize: '60px 60px',
+      }} />
+
+      <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
+        {/* Section header */}
+        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Espaços', 'Spaces')}</p>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6 text-balance">
             {t('Cuidar do Teu Espaço', 'Caring for Your Space')}
           </h2>
+          <div className="section-divider" />
         </div>
 
-        <Card className={`max-w-2xl mx-auto bg-card border-border/50 hover:shadow-xl transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <CardContent className="p-10 text-center">
-            <div className="w-20 h-20 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-6">
-              <Home className="h-9 w-9 text-secondary" />
+        {/* Asymmetric card */}
+        <div className={`max-w-4xl mx-auto grid md:grid-cols-5 gap-8 items-center transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Left — icon + decorative */}
+          <div className="md:col-span-2 flex flex-col items-center">
+            <div className="w-24 h-24 rounded-full border border-gold/30 flex items-center justify-center mb-6 animate-float-gentle">
+              <Home className="h-10 w-10 text-gold" strokeWidth={1} />
             </div>
-            <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-4 tracking-wide">Home Harmony</h3>
-            <p className="text-muted-foreground leading-relaxed mb-8">
+            <p className="font-serif text-3xl md:text-4xl font-extralight text-foreground tracking-wider text-center">
+              Home Harmony
+            </p>
+          </div>
+
+          {/* Right — text */}
+          <div className="md:col-span-3 relative">
+            {/* Decorative large quote mark */}
+            <span className="absolute -top-6 -left-4 font-serif text-8xl text-gold/10 leading-none select-none">"</span>
+            <p className="text-muted-foreground leading-relaxed text-pretty mb-4 relative z-10">
               {t(
-                'Harmonização de ambientes para criar espaços de paz e energia positiva.',
-                'Space harmonization to create environments of peace and positive energy.'
+                'Harmonização de ambientes para criar espaços de paz e energia positiva. Uma visão holística que transforma a sua casa num santuário.',
+                'Space harmonization to create environments of peace and positive energy. A holistic vision that transforms your home into a sanctuary.'
               )}
             </p>
+            <p className="font-serif italic text-sm text-primary/60 mb-8">
+              {t('"O espaço onde vives é o reflexo de quem és."', '"The space where you live is a reflection of who you are."')}
+            </p>
             <Button
-              variant="outline"
-              className="rounded-full border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground"
+              variant="ghost"
+              className="rounded-full text-xs tracking-[0.15em] uppercase text-foreground/60 hover:text-foreground hover:bg-muted"
               onClick={() => setOpen(true)}
             >
-              {t('Saber mais', 'Learn more')}
+              {t('Saber mais', 'Learn more')} →
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-2xl font-light text-primary tracking-wide">Home Harmony</DialogTitle>
+        <DialogContent className="max-w-lg border-0 shadow-2xl">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-gold via-gold/50 to-transparent rounded-l-lg" />
+          <DialogHeader className="pl-4">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{t('Espaço', 'Space')}</p>
+            <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">Home Harmony</DialogTitle>
             <DialogDescription className="sr-only">Home Harmony</DialogDescription>
           </DialogHeader>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {t(
-              'Uma visão holística do espaço, harmonização energética, organização intuitiva e uma abordagem sustentável para transformar a sua casa num santuário de paz e bem-estar.',
-              'A holistic vision of space, energy harmonization, intuitive organization and a sustainable approach to transform your home into a sanctuary of peace and well-being.'
-            )}
-          </p>
-          <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="mt-4 block">
-            <Button className="w-full bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground gap-2 rounded-full">
-              <MessageCircle className="h-4 w-4" />
-              {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
-            </Button>
-          </a>
+          <div className="pl-4">
+            <p className="text-muted-foreground text-sm leading-relaxed text-pretty">
+              {t(
+                'Uma visão holística do espaço, harmonização energética, organização intuitiva e uma abordagem sustentável para transformar a sua casa num santuário de paz e bem-estar.',
+                'A holistic vision of space, energy harmonization, intuitive organization and a sustainable approach to transform your home into a sanctuary of peace and well-being.'
+              )}
+            </p>
+            <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="mt-6 block">
+              <Button className="w-full bg-whatsapp hover:bg-whatsapp/90 text-whatsapp-foreground gap-2 rounded-full text-xs tracking-wider">
+                <MessageCircle className="h-4 w-4" />
+                {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
+              </Button>
+            </a>
+          </div>
         </DialogContent>
       </Dialog>
     </section>
