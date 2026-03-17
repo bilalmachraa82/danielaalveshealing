@@ -1,11 +1,21 @@
+import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
   const { t } = useLanguage();
   const { ref, isVisible } = useScrollAnimation(0.05);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
 
   const words = [
     { pt: 'Serenar', en: 'Soothe' },
@@ -17,6 +27,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay">
       {/* Video background */}
       <video
+        ref={videoRef}
         autoPlay
         muted
         loop
@@ -26,6 +37,15 @@ const Hero = () => {
       >
         <source src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/hero-video.mp4" type="video/mp4" />
       </video>
+
+      {/* Mute/Unmute toggle */}
+      <button
+        onClick={toggleMute}
+        className="absolute top-24 right-6 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-300"
+        aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+      >
+        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+      </button>
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-foreground/50" />

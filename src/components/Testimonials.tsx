@@ -116,32 +116,32 @@ const Testimonials = () => {
 
           {/* Controls */}
           <div className="flex items-center justify-center gap-6 mt-8">
-            <Button variant="ghost" size="icon" onClick={prev} className="rounded-full w-10 h-10 text-foreground/40 hover:text-foreground" aria-label="Previous">
+            <Button variant="ghost" size="icon" onClick={prev} className="rounded-full w-10 h-10 border border-foreground/15 text-foreground/60 hover:text-foreground hover:border-foreground/30 hover:bg-background/50" aria-label="Previous">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               {testimonials.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => { setIsAutoPlaying(false); changeTo(i); }}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${i === current ? 'bg-gold w-8' : 'bg-border w-1.5 hover:bg-gold/40'}`}
+                  className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'bg-gold w-8 shadow-[0_0_8px_hsl(var(--gold)/0.4)]' : 'bg-foreground/20 w-2 hover:bg-gold/50'}`}
                   aria-label={`Testimonial ${i + 1}`}
                 />
               ))}
             </div>
-            <Button variant="ghost" size="icon" onClick={next} className="rounded-full w-10 h-10 text-foreground/40 hover:text-foreground" aria-label="Next">
+            <Button variant="ghost" size="icon" onClick={next} className="rounded-full w-10 h-10 border border-foreground/15 text-foreground/60 hover:text-foreground hover:border-foreground/30 hover:bg-background/50" aria-label="Next">
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
 
           {/* Google badge */}
           <div className="text-center mt-10">
-            <div className="inline-flex items-center gap-2.5 text-xs text-foreground/80 bg-background/70 backdrop-blur-sm px-5 py-2.5 rounded-full border border-gold/20 shadow-sm">
-              <span className="font-serif font-medium text-gold">5.0</span>
-              <div className="flex text-gold drop-shadow-sm">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-current" />)}
+            <div className="inline-flex items-center gap-2.5 text-sm text-foreground bg-background/80 backdrop-blur-sm px-6 py-3 rounded-full border border-gold/25 shadow-md">
+              <span className="font-serif font-medium text-gold text-base">5.0</span>
+              <div className="flex text-gold">
+                {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
               </div>
-              <span className="tracking-wide font-medium">23 {t('avaliações no Google', 'reviews on Google')}</span>
+              <span className="tracking-wide font-medium text-foreground/80">23 {t('avaliações no Google', 'reviews on Google')}</span>
             </div>
           </div>
         </div>
