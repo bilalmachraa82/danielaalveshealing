@@ -77,11 +77,17 @@ const Services = () => {
   ];
 
   return (
-    <section id="servicos" className="py-24 lg:py-36 bg-gradient-to-b from-[hsl(300_30%_95%)] via-[hsl(300_25%_96%)] to-[hsl(40_40%_95%)] relative overflow-hidden noise-overlay">
+    <section
+      id="servicos"
+      className="py-24 lg:py-36 relative overflow-hidden noise-overlay"
+      style={{
+        background: 'radial-gradient(circle at 50% 35%, hsl(var(--primary) / 0.18) 0%, transparent 34%), radial-gradient(circle at 85% 85%, hsl(var(--gold) / 0.16) 0%, transparent 32%), linear-gradient(180deg, hsl(var(--section-lilac-strong)) 0%, hsl(var(--section-lilac)) 55%, hsl(var(--section-warm-soft)) 100%)',
+      }}
+    >
       {/* Radial depth glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary/[0.08] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary/[0.14] rounded-full blur-3xl pointer-events-none" />
       {/* Secondary warm glow */}
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/[0.05] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gold/[0.10] rounded-full blur-3xl pointer-events-none" />
 
       {/* Botanical SVG decoration */}
       <svg className="absolute top-20 right-0 w-64 h-64 text-gold/[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.5">
