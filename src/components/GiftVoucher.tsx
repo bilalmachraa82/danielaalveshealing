@@ -14,10 +14,15 @@ const GiftVoucher = () => {
     : 'https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-en.jpg';
 
   return (
-    <section className="py-24 lg:py-36 bg-gradient-to-br from-[hsl(37_40%_94%)] via-[hsl(300_20%_96%)] to-[hsl(37_35%_95%)] relative overflow-hidden">
+    <section
+      className="py-24 lg:py-36 relative overflow-hidden noise-overlay"
+      style={{
+        background: 'radial-gradient(circle at 24% 45%, hsl(var(--gold) / 0.20) 0%, transparent 30%), radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.14) 0%, transparent 28%), linear-gradient(135deg, hsl(var(--section-warm)) 0%, hsl(var(--section-warm-soft)) 48%, hsl(var(--section-blush)) 100%)',
+      }}
+    >
       {/* Radial gold glow */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.08] rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.06] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.12] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.10] rounded-full blur-3xl pointer-events-none" />
 
       {/* Floating gold accents */}
       <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />

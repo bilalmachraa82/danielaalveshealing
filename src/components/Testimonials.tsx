@@ -42,7 +42,7 @@ const Testimonials = () => {
   const initials = item.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <section id="testemunhos" className="py-24 lg:py-36 bg-gradient-to-b from-primary/[0.12] via-primary/[0.18] to-primary/[0.10] relative overflow-hidden noise-overlay">
+    <section id="testemunhos" className="py-24 lg:py-36 relative overflow-hidden noise-overlay" style={{ background: 'radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.22) 0%, transparent 40%), linear-gradient(180deg, hsl(var(--section-lilac-strong)) 0%, hsl(var(--primary) / 0.14) 55%, hsl(var(--section-lilac)) 100%)' }}>
       {/* Decorative large quote */}
       <span className="absolute top-12 left-1/2 -translate-x-1/2 font-serif text-[20rem] leading-none text-primary/[0.06] select-none pointer-events-none">"</span>
 

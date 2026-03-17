@@ -21,7 +21,7 @@ const About = () => {
   ];
 
   return (
-    <section id="sobre" className="py-24 lg:py-36 bg-gradient-to-b from-[hsl(40_50%_95%)] via-[hsl(35_45%_96%)] to-[hsl(300_30%_96%)] relative overflow-hidden">
+    <section id="sobre" className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--section-warm) / 0.72) 45%, hsl(var(--section-lilac)) 100%)' }}>
       {/* Botanical SVG pattern — different motif from SpaceHarmony */}
       <div className="absolute inset-0 opacity-[0.025]" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='20' fill='none' stroke='%23985F97' stroke-width='0.4'/%3E%3Ccircle cx='40' cy='40' r='35' fill='none' stroke='%23985F97' stroke-width='0.3'/%3E%3Cpath d='M40 5 L40 75 M5 40 L75 40' stroke='%23985F97' stroke-width='0.2'/%3E%3C/svg%3E")`,

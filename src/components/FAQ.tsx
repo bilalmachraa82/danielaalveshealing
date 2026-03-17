@@ -45,7 +45,7 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-36 bg-gradient-to-b from-[hsl(300_25%_96%)] via-[hsl(300_20%_97%)] to-[hsl(40_40%_96%)] relative overflow-hidden">
+    <section className="py-24 lg:py-36 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-lilac)) 0%, hsl(var(--section-blush)) 52%, hsl(var(--section-warm-soft)) 100%)' }}>
       {/* Radial gradient accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/[0.02] rounded-full blur-3xl pointer-events-none" />
 
