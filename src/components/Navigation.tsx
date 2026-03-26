@@ -124,7 +124,7 @@ const Navigation = () => {
           ))}
           <div className="section-divider my-2" />
           <a href={WA_LINK} target="_blank" rel="noopener noreferrer">
-            <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 gap-2 rounded-full mt-2 backdrop-blur-sm">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 rounded-full mt-2">
               <MessageCircle className="h-4 w-4" />
               {t('Marcar Sessão', 'Book Session')}
             </Button>
