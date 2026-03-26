@@ -72,7 +72,7 @@ const Testimonials = () => {
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Testemunhos', 'Testimonials')}</p>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6">
-            {t('Palavras que Aquecem', 'Words that Warm')}
+            {t('Palavras que Tocam', 'Words that Touch')}
           </h2>
           <div className="section-divider" />
         </div>

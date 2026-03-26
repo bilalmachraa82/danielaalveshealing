@@ -19,7 +19,7 @@ const Hero = () => {
 
   const words = [
     { pt: 'Serenar', en: 'Soothe' },
-    { pt: 'Equilibrar', en: 'Equilibrate' },
+    { pt: 'Equilibrar', en: 'Balance' },
     { pt: 'Relaxar', en: 'Relax' },
   ];
 
@@ -51,7 +51,7 @@ const Hero = () => {
       <div className="absolute inset-0 bg-foreground/50" />
 
       {/* Gradient fade at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[hsl(295_22%_11%)] to-transparent" />
 
       {/* Content */}
       <div ref={ref} className="relative z-10 text-center px-4 max-w-4xl mx-auto">

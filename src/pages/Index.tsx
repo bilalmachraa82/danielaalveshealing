@@ -18,24 +18,21 @@ const Index = () => (
   <>
     <LoadingScreen />
     <Navigation />
-    <main>
+    <main className="bg-[hsl(295_22%_11%)]">
       <Hero />
-      <TrustStrip />
 
-      {/* TrustStrip (dark) → Services (lilac-strong) */}
-      <SectionFade
-        from="hsl(295 22% 11%)"
-        to="hsl(var(--section-lilac-strong))"
-        height="120px"
-      />
+      {/* Dark zone: Hero → TrustStrip → Services */}
+      <div style={{ background: 'linear-gradient(180deg, hsl(295 22% 11%) 0%, hsl(var(--section-lilac-strong)) 100%)' }}>
+        <TrustStrip />
+      </div>
 
       <Services />
 
-      {/* Services (warm-soft) → SpaceHarmony (dark overlay) */}
+      {/* Services (warm-soft) → SpaceHarmony (dark) */}
       <SectionFade
         from="hsl(var(--section-warm-soft))"
         to="hsl(276 30% 12%)"
-        height="100px"
+        height="80px"
       />
 
       <SpaceHarmony />
@@ -44,43 +41,43 @@ const Index = () => (
       <SectionFade
         from="hsl(276 30% 12%)"
         to="hsl(var(--section-warm))"
-        height="100px"
+        height="80px"
       />
 
       <GiftVoucher />
 
-      {/* GiftVoucher (blush) → About (warm-soft) */}
+      {/* GiftVoucher (blush) → About (warm-soft) — subtle */}
       <SectionFade
         from="hsl(var(--section-blush))"
         to="hsl(var(--section-warm-soft))"
-        height="80px"
+        height="60px"
       />
 
       <About />
 
-      {/* About (lilac) → Testimonials (lilac-strong) */}
+      {/* About (lilac) → Testimonials (lilac-strong) — subtle */}
       <SectionFade
         from="hsl(var(--section-lilac))"
         to="hsl(var(--section-lilac-strong))"
-        height="80px"
+        height="60px"
       />
 
       <Testimonials />
 
-      {/* Testimonials (lilac) → FAQ (lilac) — subtle */}
+      {/* Testimonials → FAQ — same family */}
       <SectionFade
         from="hsl(var(--section-lilac))"
         to="hsl(var(--section-lilac))"
-        height="60px"
+        height="40px"
       />
 
       <FAQ />
 
-      {/* FAQ (warm-soft) → CTABanner (lilac-strong) */}
+      {/* FAQ (warm-soft) → CTABanner */}
       <SectionFade
         from="hsl(var(--section-warm-soft))"
         to="hsl(var(--section-lilac-strong))"
-        height="100px"
+        height="80px"
       />
 
       <CTABanner />
@@ -89,7 +86,7 @@ const Index = () => (
       <SectionFade
         from="hsl(var(--section-warm))"
         to="hsl(300 20% 14%)"
-        height="120px"
+        height="80px"
       />
     </main>
     <Footer />

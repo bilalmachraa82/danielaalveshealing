@@ -65,9 +65,9 @@ const GiftVoucher = () => {
               {t('Cheque-Oferta', 'Gift Voucher')}
             </h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed mb-6 text-pretty relative z-10">
-              <p>{t('Aquela prenda que não se esquece, pois é sentida e vivida!', 'A gift that is never forgotten, because it is felt and lived!')}</p>
-              <p>{t('Oferece Amor, em forma de Saúde e Bem-Estar!', 'Gift Love, in the form of Health and Well-Being!')}</p>
-              <p>{t('Oferece um momento de relaxamento de qualidade e de Harmonia Interior.', 'Gift a moment of quality relaxation and Inner Harmony.')}</p>
+              <p>{t('Aquela prenda que não se esquece, pois é sentida e vivida!', 'A gift that is never forgotten — because it is felt and experienced.')}</p>
+              <p>{t('Oferece Amor, em forma de Saúde e Bem-Estar!', 'Offer Love, in the form of Health and Well-Being.')}</p>
+              <p>{t('Oferece um momento de relaxamento de qualidade e de Harmonia Interior.', 'Offer a moment of quality relaxation and Inner Harmony.')}</p>
             </div>
             <p className="text-xs text-muted-foreground/60 mb-10 italic relative z-10">
               {t(
