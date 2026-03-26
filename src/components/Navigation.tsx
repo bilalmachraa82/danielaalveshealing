@@ -18,7 +18,7 @@ const Navigation = () => {
 
   const links = [
     { href: '#servicos', label: t('Cuidar de Ti', 'Caring for You') },
-    { href: '#espaco', label: t('Teu Espaço', 'Your Space') },
+    { href: '#espaco', label: t('Cuidar do Teu Espaço', 'Caring for Your Space') },
     { href: '#sobre', label: t('Sobre Mim', 'About Me') },
     { href: '#testemunhos', label: t('Testemunhos', 'Testimonials') },
     { href: '#contacto', label: t('Contacto', 'Contact') },
