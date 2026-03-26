@@ -19,7 +19,7 @@ const Hero = () => {
 
   const words = [
     { pt: 'Serenar', en: 'Soothe' },
-    { pt: 'Equilibrar', en: 'Equilibrate' },
+    { pt: 'Equilibrar', en: 'Balance' },
     { pt: 'Relaxar', en: 'Relax' },
   ];
 
