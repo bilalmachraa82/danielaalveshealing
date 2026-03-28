@@ -16,7 +16,7 @@ const SERVICE_LABELS: Record<string, string> = {
 };
 
 function getCalendarClient() {
-  const calendarId = process.env.GOOGLE_CALENDAR_ID;
+  const calendarId = process.env.GOOGLE_CALENDAR_ID?.trim();
   if (!calendarId) return null;
 
   // Try JSON credentials first (most reliable for Vercel)

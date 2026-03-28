@@ -44,13 +44,15 @@ export default async function handler(
 
         const cal = goog.calendar({ version: "v3", auth });
 
-        // Just list events to test access (non-destructive)
-        const list = await cal.events.list({ calendarId, maxResults: 1 });
+        // Try listing events
+        const list = await cal.events.list({ calendarId: calendarId.trim(), maxResults: 1 });
 
         return res.json({
           success: true,
           email: creds.client_email,
-          calendarId,
+          calendarId: calendarId.trim(),
+          calendarIdLength: calendarId.length,
+          calendarIdTrimmedLength: calendarId.trim().length,
           eventsFound: list.data.items?.length ?? 0,
           keyLength: creds.private_key?.length,
         });
