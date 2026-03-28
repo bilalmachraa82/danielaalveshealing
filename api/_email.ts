@@ -7,7 +7,7 @@ export function getResend(): Resend {
 }
 
 export function getAppUrl(): string {
-  return process.env.PUBLIC_URL ?? "https://danielaalveshealing.com";
+  return (process.env.PUBLIC_URL ?? "https://danielaalveshealing.com").trim();
 }
 
 export const FROM_EMAIL = "Daniela Alves <noreply@danielaalveshealing.com>";
