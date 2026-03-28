@@ -22,6 +22,33 @@ export default async function handler(
       return await handleSessionsList(req, res, sql);
     }
 
+    // /api/sessions/calendar-debug — Temporary debug endpoint
+    if (pathSegments[0] === "calendar-debug") {
+      try {
+        const eventId = await createCalendarEvent({
+          clientName: "Debug Test",
+          serviceType: "healing_wellness",
+          scheduledAt: new Date(Date.now() + 86400000).toISOString(),
+          durationMinutes: 120,
+          sessionId: "debug",
+        });
+        return res.json({ success: true, eventId });
+      } catch (e: unknown) {
+        return res.json({
+          success: false,
+          error: e instanceof Error ? e.message : String(e),
+          stack: e instanceof Error ? e.stack?.split("\n").slice(0, 5) : undefined,
+          envCheck: {
+            hasEmail: !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            hasKey: !!process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+            keyLength: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.length,
+            keyStart: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.substring(0, 30),
+            hasCalendarId: !!process.env.GOOGLE_CALENDAR_ID,
+          },
+        });
+      }
+    }
+
     // /api/sessions/quick — Quick booking
     if (pathSegments[0] === "quick") {
       return await handleQuickBooking(req, res, sql);
