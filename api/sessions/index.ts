@@ -441,8 +441,9 @@ async function handleQuickBooking(
         [calendarEventId, sessionId]
       );
     }
-  } catch {
-    // Calendar sync is non-blocking
+  } catch (calError: unknown) {
+    // Calendar sync is non-blocking, but log the error
+    console.error("Calendar sync failed:", calError instanceof Error ? calError.message : calError);
   }
 
   const response: QuickBookingResponse = {

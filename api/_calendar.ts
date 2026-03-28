@@ -24,10 +24,15 @@ function getCalendarClient() {
     return null;
   }
 
+  // Handle both escaped \\n (from env vars) and real newlines
+  const cleanKey = privateKey.includes("\\n")
+    ? privateKey.replace(/\\n/g, "\n")
+    : privateKey;
+
   const auth = new GoogleAuth({
     credentials: {
       client_email: email,
-      private_key: privateKey.replace(/\\n/g, "\n"),
+      private_key: cleanKey,
     },
     scopes: ["https://www.googleapis.com/auth/calendar"],
   });
