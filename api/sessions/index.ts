@@ -22,61 +22,6 @@ export default async function handler(
       return await handleSessionsList(req, res, sql);
     }
 
-    // /api/sessions/calendar-debug — Temporary debug endpoint
-    if (pathSegments[0] === "calendar-debug") {
-      try {
-        // Try direct auth with JSON from env
-        const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-        const calendarId = process.env.GOOGLE_CALENDAR_ID;
-
-        if (!jsonCreds || !calendarId) {
-          return res.json({ success: false, error: "Missing GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_CALENDAR_ID", hasJson: !!jsonCreds, hasCalId: !!calendarId });
-        }
-
-        const { google: goog } = await import("googleapis");
-        const { GoogleAuth: GA } = await import("google-auth-library");
-        const creds = JSON.parse(jsonCreds);
-
-        const auth = new GA({
-          credentials: { client_email: creds.client_email, private_key: creds.private_key },
-          scopes: ["https://www.googleapis.com/auth/calendar"],
-        });
-
-        const cal = goog.calendar({ version: "v3", auth });
-
-        // Try listing events
-        const list = await cal.events.list({ calendarId: calendarId.trim(), maxResults: 1 });
-
-        return res.json({
-          success: true,
-          email: creds.client_email,
-          calendarId: calendarId.trim(),
-          calendarIdLength: calendarId.length,
-          calendarIdTrimmedLength: calendarId.trim().length,
-          eventsFound: list.data.items?.length ?? 0,
-          keyLength: creds.private_key?.length,
-        });
-      } catch (e: unknown) {
-        const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-        let parsedEmail = "parse-failed";
-        let keyLen = 0;
-        try {
-          const p = JSON.parse(jsonCreds ?? "{}");
-          parsedEmail = p.client_email ?? "missing";
-          keyLen = (p.private_key ?? "").length;
-        } catch { /* */ }
-
-        return res.json({
-          success: false,
-          error: e instanceof Error ? e.message : String(e),
-          parsedEmail,
-          keyLen,
-          hasJson: !!jsonCreds,
-          jsonLen: jsonCreds?.length,
-        });
-      }
-    }
-
     // /api/sessions/quick — Quick booking
     if (pathSegments[0] === "quick") {
       return await handleQuickBooking(req, res, sql);
