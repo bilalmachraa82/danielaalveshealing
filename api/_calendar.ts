@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { GoogleAuth } from "google-auth-library";
 
 const SERVICE_COLORS: Record<string, string> = {
   healing_wellness: "3",   // Purple (Grape)
@@ -23,12 +24,13 @@ function getCalendarClient() {
     return null;
   }
 
-  const auth = new google.auth.JWT(
-    email,
-    undefined,
-    privateKey.replace(/\\n/g, "\n"),
-    ["https://www.googleapis.com/auth/calendar"]
-  );
+  const auth = new GoogleAuth({
+    credentials: {
+      client_email: email,
+      private_key: privateKey.replace(/\\n/g, "\n"),
+    },
+    scopes: ["https://www.googleapis.com/auth/calendar"],
+  });
 
   const calendar = google.calendar({ version: "v3", auth });
   return { calendar, calendarId };
