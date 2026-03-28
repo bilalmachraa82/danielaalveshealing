@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
 import { getAppUrl } from "../_email.js";
+import { createCalendarEvent } from "../_calendar.js";
 import crypto from "node:crypto";
 
 interface QuickBookingRequest {
@@ -125,6 +126,33 @@ export default async function handler(
 
     const cleanPhone = client_phone.replace(/[^0-9]/g, "");
     const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappText)}`;
+
+    // --- 8. Create Google Calendar event ---
+    const durationMap: Record<string, number> = {
+      healing_wellness: 120,
+      pura_radiancia: 180,
+      pure_earth_love: 60,
+    };
+
+    let calendarEventId: string | null = null;
+    try {
+      calendarEventId = await createCalendarEvent({
+        clientName: client_name,
+        serviceType: service_type,
+        scheduledAt: scheduled_at,
+        durationMinutes: durationMap[service_type] ?? 120,
+        sessionId,
+      });
+
+      if (calendarEventId) {
+        await sql(
+          "UPDATE sessions SET google_calendar_event_id = $1 WHERE id = $2",
+          [calendarEventId, sessionId]
+        );
+      }
+    } catch {
+      // Calendar sync is non-blocking
+    }
 
     const response: QuickBookingResponse = {
       session_id: sessionId,

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
+import { updateCalendarEvent, deleteCalendarEvent } from "../_calendar.js";
 
 export default async function handler(
   req: VercelRequest,
@@ -166,7 +167,31 @@ async function handleSessionById(
       return res.status(404).json({ error: "Session not found" });
     }
 
-    return res.json(rows[0]);
+    const updated = rows[0];
+
+    // Sync with Google Calendar if event exists
+    try {
+      if (updated.google_calendar_event_id) {
+        if (data.status === "cancelled" || data.status === "no_show") {
+          await deleteCalendarEvent(updated.google_calendar_event_id);
+          await sql(
+            "UPDATE sessions SET google_calendar_event_id = NULL WHERE id = $1",
+            [id]
+          );
+        } else if (data.scheduled_at || data.service_type) {
+          await updateCalendarEvent({
+            eventId: updated.google_calendar_event_id,
+            scheduledAt: data.scheduled_at,
+            durationMinutes: data.duration_minutes,
+            serviceType: data.service_type,
+          });
+        }
+      }
+    } catch {
+      // Calendar sync is non-blocking
+    }
+
+    return res.json(updated);
   }
 
   return res.status(405).json({ error: "Method not allowed" });
