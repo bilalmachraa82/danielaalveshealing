@@ -366,6 +366,7 @@ interface BookingFormProps {
   searchResults: ClientSearchResult[];
   isSearching: boolean;
   showDropdown: boolean;
+  setShowDropdown: (v: boolean) => void;
   selectedClient: SelectedClient | null;
   newClientPhone: string;
   setNewClientPhone: (p: string) => void;
