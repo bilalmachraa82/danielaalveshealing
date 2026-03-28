@@ -25,26 +25,57 @@ export default async function handler(
     // /api/sessions/calendar-debug — Temporary debug endpoint
     if (pathSegments[0] === "calendar-debug") {
       try {
-        const eventId = await createCalendarEvent({
-          clientName: "Debug Test",
-          serviceType: "healing_wellness",
-          scheduledAt: new Date(Date.now() + 86400000).toISOString(),
-          durationMinutes: 120,
-          sessionId: "debug",
+        // Try direct auth with JSON from env
+        const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+        const calendarId = process.env.GOOGLE_CALENDAR_ID;
+
+        if (!jsonCreds || !calendarId) {
+          return res.json({ success: false, error: "Missing GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_CALENDAR_ID", hasJson: !!jsonCreds, hasCalId: !!calendarId });
+        }
+
+        const { google: goog } = await import("googleapis");
+        const { GoogleAuth: GA } = await import("google-auth-library");
+        const creds = JSON.parse(jsonCreds);
+
+        const auth = new GA({
+          credentials: { client_email: creds.client_email, private_key: creds.private_key },
+          scopes: ["https://www.googleapis.com/auth/calendar"],
         });
-        return res.json({ success: true, eventId });
+
+        const cal = goog.calendar({ version: "v3", auth });
+
+        const event = await cal.events.insert({
+          calendarId,
+          requestBody: {
+            summary: "DEBUG TEST - Delete me",
+            start: { dateTime: new Date(Date.now() + 86400000).toISOString(), timeZone: "Europe/Lisbon" },
+            end: { dateTime: new Date(Date.now() + 93600000).toISOString(), timeZone: "Europe/Lisbon" },
+          },
+        });
+
+        // Clean up
+        if (event.data.id) {
+          await cal.events.delete({ calendarId, eventId: event.data.id });
+        }
+
+        return res.json({ success: true, eventId: event.data.id, email: creds.client_email });
       } catch (e: unknown) {
+        const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+        let parsedEmail = "parse-failed";
+        let keyLen = 0;
+        try {
+          const p = JSON.parse(jsonCreds ?? "{}");
+          parsedEmail = p.client_email ?? "missing";
+          keyLen = (p.private_key ?? "").length;
+        } catch { /* */ }
+
         return res.json({
           success: false,
           error: e instanceof Error ? e.message : String(e),
-          stack: e instanceof Error ? e.stack?.split("\n").slice(0, 5) : undefined,
-          envCheck: {
-            hasEmail: !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            hasKey: !!process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
-            keyLength: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.length,
-            keyStart: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?.substring(0, 30),
-            hasCalendarId: !!process.env.GOOGLE_CALENDAR_ID,
-          },
+          parsedEmail,
+          keyLen,
+          hasJson: !!jsonCreds,
+          jsonLen: jsonCreds?.length,
         });
       }
     }
