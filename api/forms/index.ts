@@ -721,9 +721,7 @@ async function handlePrepareGet(
        c.email,
        c.phone,
        c.date_of_birth,
-       c.height_cm,
-       c.weight_kg,
-       c.profession
+       c.gender
      FROM sessions s
      JOIN clients c ON c.id = s.client_id
      WHERE s.prepare_token = $1`,
@@ -761,13 +759,6 @@ async function handlePrepareGet(
     lastSessionDate = lastRows[0]?.scheduled_at ?? null;
   }
 
-  // Determine if anamnesis is needed
-  const anamnesisRows = await sql(
-    `SELECT id FROM anamnesis_forms WHERE client_id = $1 AND status = 'completed' LIMIT 1`,
-    [clientId]
-  );
-  const needsAnamnesis = anamnesisRows.length === 0;
-
   // Determine if personal data completion is needed
   const needsPersonalData =
     row.email === null || row.date_of_birth === null;
@@ -781,9 +772,7 @@ async function handlePrepareGet(
       email: row.email ?? null,
       phone: row.phone ?? null,
       date_of_birth: row.date_of_birth ?? null,
-      height_cm: row.height_cm ?? null,
-      weight_kg: row.weight_kg ?? null,
-      profession: row.profession ?? null,
+      gender: row.gender ?? null,
     },
     session: {
       id: sessionId,
@@ -792,7 +781,6 @@ async function handlePrepareGet(
       duration_minutes: row.duration_minutes ?? 90,
     },
     is_returning: isReturning,
-    needs_anamnesis: needsAnamnesis,
     needs_personal_data: needsPersonalData,
     form_type: formType,
     last_session_date: lastSessionDate,
@@ -834,10 +822,8 @@ async function handlePreparePost(
   const body = req.body ?? {};
   const {
     client_updates,
-    anamnesis,
     intake,
     returning_checkin,
-    declaration_accepted,
   } = body;
 
   // ---- 1. Update client with non-null fields ----
@@ -846,9 +832,6 @@ async function handlePreparePost(
     const allowedFields = [
       "email",
       "date_of_birth",
-      "profession",
-      "height_cm",
-      "weight_kg",
     ] as const;
 
     const setClauses: string[] = [];
@@ -873,45 +856,24 @@ async function handlePreparePost(
     }
   }
 
-  // ---- 2. Create anamnesis_forms record ----
-  if (anamnesis && typeof anamnesis === "object") {
-    const a = anamnesis as Record<string, unknown>;
-    await sql(
-      `INSERT INTO anamnesis_forms
-         (client_id, session_id, health_general, lifestyle, body_map_data,
-          has_pain_trigger, pain_trigger_task, declaration_accepted,
-          declaration_date, status, completed_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, now(), 'completed', now())`,
-      [
-        clientId,
-        sessionId,
-        JSON.stringify(a.health_general ?? {}),
-        JSON.stringify(a.lifestyle ?? {}),
-        JSON.stringify(a.body_map_data ?? []),
-        a.has_pain_trigger ?? false,
-        a.pain_trigger_task ?? null,
-        declaration_accepted ?? false,
-      ]
-    );
-  }
-
-  // ---- 3. Create session_intake_forms record ----
+  // ---- 2. Create session_intake_forms record (new clients) ----
   if (intake && typeof intake === "object") {
     const i = intake as Record<string, unknown>;
     await sql(
       `INSERT INTO session_intake_forms
-         (client_id, session_id, form_type,
+         (client_id, session_id, form_type, referral_source,
           motivation, main_objective, health_conditions, current_treatment,
           pregnant_breastfeeding, allergies_sensitivities,
           feeling_physically, feeling_psychologically, feeling_emotionally, feeling_energetically,
-          meditation_practice, immersion_motivation, main_intention, wishlist,
-          aroma_preferences, music_preferences, beverage_preference, color_preferences,
+          meditation_practice, current_challenges, immersion_motivation, main_intention, wishlist,
+          aroma_preferences, music_preferences, beverage_preference, dietary_restrictions, color_preferences,
           additional_observations, status, completed_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, 'completed', now())`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, 'completed', now())`,
       [
         clientId,
         sessionId,
         i.form_type ?? "healing_touch",
+        i.referral_source ?? null,
         i.motivation ?? null,
         i.main_objective ?? null,
         i.health_conditions ?? null,
@@ -923,19 +885,21 @@ async function handlePreparePost(
         i.feeling_emotionally ?? null,
         i.feeling_energetically ?? null,
         i.meditation_practice ?? null,
+        i.current_challenges ?? null,
         i.immersion_motivation ?? null,
         i.main_intention ?? null,
         i.wishlist ?? null,
         i.aroma_preferences ?? null,
         i.music_preferences ?? null,
         i.beverage_preference ?? null,
+        i.dietary_restrictions ?? null,
         i.color_preferences ?? null,
         i.additional_observations ?? null,
       ]
     );
   }
 
-  // ---- 4. Create returning_checkins record ----
+  // ---- 3. Create returning_checkins record (returning clients) ----
   if (returning_checkin && typeof returning_checkin === "object") {
     const rc = returning_checkin as Record<string, unknown>;
     await sql(
@@ -964,7 +928,7 @@ async function handlePreparePost(
     );
   }
 
-  // ---- 5. Clear prepare_token to prevent reuse ----
+  // ---- 4. Clear prepare_token to prevent reuse ----
   await sql(
     `UPDATE sessions SET prepare_token = NULL, prepare_token_expires_at = NULL WHERE id = $1`,
     [sessionId]
