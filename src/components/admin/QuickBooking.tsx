@@ -334,6 +334,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             searchResults={searchResults}
             isSearching={isSearching}
             showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
             selectedClient={selectedClient}
             newClientPhone={newClientPhone}
             setNewClientPhone={setNewClientPhone}
@@ -365,6 +366,7 @@ interface BookingFormProps {
   searchResults: ClientSearchResult[];
   isSearching: boolean;
   showDropdown: boolean;
+  setShowDropdown: (v: boolean) => void;
   selectedClient: SelectedClient | null;
   newClientPhone: string;
   setNewClientPhone: (p: string) => void;
@@ -389,6 +391,7 @@ function BookingForm({
   searchResults,
   isSearching,
   showDropdown,
+  setShowDropdown,
   selectedClient,
   newClientPhone,
   setNewClientPhone,

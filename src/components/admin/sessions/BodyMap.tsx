@@ -74,13 +74,13 @@ export function BodyMap({ value, onChange, readOnly = false }: BodyMapProps) {
 
   const modelData = value.map((marker) => ({
     name: `Intensidade ${marker.intensity}`,
-    muscles: [marker.muscle],
+    muscles: [marker.muscle] as any[],
     frequency: marker.intensity,
-  }));
+  })) as any[];
 
-  const colorFunction = (_fillObj: unknown, frequency: number) => {
+  const colorFunction = ((_fillObj: unknown, frequency: number) => {
     return INTENSITY_COLORS[frequency] ?? INTENSITY_COLORS[3];
-  };
+  }) as any;
 
   return (
     <div className="space-y-4">
