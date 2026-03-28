@@ -389,6 +389,7 @@ function BookingForm({
   searchResults,
   isSearching,
   showDropdown,
+  setShowDropdown,
   selectedClient,
   newClientPhone,
   setNewClientPhone,
