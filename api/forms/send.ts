@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
-import { getDb } from "../_db";
+import { getDb } from "../_db.js";
 
 const SERVICE_FORM_TYPE_MAP: Record<string, string> = {
   healing_wellness: "healing_touch",

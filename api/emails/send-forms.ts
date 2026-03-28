@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
-import { getDb } from "../_db";
-import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email";
+import { getDb } from "../_db.js";
+import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 
 type ServiceType = "healing_wellness" | "pura_radiancia";
 
