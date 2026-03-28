@@ -1,5 +1,6 @@
 import { useDashboardStats, usePendingForms, useRecentSatisfaction } from "@/hooks/useDashboard";
 import { useTodaySessions, useUpcomingSessions } from "@/hooks/useSessions";
+import { useQuickBooking } from "@/contexts/QuickBookingContext";
 import {
   Card,
   CardContent,
@@ -7,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, Calendar, Star, TrendingUp, ClipboardList, CheckCircle } from "lucide-react";
+import { Users, Calendar, Star, TrendingUp, ClipboardList, CheckCircle, CalendarPlus } from "lucide-react";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Link } from "react-router-dom";
@@ -92,6 +94,7 @@ export default function Dashboard() {
   const { data: upcomingSessions } = useUpcomingSessions(5);
   const { data: pendingForms, isLoading: formsLoading } = usePendingForms();
   const { data: recentSatisfaction, isLoading: satLoading } = useRecentSatisfaction();
+  const { openQuickBooking } = useQuickBooking();
 
   const totalClients = stats?.clients.total ?? 0;
   const activeClients = stats?.clients.active ?? 0;
@@ -99,11 +102,21 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-serif font-semibold">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Bem-vinda, Daniela. Aqui está o resumo do seu dia.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-serif font-semibold">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Bem-vinda, Daniela. Aqui esta o resumo do seu dia.
+          </p>
+        </div>
+        <Button
+          onClick={openQuickBooking}
+          className="bg-[#985F97] hover:bg-[#7d4e7c] text-white shrink-0"
+        >
+          <CalendarPlus className="h-4 w-4" />
+          <span className="hidden sm:inline">Nova Marcacao</span>
+          <span className="sm:hidden">Marcar</span>
+        </Button>
       </div>
 
       {/* Metric cards — 1 col mobile / 2 tablet / 4 desktop */}

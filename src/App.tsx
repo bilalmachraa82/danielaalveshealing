@@ -20,6 +20,7 @@ const SessionList = lazy(() => import("./pages/admin/SessionList"));
 const SessionCreate = lazy(() => import("./pages/admin/SessionCreate"));
 const SessionDetail = lazy(() => import("./pages/admin/SessionDetail"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
+const ClientImport = lazy(() => import("./pages/admin/ClientImport"));
 const AdminLayout = lazy(() =>
   import("./components/admin/layout/AdminLayout").then((m) => ({
     default: m.AdminLayout,
@@ -30,6 +31,7 @@ const AdminLayout = lazy(() =>
 const AnamnesisPage = lazy(() => import("./pages/public/AnamnesisPage"));
 const IntakePage = lazy(() => import("./pages/public/IntakePage"));
 const SatisfactionPage = lazy(() => import("./pages/public/SatisfactionPage"));
+const PreparePage = lazy(() => import("./pages/public/PreparePage"));
 
 const loadingSpinner = (
   <div className="flex h-screen items-center justify-center">
@@ -62,6 +64,9 @@ const App = () => (
               {/* Public - Satisfaction survey (token-based, no auth) */}
               <Route path="/satisfacao/:token" element={<SatisfactionPage />} />
 
+              {/* Public - Unified preparation form (token-based, no auth) */}
+              <Route path="/preparar/:token" element={<PreparePage />} />
+
               {/* Admin - Login */}
               <Route path="/admin/login" element={<LoginPage />} />
 
@@ -71,6 +76,7 @@ const App = () => (
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="clientes" element={<ClientList />} />
                 <Route path="clientes/novo" element={<ClientCreate />} />
+                <Route path="clientes/importar" element={<ClientImport />} />
                 <Route path="clientes/:id" element={<ClientDetail />} />
                 <Route path="clientes/:id/editar" element={<ClientEdit />} />
                 <Route path="sessoes" element={<SessionList />} />

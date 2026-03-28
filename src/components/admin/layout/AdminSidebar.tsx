@@ -18,6 +18,7 @@ import {
   Star,
   Settings,
   Heart,
+  Upload,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -31,6 +32,11 @@ const navItems = [
     title: "Clientes",
     url: "/admin/clientes",
     icon: Users,
+  },
+  {
+    title: "Importar Clientes",
+    url: "/admin/clientes/importar",
+    icon: Upload,
   },
   {
     title: "Sessões",

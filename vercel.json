@@ -1,6 +1,9 @@
 {
   "installCommand": "bun install",
   "rewrites": [
+    { "source": "/api/bookings/quick", "destination": "/api/bookings/quick" },
+    { "source": "/api/clients/search", "destination": "/api/clients/search" },
+    { "source": "/api/clients/import", "destination": "/api/clients/import" },
     { "source": "/api/clients/:path*", "destination": "/api/clients?__path=:path*" },
     { "source": "/api/sessions/:path*", "destination": "/api/sessions?__path=:path*" },
     { "source": "/api/dashboard/:path*", "destination": "/api/dashboard?__path=:path*" },
