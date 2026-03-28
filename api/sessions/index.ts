@@ -44,21 +44,16 @@ export default async function handler(
 
         const cal = goog.calendar({ version: "v3", auth });
 
-        const event = await cal.events.insert({
+        // Just list events to test access (non-destructive)
+        const list = await cal.events.list({ calendarId, maxResults: 1 });
+
+        return res.json({
+          success: true,
+          email: creds.client_email,
           calendarId,
-          requestBody: {
-            summary: "DEBUG TEST - Delete me",
-            start: { dateTime: new Date(Date.now() + 86400000).toISOString(), timeZone: "Europe/Lisbon" },
-            end: { dateTime: new Date(Date.now() + 93600000).toISOString(), timeZone: "Europe/Lisbon" },
-          },
+          eventsFound: list.data.items?.length ?? 0,
+          keyLength: creds.private_key?.length,
         });
-
-        // Clean up
-        if (event.data.id) {
-          await cal.events.delete({ calendarId, eventId: event.data.id });
-        }
-
-        return res.json({ success: true, eventId: event.data.id, email: creds.client_email });
       } catch (e: unknown) {
         const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
         let parsedEmail = "parse-failed";

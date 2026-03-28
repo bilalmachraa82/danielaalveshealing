@@ -22,10 +22,10 @@ function getCalendarClient() {
   // Try JSON credentials first (most reliable for Vercel)
   const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (jsonCreds) {
-    const credentials = JSON.parse(jsonCreds);
+    const credentials = JSON.parse(jsonCreds.trim());
     const auth = new GoogleAuth({
       credentials: {
-        client_email: credentials.client_email,
+        client_email: credentials.client_email.trim(),
         private_key: credentials.private_key,
       },
       scopes: ["https://www.googleapis.com/auth/calendar"],
