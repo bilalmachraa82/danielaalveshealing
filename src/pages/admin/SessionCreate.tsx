@@ -43,7 +43,7 @@ async function sendForms(
   sessionId: string,
   serviceType: string
 ): Promise<void> {
-  const response = await fetch("/api/emails/send-forms", {
+  const response = await fetch("/api/forms/emails/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

@@ -239,7 +239,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/bookings/quick", {
+      const response = await fetch("/api/sessions/quick", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
