@@ -30,7 +30,7 @@ export default async function handler(
 }
 
 async function handleGet(
-  sql: ReturnType<typeof import("../../_db").getDb>,
+  sql: ReturnType<typeof import("../../_db.js").getDb>,
   token: string,
   res: VercelResponse
 ) {
@@ -96,7 +96,7 @@ async function handleGet(
 }
 
 async function handlePost(
-  sql: ReturnType<typeof import("../../_db").getDb>,
+  sql: ReturnType<typeof import("../../_db.js").getDb>,
   token: string,
   req: VercelRequest,
   res: VercelResponse

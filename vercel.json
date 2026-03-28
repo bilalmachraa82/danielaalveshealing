@@ -1,7 +1,10 @@
 {
   "installCommand": "bun install",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/clients/:path*", "destination": "/api/clients?__path=:path*" },
+    { "source": "/api/sessions/:path*", "destination": "/api/sessions?__path=:path*" },
+    { "source": "/api/dashboard/:path*", "destination": "/api/dashboard?__path=:path*" },
+    { "source": "/api/cron/:path*", "destination": "/api/cron?__path=:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "crons": [

@@ -10,10 +10,11 @@ export default async function handler(
   }
 
   const sql = getDb();
-  const pathSegments = Array.isArray(req.query.path)
-    ? req.query.path
-    : req.query.path
-      ? [req.query.path]
+  const rawPath = req.query.__path;
+  const pathSegments = typeof rawPath === "string" && rawPath !== ""
+    ? rawPath.split("/")
+    : Array.isArray(rawPath)
+      ? rawPath
       : [];
 
   const route = pathSegments[0] ?? "stats";

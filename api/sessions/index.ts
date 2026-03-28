@@ -6,10 +6,11 @@ export default async function handler(
   res: VercelResponse
 ) {
   const sql = getDb();
-  const pathSegments = Array.isArray(req.query.path)
-    ? req.query.path
-    : req.query.path
-      ? [req.query.path]
+  const rawPath = req.query.__path;
+  const pathSegments = typeof rawPath === "string" && rawPath !== ""
+    ? rawPath.split("/")
+    : Array.isArray(rawPath)
+      ? rawPath
       : [];
 
   try {
