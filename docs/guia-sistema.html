@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guia do Sistema CRM — Daniela Alves Healing &amp; Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================
+       RESET & BASE
+    ============================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --purple:      #985F97;
+      --purple-dark: #7A4C79;
+      --purple-light:#C49CC3;
+      --purple-pale: #F5EDF5;
+      --gold:        #D9AA4F;
+      --gold-dark:   #B8892E;
+      --gold-light:  #EDD08A;
+      --gold-pale:   #FBF5E6;
+      --cream:       #FAF7F5;
+      --cream-dark:  #F0EBE6;
+      --dark:        #2D2D2D;
+      --dark-mid:    #4A4A4A;
+      --dark-light:  #6B6B6B;
+      --white:       #FFFFFF;
+      --border:      #E8DFD8;
+      --shadow-sm:   0 1px 4px rgba(45,45,45,.06);
+      --shadow-md:   0 4px 20px rgba(45,45,45,.10);
+      --shadow-lg:   0 12px 48px rgba(45,45,45,.14);
+      --radius-sm:   6px;
+      --radius-md:   12px;
+      --radius-lg:   20px;
+      --radius-xl:   32px;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      color: var(--dark);
+      background-color: var(--cream);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================
+       TYPOGRAPHY
+    ============================================ */
+    h1, h2, h3, h4 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--dark);
+    }
+
+    h1 { font-size: clamp(2.8rem, 6vw, 4.5rem); font-weight: 300; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 400; letter-spacing: -0.01em; }
+    h3 { font-size: clamp(1.3rem, 2.5vw, 1.7rem); font-weight: 500; }
+    h4 { font-size: 1.15rem; font-weight: 600; }
+
+    p { margin-bottom: 1rem; color: var(--dark-mid); }
+    p:last-child { margin-bottom: 0; }
+
+    strong { font-weight: 600; color: var(--dark); }
+    em { font-style: italic; }
+
+    a {
+      color: var(--purple);
+      text-decoration: none;
+      border-bottom: 1px solid var(--purple-light);
+      transition: color .2s, border-color .2s;
+    }
+    a:hover { color: var(--purple-dark); border-color: var(--purple-dark); }
+
+    /* ============================================
+       LAYOUT
+    ============================================ */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .container-wide {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ============================================
+       COVER / HERO
+    ============================================ */
+    .cover {
+      background: linear-gradient(135deg, #1E0F1E 0%, #3B1F3A 40%, #5A2E58 70%, #7A4C79 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 30%, rgba(217,170,79,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 70%, rgba(152,95,151,.18) 0%, transparent 60%);
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--cream));
+    }
+
+    .cover-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(217,170,79,.15);
+      border: 1px solid rgba(217,170,79,.4);
+      color: var(--gold-light);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .45rem 1.1rem;
+      border-radius: 100px;
+      margin-bottom: 2.5rem;
+    }
+
+    .cover-badge span { opacity: .7; }
+
+    .cover-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      font-weight: 400;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      opacity: .9;
+      margin-bottom: 1.2rem;
+    }
+
+    .cover h1 {
+      color: var(--white);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: .5rem;
+    }
+
+    .cover h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .cover-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 300;
+      color: rgba(255,255,255,.75);
+      font-style: italic;
+      margin-bottom: 3rem;
+    }
+
+    .cover-divider {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 0 auto 2.5rem;
+    }
+
+    .cover-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cover-meta-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .2rem;
+    }
+
+    .cover-meta-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+
+    .cover-meta-label {
+      font-size: .72rem;
+      font-weight: 400;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+    }
+
+    .cover-meta-sep {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,.15);
+    }
+
+    .cover-date {
+      position: absolute;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+    }
+
+    /* ============================================
+       TABLE OF CONTENTS
+    ============================================ */
+    .toc-section {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 0;
+    }
+
+    .toc-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .toc-header h2 {
+      margin-bottom: .5rem;
+    }
+
+    .toc-header p {
+      color: var(--dark-light);
+      font-size: .9rem;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--cream);
+      text-decoration: none;
+      border-bottom: none;
+      transition: all .2s;
+    }
+
+    .toc-item:hover {
+      border-color: var(--purple-light);
+      background: var(--purple-pale);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .toc-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--purple-pale);
+      border: 1.5px solid var(--purple-light);
+      color: var(--purple-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .95rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .toc-item:hover .toc-num {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: var(--white);
+    }
+
+    .toc-text {
+      flex: 1;
+    }
+
+    .toc-text strong {
+      display: block;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: .15rem;
+    }
+
+    .toc-text span {
+      font-size: .78rem;
+      color: var(--dark-light);
+    }
+
+    /* ============================================
+       SECTIONS
+    ============================================ */
+    .section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:nth-child(even) {
+      background: var(--white);
+    }
+
+    .section:nth-child(odd) {
+      background: var(--cream);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-num {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: var(--white);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+      line-height: 1;
+      box-shadow: 0 4px 16px rgba(152,95,151,.3);
+      margin-top: .2rem;
+    }
+
+    .section-header-text {}
+
+    .section-eyebrow {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: .4rem;
+    }
+
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin: 1.5rem 0 2.5rem;
+    }
+
+    /* ============================================
+       METRICS CARDS
+    ============================================ */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .metric-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--purple), var(--gold));
+    }
+
+    .metric-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: .4rem;
+    }
+
+    .metric-label {
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--dark-light);
+      letter-spacing: .04em;
+    }
+
+    /* ============================================
+       FLOW DIAGRAM
+    ============================================ */
+    .flow-diagram {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      margin: 2.5rem 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-diagram-title {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--dark-light);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .flow-steps {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      flex: 1;
+      min-width: 100px;
+      max-width: 140px;
+    }
+
+    .flow-step-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-pale), var(--white));
+      border: 2px solid var(--purple-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .flow-step-label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--dark-mid);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      padding-bottom: 1.6rem;
+      color: var(--gold);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      align-self: flex-start;
+      padding-top: .95rem;
+    }
+
+    /* ============================================
+       STEPS LIST
+    ============================================ */
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      margin: 1.5rem 0;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.1rem 1.4rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: all .2s;
+    }
+
+    .step-item:hover {
+      border-color: var(--purple-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 600;
+      line-height: 1;
+      margin-top: .05rem;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content strong {
+      display: block;
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: .15rem;
+    }
+
+    .step-content p {
+      font-size: .88rem;
+      color: var(--dark-light);
+      margin: 0;
+    }
+
+    /* ============================================
+       TIP / WARNING BOXES
+    ============================================ */
+    .tip-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--purple-pale);
+      border: 1px solid var(--purple-light);
+      border-left: 4px solid var(--purple);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .tip-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-top: .1rem;
+    }
+
+    .tip-content {}
+    .tip-content strong {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--purple-dark);
+      letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+    .tip-content p {
+      font-size: .9rem;
+      color: var(--dark-mid);
+      margin: 0;
+    }
+
+    .warning-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--gold-pale);
+      border: 1px solid var(--gold-light);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .warning-content strong {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+    .warning-content p {
+      font-size: .9rem;
+      color: var(--dark-mid);
+      margin: 0;
+    }
+
+    /* ============================================
+       TWO COLUMNS (NEW vs RETURNING)
+    ============================================ */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .col-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .col-card-header {
+      padding: 1.4rem 1.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col-card-header.purple {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+    }
+
+    .col-card-header.gold {
+      background: linear-gradient(135deg, var(--gold-dark), #9A6E25);
+    }
+
+    .col-card-header h3 {
+      color: var(--white);
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: .2rem;
+    }
+
+    .col-card-header p {
+      color: rgba(255,255,255,.7);
+      font-size: .82rem;
+      margin: 0;
+    }
+
+    .col-card-body {
+      padding: 1.5rem 1.8rem;
+    }
+
+    .col-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .col-step {
+      display: flex;
+      align-items: flex-start;
+      gap: .85rem;
+    }
+
+    .col-step-num {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 600;
+      line-height: 1;
+      margin-top: .1rem;
+    }
+
+    .col-step-num.purple {
+      background: var(--purple-pale);
+      border: 1.5px solid var(--purple-light);
+      color: var(--purple-dark);
+    }
+
+    .col-step-num.gold {
+      background: var(--gold-pale);
+      border: 1.5px solid var(--gold-light);
+      color: var(--gold-dark);
+    }
+
+    .col-step-text {
+      flex: 1;
+      font-size: .88rem;
+      color: var(--dark-mid);
+      line-height: 1.5;
+      padding-top: .03rem;
+    }
+
+    .col-step-text strong {
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .sub-steps {
+      list-style: none;
+      margin-top: .4rem;
+      margin-left: .2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+
+    .sub-step {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      font-size: .83rem;
+      color: var(--dark-light);
+    }
+
+    .sub-step::before {
+      content: '–';
+      flex-shrink: 0;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ============================================
+       TIMELINE
+    ============================================ */
+    .timeline {
+      position: relative;
+      padding-left: 3rem;
+      margin: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 1.1rem;
+      top: 0.6rem;
+      bottom: 0.6rem;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--purple), var(--gold));
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -2.38rem;
+      top: 1.1rem;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 2px var(--purple-light);
+      background: var(--purple);
+      z-index: 1;
+    }
+
+    .timeline-dot.gold {
+      background: var(--gold);
+      box-shadow: 0 0 0 2px var(--gold-light);
+    }
+
+    .timeline-dot.green {
+      background: #5C9E6E;
+      box-shadow: 0 0 0 2px #A8D4B4;
+    }
+
+    .timeline-dot.amber {
+      background: #E07A3A;
+      box-shadow: 0 0 0 2px #F0B48A;
+    }
+
+    .timeline-dot.red {
+      background: #C0404A;
+      box-shadow: 0 0 0 2px #E5939A;
+    }
+
+    .timeline-time {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: .3rem;
+    }
+
+    .timeline-time.gold { color: var(--gold-dark); }
+    .timeline-time.green { color: #4A8055; }
+    .timeline-time.amber { color: #C05A20; }
+    .timeline-time.red { color: #A02832; }
+
+    .timeline-item h4 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: .25rem;
+    }
+
+    .timeline-item p {
+      font-size: .87rem;
+      color: var(--dark-light);
+      margin: 0;
+    }
+
+    /* ============================================
+       CALENDAR COLORS
+    ============================================ */
+    .calendar-colors {
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+      margin: 1.5rem 0;
+    }
+
+    .cal-color-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .9rem 1.3rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .cal-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .cal-color-label {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .cal-color-sub {
+      font-size: .82rem;
+      color: var(--dark-light);
+      margin-left: auto;
+    }
+
+    /* ============================================
+       FEATURE GRID
+    ============================================ */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      text-align: center;
+      transition: all .2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--purple-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: .7rem;
+    }
+
+    .feature-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: .35rem;
+    }
+
+    .feature-desc {
+      font-size: .82rem;
+      color: var(--dark-light);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* ============================================
+       INSTALL STEPS (PWA)
+    ============================================ */
+    .pwa-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .pwa-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pwa-card-header {
+      padding: 1.2rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .pwa-card-header.ios { background: linear-gradient(135deg, #1C1C1E, #2C2C2E); }
+    .pwa-card-header.android { background: linear-gradient(135deg, #01875F, #005C40); }
+
+    .pwa-card-header h3 {
+      color: var(--white);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .pwa-card-header span { font-size: 1.4rem; }
+
+    .pwa-card-body { padding: 1.4rem 1.6rem; }
+
+    .pwa-steps { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+
+    .pwa-step {
+      display: flex;
+      align-items: flex-start;
+      gap: .8rem;
+    }
+
+    .pwa-step-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .ios .pwa-step-num { background: #1C1C1E; color: var(--white); }
+    .android .pwa-step-num { background: #01875F; color: var(--white); }
+
+    .pwa-step-text {
+      font-size: .88rem;
+      color: var(--dark-mid);
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       ACCESS CARD
+    ============================================ */
+    .access-card {
+      background: linear-gradient(135deg, #1E0F1E, #3B1F3A);
+      border-radius: var(--radius-xl);
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .access-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 20%, rgba(217,170,79,.1), transparent 60%);
+    }
+
+    .access-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .access-item {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .access-label {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      opacity: .8;
+      margin-bottom: .5rem;
+    }
+
+    .access-value {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--white);
+      word-break: break-all;
+    }
+
+    .access-value.mono {
+      font-family: 'Courier New', monospace;
+      font-size: .9rem;
+      background: rgba(255,255,255,.08);
+      padding: .35rem .6rem;
+      border-radius: var(--radius-sm);
+      margin-top: .35rem;
+      display: block;
+    }
+
+    /* ============================================
+       SOAP NOTES
+    ============================================ */
+    .soap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .soap-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+      border-top: 3px solid var(--purple);
+    }
+
+    .soap-item:nth-child(2) { border-top-color: var(--gold); }
+    .soap-item:nth-child(3) { border-top-color: #5C9E6E; }
+    .soap-item:nth-child(4) { border-top-color: #6B8FBF; }
+
+    .soap-letter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: .4rem;
+    }
+
+    .soap-item:nth-child(2) .soap-letter { color: var(--gold-dark); }
+    .soap-item:nth-child(3) .soap-letter { color: #4A8055; }
+    .soap-item:nth-child(4) .soap-letter { color: #4A6A9E; }
+
+    .soap-title {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: .4rem;
+    }
+
+    .soap-desc {
+      font-size: .8rem;
+      color: var(--dark-light);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ============================================
+       DASHBOARD WIDGETS
+    ============================================ */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+
+    .dash-widget {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dash-widget::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    .dash-widget.purple::after { background: linear-gradient(to right, var(--purple), var(--purple-light)); }
+    .dash-widget.gold::after   { background: linear-gradient(to right, var(--gold), var(--gold-light)); }
+    .dash-widget.green::after  { background: linear-gradient(to right, #5C9E6E, #9DD4AD); }
+    .dash-widget.blue::after   { background: linear-gradient(to right, #6B8FBF, #A8C4E0); }
+
+    .dash-icon { font-size: 1.6rem; margin-bottom: .7rem; }
+
+    .dash-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+
+    .dash-widget.purple .dash-value { color: var(--purple); }
+    .dash-widget.gold   .dash-value { color: var(--gold-dark); }
+    .dash-widget.green  .dash-value { color: #4A8055; }
+    .dash-widget.blue   .dash-value { color: #4A6A9E; }
+
+    .dash-label {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--dark-light);
+    }
+
+    /* ============================================
+       FOOTER
+    ============================================ */
+    .footer {
+      background: linear-gradient(135deg, #1E0F1E, #3B1F3A);
+      padding: 4rem 0 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(217,170,79,.08), transparent 60%);
+    }
+
+    .footer-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--white);
+      font-style: italic;
+      margin-bottom: .4rem;
+    }
+
+    .footer-logo em {
+      color: var(--gold-light);
+    }
+
+    .footer-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 1.5rem auto;
+    }
+
+    .footer-text {
+      font-size: .85rem;
+      color: rgba(255,255,255,.5);
+      margin-bottom: .5rem;
+    }
+
+    .footer-text a {
+      color: var(--gold-light);
+      border-bottom-color: rgba(217,170,79,.3);
+    }
+
+    .footer-text a:hover {
+      color: var(--gold);
+    }
+
+    .footer-heart {
+      color: #C97BA8;
+    }
+
+    /* ============================================
+       UTILITY
+    ============================================ */
+    .tag {
+      display: inline-block;
+      padding: .2rem .65rem;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .tag-purple { background: var(--purple-pale); color: var(--purple-dark); border: 1px solid var(--purple-light); }
+    .tag-gold   { background: var(--gold-pale);   color: var(--gold-dark);   border: 1px solid var(--gold-light); }
+    .tag-green  { background: #EBF5EF; color: #2E6E43; border: 1px solid #A8D4B4; }
+
+    .text-center { text-align: center; }
+    .mt-1 { margin-top: .5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+
+    .prose p + p { margin-top: .8rem; }
+
+    .url-display {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--purple-pale);
+      border: 1px solid var(--purple-light);
+      border-radius: var(--radius-sm);
+      padding: .4rem .9rem;
+      font-family: 'Courier New', monospace;
+      font-size: .88rem;
+      color: var(--purple-dark);
+      font-weight: 600;
+    }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 720px) {
+      .metrics-row { grid-template-columns: 1fr; }
+      .two-col     { grid-template-columns: 1fr; }
+      .pwa-grid    { grid-template-columns: 1fr; }
+      .soap-grid   { grid-template-columns: repeat(2, 1fr); }
+      .flow-steps  { flex-direction: column; align-items: center; }
+      .flow-arrow  { transform: rotate(90deg); padding: 0; margin: -.4rem 0; }
+      .section-header { flex-direction: column; gap: .8rem; }
+      .access-card { padding: 2rem 1.5rem; }
+      .cover-meta-sep { display: none; }
+      .toc-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 500px) {
+      .soap-grid { grid-template-columns: 1fr 1fr; }
+      .container, .container-wide { padding: 0 1.2rem; }
+      .section { padding: 3.5rem 0; }
+    }
+
+    /* ============================================
+       PRINT STYLES
+    ============================================ */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { background: white !important; font-size: 11pt; }
+
+      .cover {
+        background: white !important;
+        min-height: auto;
+        padding: 3cm 2cm 2cm;
+        page-break-after: always;
+        border-bottom: 2px solid var(--purple);
+      }
+
+      .cover::before,
+      .cover::after,
+      .footer::before { display: none; }
+
+      .cover h1, .cover-subtitle, .cover-eyebrow { color: var(--dark) !important; }
+      .cover-badge { background: var(--purple-pale) !important; color: var(--purple-dark) !important; border-color: var(--purple-light) !important; }
+      .cover-meta-value { color: var(--purple) !important; }
+      .cover-meta-label { color: var(--dark-light) !important; }
+      .cover-date { color: var(--dark-light) !important; position: static; transform: none; margin-top: 2rem; }
+      .cover-divider { background: var(--gold) !important; }
+
+      .toc-section { background: white !important; }
+      .toc-item { border-color: var(--border) !important; background: var(--cream) !important; }
+      .toc-num { background: var(--purple-pale) !important; color: var(--purple-dark) !important; }
+
+      .section {
+        background: white !important;
+        page-break-before: always;
+        padding: 1.5cm 0;
+        border-bottom: 1px solid var(--border) !important;
+      }
+
+      .toc-section { page-break-after: always; }
+
+      .section:first-of-type { page-break-before: avoid; }
+
+      .metric-card, .col-card, .timeline-item,
+      .step-item, .pwa-card, .feature-card,
+      .dash-widget, .cal-color-item, .soap-item {
+        background: white !important;
+        box-shadow: none !important;
+        border: 1px solid var(--border) !important;
+      }
+
+      .col-card-header.purple { background: var(--purple) !important; }
+      .col-card-header.gold   { background: var(--gold-dark) !important; }
+      .pwa-card-header.ios     { background: #1C1C1E !important; }
+      .pwa-card-header.android { background: #01875F !important; }
+
+      .access-card {
+        background: var(--dark) !important;
+        color: white !important;
+      }
+
+      .access-item {
+        background: rgba(255,255,255,.1) !important;
+        border-color: rgba(255,255,255,.2) !important;
+      }
+
+      .footer {
+        background: var(--dark) !important;
+        page-break-before: always;
+      }
+
+      .tip-box, .warning-box { page-break-inside: avoid; }
+      .two-col, .pwa-grid, .soap-grid, .metrics-row { page-break-inside: avoid; }
+      .timeline-item { page-break-inside: avoid; }
+
+      a { color: inherit !important; border-bottom: none !important; }
+
+      .section-num {
+        background: var(--purple) !important;
+        box-shadow: none !important;
+      }
+
+      h1 { font-size: 28pt !important; }
+      h2 { font-size: 20pt !important; }
+      h3 { font-size: 14pt !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       COVER
+  ============================================================ -->
+  <section class="cover" id="inicio">
+    <div class="cover-inner">
+      <div class="cover-badge">
+        <span>✦</span>
+        Guia Oficial de Utilizador
+        <span>✦</span>
+      </div>
+
+      <p class="cover-eyebrow">Sistema de Gestão CRM</p>
+
+      <h1>Daniela <em>Alves</em></h1>
+      <p class="cover-subtitle">Healing &amp; Wellness</p>
+
+      <div class="cover-divider"></div>
+
+      <p style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; color:rgba(255,255,255,.8); font-style:italic; margin-bottom:3rem;">
+        Manual completo de utilização
+      </p>
+
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <span class="cover-meta-value">0€</span>
+          <span class="cover-meta-label">Por mês</span>
+        </div>
+        <div class="cover-meta-sep"></div>
+        <div class="cover-meta-item">
+          <span class="cover-meta-value">30s</span>
+          <span class="cover-meta-label">Para agendar</span>
+        </div>
+        <div class="cover-meta-sep"></div>
+        <div class="cover-meta-item">
+          <span class="cover-meta-value">100%</span>
+          <span class="cover-meta-label">Automático</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-date">Março 2026</div>
+  </section>
+
+  <!-- ============================================================
+       TABLE OF CONTENTS
+  ============================================================ -->
+  <section class="toc-section" id="indice">
+    <div class="container">
+      <div class="toc-header">
+        <h2>Índice</h2>
+        <p>Navegue rapidamente para qualquer secção do guia</p>
+      </div>
+
+      <div class="toc-grid">
+        <a href="#visao-geral" class="toc-item">
+          <div class="toc-num">1</div>
+          <div class="toc-text">
+            <strong>Visão Geral do Sistema</strong>
+            <span>O que faz e como funciona</span>
+          </div>
+        </a>
+        <a href="#agendar" class="toc-item">
+          <div class="toc-num">2</div>
+          <div class="toc-text">
+            <strong>Como Agendar uma Sessão</strong>
+            <span>Quick Booking passo a passo</span>
+          </div>
+        </a>
+        <a href="#cliente-recebe" class="toc-item">
+          <div class="toc-num">3</div>
+          <div class="toc-text">
+            <strong>O que o Cliente Recebe</strong>
+            <span>Novo vs. recorrente</span>
+          </div>
+        </a>
+        <a href="#durante" class="toc-item">
+          <div class="toc-num">4</div>
+          <div class="toc-text">
+            <strong>Durante a Sessão</strong>
+            <span>Perfil, SOAP e mapa corporal</span>
+          </div>
+        </a>
+        <a href="#apos" class="toc-item">
+          <div class="toc-num">5</div>
+          <div class="toc-text">
+            <strong>Após a Sessão (Automático)</strong>
+            <span>Follow-up e NPS</span>
+          </div>
+        </a>
+        <a href="#calendar" class="toc-item">
+          <div class="toc-num">6</div>
+          <div class="toc-text">
+            <strong>Google Calendar</strong>
+            <span>Sincronização automática</span>
+          </div>
+        </a>
+        <a href="#clientes" class="toc-item">
+          <div class="toc-num">7</div>
+          <div class="toc-text">
+            <strong>Gestão de Clientes</strong>
+            <span>Perfis, tags e histórico</span>
+          </div>
+        </a>
+        <a href="#dashboard" class="toc-item">
+          <div class="toc-num">8</div>
+          <div class="toc-text">
+            <strong>Dashboard</strong>
+            <span>Métricas e resumo diário</span>
+          </div>
+        </a>
+        <a href="#instalar" class="toc-item">
+          <div class="toc-num">9</div>
+          <div class="toc-text">
+            <strong>Instalar no Telemóvel</strong>
+            <span>iPhone e Android (PWA)</span>
+          </div>
+        </a>
+        <a href="#acesso" class="toc-item">
+          <div class="toc-num">10</div>
+          <div class="toc-text">
+            <strong>Dados de Acesso</strong>
+            <span>URL, email e password</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 1 — VISÃO GERAL
+  ============================================================ -->
+  <section class="section" id="visao-geral">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Introdução</p>
+          <h2>Visão Geral do Sistema</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="prose">
+        <p>
+          O CRM da Daniela Alves Healing &amp; Wellness é uma plataforma personalizada, concebida exclusivamente
+          para o seu negócio. Centraliza toda a gestão de clientes, agendamentos, anamneses e follow-up
+          automático num único lugar — acessível no telemóvel como uma app, sem custos mensais de subscrição.
+        </p>
+        <p>
+          Desde o primeiro contacto com um cliente até ao follow-up após a sessão, o sistema trabalha por si:
+          recolhe informação, envia questionários, sincroniza o calendário e gere os lembretes de forma
+          completamente automática. O seu foco fica onde importa — no cliente.
+        </p>
+      </div>
+
+      <!-- Flow Diagram -->
+      <div class="flow-diagram">
+        <p class="flow-diagram-title">Fluxo completo de uma sessão</p>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-circle">📞</div>
+            <span class="flow-step-label">Chamada /<br>Contacto</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-circle">⚡</div>
+            <span class="flow-step-label">Quick<br>Booking</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-circle">💬</div>
+            <span class="flow-step-label">Link<br>WhatsApp</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-circle">📋</div>
+            <span class="flow-step-label">Cliente<br>preenche</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-circle">✨</div>
+            <span class="flow-step-label">Sessão<br>realizada</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-circle">🔄</div>
+            <span class="flow-step-label">Follow-up<br>automático</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-value">0€</div>
+          <div class="metric-label">Custo mensal de subscrição</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">30s</div>
+          <div class="metric-label">Para agendar e enviar link</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">100%</div>
+          <div class="metric-label">Automático após a sessão</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2 — COMO AGENDAR
+  ============================================================ -->
+  <section class="section" id="agendar">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Agendamento rápido</p>
+          <h2>Como Agendar uma Sessão</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>O Quick Booking foi desenhado para que consiga agendar em menos de 30 segundos, mesmo durante uma chamada telefónica. Siga os passos abaixo:</p>
+
+      <ul class="steps-list" style="margin-top:1.8rem;">
+        <li class="step-item">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <strong>Abrir a aplicação</strong>
+            <p>PWA no ecrã inicial do telemóvel, ou aceder via browser em <span class="url-display">danielaalveshealing.vercel.app/admin</span></p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <strong>Tocar no botão "+" roxo</strong>
+            <p>Localizado no canto inferior direito do ecrã — visível em qualquer página da app</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <strong>Pesquisar o cliente</strong>
+            <p>Escrever o nome ou número de telefone na barra de pesquisa</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">4</span>
+          <div class="step-content">
+            <strong>Cliente existente — resumo automático</strong>
+            <p>O sistema mostra automaticamente: última sessão realizada, tipo de serviço, total de sessões e observações relevantes</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">5</span>
+          <div class="step-content">
+            <strong>Cliente novo — criar perfil</strong>
+            <p>Preencher apenas nome e número de telefone — o resto é recolhido via formulário automático</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">6</span>
+          <div class="step-content">
+            <strong>Escolher data e hora</strong>
+            <p>Selecionar no calendário integrado — as disponibilidades são apresentadas visualmente</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">7</span>
+          <div class="step-content">
+            <strong>Escolher tipo de serviço</strong>
+            <p>Healing Session, Pura Radiância, Pure Earth Love, ou outro serviço configurado</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">8</span>
+          <div class="step-content">
+            <strong>Tocar em "Agendar"</strong>
+            <p>O sistema cria a sessão, regista no Google Calendar e gera o link personalizado</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">9</span>
+          <div class="step-content">
+            <strong>Copiar link ou enviar por WhatsApp</strong>
+            <p>Com um toque, copie o link ou partilhe diretamente via WhatsApp com o cliente</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <div class="tip-content">
+          <strong>Dica importante</strong>
+          <p>O link de formulário é válido por <strong>7 dias</strong> a partir do momento em que é gerado. Após esse prazo, é necessário criar um novo agendamento.</p>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span class="tip-icon" style="font-size:1.2rem; flex-shrink:0; margin-top:.1rem;">⚠️</span>
+        <div class="warning-content">
+          <strong>Atenção</strong>
+          <p>Para clientes novos, o formulário de anamnese completo (17 perguntas) fica disponível no link enviado. Não é necessário preencher nada manualmente — o cliente faz tudo.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 3 — O QUE O CLIENTE RECEBE
+  ============================================================ -->
+  <section class="section" id="cliente-recebe">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Experiência do cliente</p>
+          <h2>O que o Cliente Recebe</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>Ao receber o link, o cliente é encaminhado para um formulário responsivo e elegante, adaptado ao seu perfil. A experiência é diferente consoante seja um cliente novo ou recorrente.</p>
+
+      <div class="two-col">
+        <!-- NOVO -->
+        <div class="col-card">
+          <div class="col-card-header purple">
+            <h3>Cliente Novo</h3>
+            <p>6 etapas — ~12 a 15 minutos</p>
+          </div>
+          <div class="col-card-body">
+            <ul class="col-steps">
+              <li class="col-step">
+                <span class="col-step-num purple">1</span>
+                <span class="col-step-text">
+                  <strong>Dados pessoais</strong>
+                  Email, data de nascimento, profissão e informações de contacto
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num purple">2</span>
+                <span class="col-step-text">
+                  <strong>Questionário de saúde</strong>
+                  17 perguntas sobre histórico de saúde, condições e medicação atual
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num purple">3</span>
+                <span class="col-step-text">
+                  <strong>Estilo de vida</strong>
+                  8 perguntas sobre sono, alimentação, exercício e bem-estar geral
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num purple">4</span>
+                <span class="col-step-text">
+                  <strong>Mapa corporal</strong>
+                  Marcar zonas de dor, tensão ou desconforto numa silhueta interativa
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num purple">5</span>
+                <span class="col-step-text">
+                  <strong>Preparação para a sessão</strong>
+                  Motivação, objetivos e 3 escalas de bem-estar de 1 a 10
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num purple">6</span>
+                <span class="col-step-text">
+                  <strong>Informações práticas + declaração</strong>
+                  Morada, preparação necessária e confirmação de consentimento
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- RECORRENTE -->
+        <div class="col-card">
+          <div class="col-card-header gold">
+            <h3>Cliente Recorrente</h3>
+            <p>2 etapas — ~3 a 5 minutos</p>
+          </div>
+          <div class="col-card-body">
+            <ul class="col-steps">
+              <li class="col-step">
+                <span class="col-step-num gold">1</span>
+                <span class="col-step-text">
+                  <strong>Check-in rápido</strong>
+                  Como se sente desde a última sessão, 4 escalas de bem-estar (1-10), e se pretende continuar o trabalho anterior ou abordar um tema novo
+                  <ul class="sub-steps">
+                    <li>Como se sente fisicamente</li>
+                    <li>Estado emocional atual</li>
+                    <li>Nível de energia</li>
+                    <li>Qualidade do sono</li>
+                  </ul>
+                </span>
+              </li>
+              <li class="col-step">
+                <span class="col-step-num gold">2</span>
+                <span class="col-step-text">
+                  <strong>Informações práticas</strong>
+                  Confirmação da morada da sessão e instruções de preparação (relembradas automaticamente)
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <span class="tip-icon">✨</span>
+        <div class="tip-content">
+          <strong>Experiência premium para o cliente</strong>
+          <p>O formulário é completamente responsivo, funciona no telemóvel, e tem o visual da sua marca — roxo, dourado e creme. O cliente recebe uma experiência profissional antes mesmo de chegar à sessão.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 4 — DURANTE A SESSÃO
+  ============================================================ -->
+  <section class="section" id="durante">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Ferramentas de sessão</p>
+          <h2>Durante a Sessão</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>Com o perfil do cliente aberto no CRM, tem acesso imediato a toda a informação necessária para conduzir a sessão com confiança e profissionalismo.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <div class="feature-title">Anamnese Completa</div>
+          <p class="feature-desc">Todo o histórico de saúde e estilo de vida preenchido pelo cliente</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Respostas Pré-Sessão</div>
+          <p class="feature-desc">Check-in e escalas de bem-estar submetidas antes da sessão</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗓️</div>
+          <div class="feature-title">Histórico de Sessões</div>
+          <p class="feature-desc">Todas as sessões anteriores, notas e evolução do cliente</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <div class="feature-title">Mapa Corporal</div>
+          <p class="feature-desc">Marcar interativamente as zonas trabalhadas durante a sessão</p>
+        </div>
+      </div>
+
+      <!-- SOAP Notes -->
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Notas SOAP</h3>
+      <p>O sistema de notas SOAP organiza os registos de cada sessão de forma estruturada e profissional:</p>
+
+      <div class="soap-grid">
+        <div class="soap-item">
+          <div class="soap-letter">S</div>
+          <div class="soap-title">Subjetivo</div>
+          <p class="soap-desc">O que o cliente reporta — sintomas, queixas, sensações e como se sente</p>
+        </div>
+        <div class="soap-item">
+          <div class="soap-letter">O</div>
+          <div class="soap-title">Objetivo</div>
+          <p class="soap-desc">O que a terapeuta observa — tensão muscular, postura, zonas de bloqueio</p>
+        </div>
+        <div class="soap-item">
+          <div class="soap-letter">A</div>
+          <div class="soap-title">Avaliação</div>
+          <p class="soap-desc">Interpretação e diagnóstico energético — evolução em relação à sessão anterior</p>
+        </div>
+        <div class="soap-item">
+          <div class="soap-letter">P</div>
+          <div class="soap-title">Plano</div>
+          <p class="soap-desc">Próximos passos — técnicas a usar, recomendações e agendamento seguinte</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Concluir a Sessão</h3>
+      <ul class="steps-list">
+        <li class="step-item">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <strong>Preencher notas SOAP</strong>
+            <p>Registar as observações e o plano para a próxima sessão enquanto ainda está fresco</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <strong>Marcar zonas trabalhadas no mapa corporal</strong>
+            <p>Tocar nas áreas do corpo trabalhadas durante a sessão — fica registado no histórico</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <strong>Marcar como "Concluída"</strong>
+            <p>Tocar no botão de conclusão — o sistema desencadeia automaticamente o follow-up pós-sessão</p>
+          </div>
+        </li>
+      </ul>
+
+      <div class="tip-box">
+        <span class="tip-icon">💡</span>
+        <div class="tip-content">
+          <strong>Automatismo pós-conclusão</strong>
+          <p>Ao marcar a sessão como "Concluída", o sistema agenda automaticamente o questionário de satisfação, os lembretes de rebooking e a mensagem de aniversário — sem qualquer ação adicional da sua parte.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 5 — APÓS A SESSÃO
+  ============================================================ -->
+  <section class="section" id="apos">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Automação pós-sessão</p>
+          <h2>Após a Sessão (Automático)</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>Após marcar a sessão como concluída, o CRM gere todo o follow-up de forma completamente automática. Não precisa de fazer nada — o sistema trabalha enquanto descansa.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-time">No mesmo dia — 20h00</div>
+          <h4>Questionário de Satisfação (NPS)</h4>
+          <p>O cliente recebe automaticamente um link para avaliar a sessão numa escala de 0 a 10, com uma pergunta aberta opcional.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot gold"></div>
+          <div class="timeline-time gold">NPS ≥ 9 — após 3 dias</div>
+          <h4>Pedido de Review Google</h4>
+          <p>Clientes muito satisfeitos recebem um convite personalizado para deixar uma avaliação no Google — aumentando a visibilidade orgânica do negócio.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#6B8FBF; box-shadow:0 0 0 2px #A8C4E0;"></div>
+          <div class="timeline-time" style="color:#4A6A9E;">NPS 7–8</div>
+          <h4>Pedido de Feedback Qualitativo</h4>
+          <p>Para clientes satisfeitos mas não entusiastas, o sistema pede uma opinião mais detalhada para identificar melhorias.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot red"></div>
+          <div class="timeline-time red">NPS ≤ 6 — Imediatamente</div>
+          <h4>Alerta no Dashboard</h4>
+          <p>Aparece um alerta vermelho no dashboard indicando que este cliente precisa de atenção. Recomendado contacto pessoal para resolver a situação.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot amber"></div>
+          <div class="timeline-time amber">7 dias sem reagendamento</div>
+          <h4>Lembrete Amigável</h4>
+          <p>"Como tem corrido desde a última sessão? Quando quiser marcar a próxima, estou aqui." — mensagem enviada com o seu tom de voz.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#A06E9E; box-shadow:0 0 0 2px var(--purple-light);"></div>
+          <div class="timeline-time">30 dias sem visita</div>
+          <h4>"Sentimos a Sua Falta"</h4>
+          <p>Mensagem de reconexão mais calorosa, para clientes que não voltaram ao fim de um mês.</p>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot gold"></div>
+          <div class="timeline-time gold">Aniversário do cliente</div>
+          <h4>Mensagem Personalizada</h4>
+          <p>O sistema envia automaticamente uma mensagem de aniversário personalizada — um toque humano que fortalece a relação.</p>
+        </div>
+      </div>
+
+      <div class="warning-box">
+        <span style="font-size:1.2rem; flex-shrink:0; margin-top:.1rem;">📱</span>
+        <div class="warning-content">
+          <strong>Verificar alertas regularmente</strong>
+          <p>As notificações de NPS baixo e formulários pendentes aparecem no dashboard. Consulte o dashboard uma vez por dia para não perder nenhum alerta.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 6 — GOOGLE CALENDAR
+  ============================================================ -->
+  <section class="section" id="calendar">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Sincronização</p>
+          <h2>Google Calendar</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>Todos os agendamentos criados no CRM aparecem automaticamente no seu Google Calendar pessoal, com todas as informações relevantes e lembretes configurados. Não é necessário criar eventos manualmente.</p>
+
+      <div class="two-col" style="margin-top:2rem;">
+        <div>
+          <h3 style="margin-bottom:1rem;">O que fica registado</h3>
+          <ul class="steps-list">
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#4285F4,#1a6cd4);">📅</span>
+              <div class="step-content">
+                <strong>Nome do cliente e serviço</strong>
+                <p>Ex: "Ana Silva — Healing Session"</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#4285F4,#1a6cd4);">📍</span>
+              <div class="step-content">
+                <strong>Local da sessão</strong>
+                <p>Morada configurada para cada tipo de serviço</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#4285F4,#1a6cd4);">🔗</span>
+              <div class="step-content">
+                <strong>Link para o perfil</strong>
+                <p>Acesso direto ao perfil do cliente no CRM</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin-bottom:1rem;">Lembretes automáticos</h3>
+          <ul class="steps-list">
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#E8710A,#C05A0A);">30</span>
+              <div class="step-content">
+                <strong>30 minutos antes</strong>
+                <p>Notificação push para preparação da sessão</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#E8710A,#C05A0A);">10</span>
+              <div class="step-content">
+                <strong>10 minutos antes</strong>
+                <p>Segundo lembrete antes do início da sessão</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num" style="background:linear-gradient(135deg,#34A853,#1E8C40);">❌</span>
+              <div class="step-content">
+                <strong>Cancelamentos automáticos</strong>
+                <p>Se cancelar no CRM, o evento é removido do Calendar</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Cores por tipo de serviço</h3>
+      <p>Cada serviço tem uma cor distinta no calendário para identificação rápida:</p>
+
+      <div class="calendar-colors">
+        <div class="cal-color-item">
+          <div class="cal-swatch" style="background:var(--purple);"></div>
+          <span class="cal-color-label">Healing Session</span>
+          <span class="cal-color-sub">Roxo — #985F97</span>
+        </div>
+        <div class="cal-color-item">
+          <div class="cal-swatch" style="background:var(--gold-dark);"></div>
+          <span class="cal-color-label">Pura Radiância</span>
+          <span class="cal-color-sub">Dourado — #B8892E</span>
+        </div>
+        <div class="cal-color-item">
+          <div class="cal-swatch" style="background:#5C9E6E;"></div>
+          <span class="cal-color-label">Pure Earth Love</span>
+          <span class="cal-color-sub">Verde — #5C9E6E</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 7 — GESTÃO DE CLIENTES
+  ============================================================ -->
+  <section class="section" id="clientes">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Base de dados</p>
+          <h2>Gestão de Clientes</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>A secção de clientes é o coração do CRM — onde encontra todos os dados, histórico e evolução de cada pessoa que passa pelo seu espaço.</p>
+
+      <h3 style="margin-top:2rem; margin-bottom:1rem;">Pesquisa e listagem</h3>
+      <ul class="steps-list">
+        <li class="step-item">
+          <span class="step-num">🔍</span>
+          <div class="step-content">
+            <strong>Pesquisa instantânea</strong>
+            <p>Filtrar por nome, email ou número de telefone — resultados em tempo real enquanto escreve</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">🏷️</span>
+          <div class="step-content">
+            <strong>Filtro por tags</strong>
+            <p>Ver apenas clientes VIP, inscritos na newsletter, ou por tipo de serviço</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">📅</span>
+          <div class="step-content">
+            <strong>Ordenação flexível</strong>
+            <p>Por data da última sessão, nome alfabético, ou número total de sessões</p>
+          </div>
+        </li>
+      </ul>
+
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Perfil completo de cada cliente</h3>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👤</div>
+          <div class="feature-title">Dados Pessoais</div>
+          <p class="feature-desc">Contacto, data de nascimento, profissão e informações gerais</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏷️</div>
+          <div class="feature-title">Tags Personalizadas</div>
+          <p class="feature-desc">VIP, Newsletter, tipo de serviço preferido, necessidades especiais</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title">Anamnese Completa</div>
+          <p class="feature-desc">Histórico de saúde, estilo de vida e mapa corporal inicial</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <div class="feature-title">Gráfico de Evolução</div>
+          <p class="feature-desc">4 escalas de bem-estar ao longo de todas as sessões</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <div class="feature-title">Notas SOAP</div>
+          <p class="feature-desc">Registos detalhados de cada sessão com histórico completo</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <div class="feature-title">NPS e Satisfação</div>
+          <p class="feature-desc">Pontuações de satisfação ao longo do tempo e comentários</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Importar clientes</h3>
+      <p>Existem três formas de adicionar clientes existentes ao sistema:</p>
+
+      <div class="two-col">
+        <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.5rem;">
+          <h4 style="margin-bottom:1rem; color:var(--purple-dark);">📥 Via ficheiro CSV</h4>
+          <p style="font-size:.88rem; color:var(--dark-mid); margin:0;">Exportar a lista de contactos do seu telemóvel, Google Contacts ou Excel, e importar com um clique. O sistema mapeia automaticamente os campos.</p>
+        </div>
+        <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.5rem;">
+          <h4 style="margin-bottom:1rem; color:var(--purple-dark);">⚡ Entrada rápida</h4>
+          <p style="font-size:.88rem; color:var(--dark-mid); margin:0;">Adicionar manualmente nome e telefone durante uma chamada — o sistema cria o perfil e pode enviar um link de anamnese mais tarde.</p>
+        </div>
+      </div>
+
+      <div class="tip-box" style="margin-top:1.5rem;">
+        <span class="tip-icon">🎁</span>
+        <div class="tip-content">
+          <strong>Convite por link</strong>
+          <p>Pode gerar um link de convite para um cliente existente preencher a anamnese retroativamente — útil para clientes antigos que ainda não têm ficha digital completa.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 8 — DASHBOARD
+  ============================================================ -->
+  <section class="section" id="dashboard">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Visão geral em tempo real</p>
+          <h2>Dashboard</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>O dashboard é a primeira página que vê ao abrir a app — um resumo visual e claro do estado atual do negócio, projetado para uma consulta rápida de manhã.</p>
+
+      <div class="dashboard-grid">
+        <div class="dash-widget purple">
+          <div class="dash-icon">📅</div>
+          <div class="dash-value">3</div>
+          <div class="dash-label">Sessões hoje</div>
+        </div>
+        <div class="dash-widget gold">
+          <div class="dash-icon">⏳</div>
+          <div class="dash-value">2</div>
+          <div class="dash-label">Formulários pendentes</div>
+        </div>
+        <div class="dash-widget green">
+          <div class="dash-icon">⭐</div>
+          <div class="dash-value">9.4</div>
+          <div class="dash-label">NPS médio recente</div>
+        </div>
+        <div class="dash-widget blue">
+          <div class="dash-icon">👥</div>
+          <div class="dash-value">47</div>
+          <div class="dash-label">Total de clientes</div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:2rem;">
+        <div>
+          <h3 style="margin-bottom:1rem;">Informação disponível</h3>
+          <ul class="steps-list">
+            <li class="step-item">
+              <span class="step-num">📋</span>
+              <div class="step-content">
+                <strong>Sessões do dia</strong>
+                <p>Lista cronológica com nome do cliente, hora e tipo de serviço</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num">🔔</span>
+              <div class="step-content">
+                <strong>Alertas ativos</strong>
+                <p>NPS baixo, formulários não submetidos e follow-ups pendentes</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num">📊</span>
+              <div class="step-content">
+                <strong>Satisfação recente</strong>
+                <p>Últimas avaliações NPS recebidas com comentários dos clientes</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin-bottom:1rem;">Métricas mensais</h3>
+          <ul class="steps-list">
+            <li class="step-item">
+              <span class="step-num">👥</span>
+              <div class="step-content">
+                <strong>Total de clientes ativos</strong>
+                <p>Clientes com sessão nos últimos 90 dias</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num">📈</span>
+              <div class="step-content">
+                <strong>Sessões este mês</strong>
+                <p>Comparação com o mês anterior</p>
+              </div>
+            </li>
+            <li class="step-item">
+              <span class="step-num">⭐</span>
+              <div class="step-content">
+                <strong>NPS médio</strong>
+                <p>Evolução da satisfação ao longo dos meses</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 9 — INSTALAR NO TELEMÓVEL
+  ============================================================ -->
+  <section class="section" id="instalar">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">PWA — Progressive Web App</p>
+          <h2>Instalar no Telemóvel</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>
+        O CRM funciona como uma aplicação nativa no seu telemóvel, sem precisar de a descarregar da App Store ou Google Play.
+        Esta tecnologia chama-se PWA (Progressive Web App) e permite instalar o site como se fosse uma app — com ícone no ecrã inicial, funcionamento em ecrã completo e acesso rápido.
+      </p>
+
+      <div class="pwa-grid">
+        <!-- iOS -->
+        <div class="pwa-card">
+          <div class="pwa-card-header ios">
+            <span>🍎</span>
+            <h3>iPhone (iOS)</h3>
+          </div>
+          <div class="pwa-card-body ios">
+            <ul class="pwa-steps">
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#1C1C1E; color:white;">1</span>
+                <span class="pwa-step-text">Abrir o <strong>Safari</strong> (obrigatório — não funciona no Chrome em iOS)</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#1C1C1E; color:white;">2</span>
+                <span class="pwa-step-text">Navegar para <span style="font-family:'Courier New',monospace; font-size:.83rem; background:#f0f0f0; padding:.1rem .35rem; border-radius:3px;">danielaalveshealing.vercel.app/admin</span></span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#1C1C1E; color:white;">3</span>
+                <span class="pwa-step-text">Tocar no ícone de <strong>Partilha</strong> — o quadrado com a seta a apontar para cima, na barra inferior do Safari</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#1C1C1E; color:white;">4</span>
+                <span class="pwa-step-text">Fazer scroll para baixo no menu e tocar em <strong>"Adicionar ao Ecrã Inicial"</strong></span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#1C1C1E; color:white;">5</span>
+                <span class="pwa-step-text">Confirmar o nome e tocar em <strong>"Adicionar"</strong> no canto superior direito</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:var(--gold-dark); color:white;">✓</span>
+                <span class="pwa-step-text"><strong>Pronto!</strong> O ícone da Daniela Alves aparece no ecrã inicial como uma app</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Android -->
+        <div class="pwa-card">
+          <div class="pwa-card-header android">
+            <span>🤖</span>
+            <h3>Android</h3>
+          </div>
+          <div class="pwa-card-body android">
+            <ul class="pwa-steps">
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#01875F; color:white;">1</span>
+                <span class="pwa-step-text">Abrir o <strong>Chrome</strong> (recomendado para melhor compatibilidade)</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#01875F; color:white;">2</span>
+                <span class="pwa-step-text">Navegar para <span style="font-family:'Courier New',monospace; font-size:.83rem; background:#f0f0f0; padding:.1rem .35rem; border-radius:3px;">danielaalveshealing.vercel.app/admin</span></span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#01875F; color:white;">3</span>
+                <span class="pwa-step-text">Tocar no menu dos <strong>3 pontos</strong> no canto superior direito</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#01875F; color:white;">4</span>
+                <span class="pwa-step-text">Selecionar <strong>"Instalar aplicação"</strong> ou <strong>"Adicionar ao ecrã inicial"</strong></span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:#01875F; color:white;">5</span>
+                <span class="pwa-step-text">Tocar em <strong>"Instalar"</strong> na caixa de diálogo de confirmação</span>
+              </li>
+              <li class="pwa-step">
+                <span class="pwa-step-num" style="background:var(--gold-dark); color:white;">✓</span>
+                <span class="pwa-step-text"><strong>Pronto!</strong> A app é instalada e aparece na gaveta de aplicações e ecrã inicial</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box">
+        <span class="tip-icon">📱</span>
+        <div class="tip-content">
+          <strong>Comportamento como app nativa</strong>
+          <p>Após instalada, a PWA abre em ecrã completo, sem a barra de endereço do browser, exatamente como uma app descarregada da loja. Funciona mesmo com ligação lenta — as páginas principais são guardadas localmente.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 10 — DADOS DE ACESSO
+  ============================================================ -->
+  <section class="section" id="acesso">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-header-text">
+          <p class="section-eyebrow">Credenciais</p>
+          <h2>Dados de Acesso</h2>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <p>Guarde estes dados em local seguro. Recomenda-se a utilização de um gestor de passwords como o iCloud Keychain ou o Google Password Manager.</p>
+
+      <div class="access-card">
+        <div class="access-grid">
+          <div class="access-item">
+            <div class="access-label">Endereço da aplicação</div>
+            <span class="access-value mono">danielaalveshealing.vercel.app/admin</span>
+          </div>
+          <div class="access-item">
+            <div class="access-label">Email de acesso</div>
+            <span class="access-value mono">daniela@danielaalveshealing.com</span>
+          </div>
+          <div class="access-item">
+            <div class="access-label">Password inicial</div>
+            <span class="access-value mono">daniela2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box" style="margin-top:2rem;">
+        <span style="font-size:1.3rem; flex-shrink:0; margin-top:.1rem;">⚠️</span>
+        <div class="warning-content">
+          <strong>Altere a password assim que possível</strong>
+          <p>A password acima é a inicial de configuração do sistema. Para garantir a segurança dos dados dos seus clientes, altere-a para uma password pessoal e única nas definições da conta — em Perfil → Segurança → Alterar Password.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2.5rem; margin-bottom:1rem;">Como recuperar a password</h3>
+      <ul class="steps-list">
+        <li class="step-item">
+          <span class="step-num">1</span>
+          <div class="step-content">
+            <strong>Aceder à página de login</strong>
+            <p><span class="url-display">danielaalveshealing.vercel.app/admin</span></p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">2</span>
+          <div class="step-content">
+            <strong>Clicar em "Esqueci a password"</strong>
+            <p>Link disponível abaixo do formulário de login</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-num">3</span>
+          <div class="step-content">
+            <strong>Verificar o email</strong>
+            <p>Um link de recuperação é enviado para <strong>daniela@danielaalveshealing.com</strong></p>
+          </div>
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        Daniela <em>Alves</em>
+      </div>
+      <p style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(255,255,255,.55); margin-bottom:0;">
+        Healing &amp; Wellness
+      </p>
+
+      <div class="footer-divider"></div>
+
+      <p class="footer-text">
+        Desenvolvido com <span class="footer-heart">♥</span> para Daniela Alves — Março 2026
+      </p>
+      <p class="footer-text" style="margin-top:.3rem;">
+        Suporte técnico:
+        <a href="mailto:bilal@example.com">bilal@example.com</a>
+      </p>
+
+      <p style="font-size:.72rem; color:rgba(255,255,255,.25); margin-top:2rem; letter-spacing:.08em;">
+        GUIA DO SISTEMA CRM — VERSÃO 1.0 — CONFIDENCIAL
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
