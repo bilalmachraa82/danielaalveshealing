@@ -116,7 +116,7 @@ export async function extractAnamnesisFromImage(
   const client = getAnthropicClient();
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20250929",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 4096,
     messages: [
       {
@@ -167,7 +167,7 @@ export async function extractAnamnesisFromImages(
   content.push({ type: "text", text: ANAMNESIS_PROMPT });
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20250929",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 4096,
     messages: [{ role: "user", content }],
   });
@@ -190,7 +190,7 @@ export async function extractSessionNotesFromImage(
   const client = getAnthropicClient();
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20250929",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 4096,
     messages: [
       {
@@ -241,7 +241,7 @@ export async function extractSessionNotesFromImages(
   content.push({ type: "text", text: SESSION_NOTES_PROMPT });
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20250929",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 4096,
     messages: [{ role: "user", content }],
   });
