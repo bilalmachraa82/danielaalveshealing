@@ -43,6 +43,8 @@ interface QuickBookingResult {
   whatsapp_url: string;
 }
 
+type Gender = "female" | "male";
+
 interface SelectedClient {
   id: string | null;
   name: string;
@@ -100,6 +102,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedClient, setSelectedClient] = useState<SelectedClient | null>(null);
   const [newClientPhone, setNewClientPhone] = useState("");
+  const [gender, setGender] = useState<Gender>("female");
   const [scheduledAt, setScheduledAt] = useState(getDefaultDateTime);
   const [serviceType, setServiceType] = useState<ServiceType>("healing_wellness");
 
@@ -179,6 +182,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     setShowDropdown(false);
     setSelectedClient(null);
     setNewClientPhone("");
+    setGender("female");
     setScheduledAt(getDefaultDateTime());
     setServiceType("healing_wellness");
     setIsSubmitting(false);
@@ -245,6 +249,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
         body: JSON.stringify({
           client_name: selectedClient.name,
           client_phone: phone,
+          client_gender: selectedClient.isNew ? gender : undefined,
           scheduled_at: scheduledAt,
           service_type: serviceType,
         }),
@@ -332,6 +337,8 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             selectedClient={selectedClient}
             newClientPhone={newClientPhone}
             setNewClientPhone={setNewClientPhone}
+            gender={gender}
+            setGender={setGender}
             scheduledAt={scheduledAt}
             setScheduledAt={setScheduledAt}
             serviceType={serviceType}
@@ -361,6 +368,8 @@ interface BookingFormProps {
   selectedClient: SelectedClient | null;
   newClientPhone: string;
   setNewClientPhone: (p: string) => void;
+  gender: Gender;
+  setGender: (g: Gender) => void;
   scheduledAt: string;
   setScheduledAt: (d: string) => void;
   serviceType: ServiceType;
@@ -383,6 +392,8 @@ function BookingForm({
   selectedClient,
   newClientPhone,
   setNewClientPhone,
+  gender,
+  setGender,
   scheduledAt,
   setScheduledAt,
   serviceType,
@@ -525,18 +536,44 @@ function BookingForm({
           </div>
         )}
 
-        {/* Phone input for new clients */}
+        {/* Phone + Gender for new clients */}
         {selectedClient?.isNew && (
-          <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              type="tel"
-              placeholder="+351 9XX XXX XXX"
-              value={newClientPhone}
-              onChange={(e) => setNewClientPhone(e.target.value)}
-              className="pl-9 h-12 text-base"
-              autoFocus
-            />
+          <div className="space-y-3">
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                type="tel"
+                placeholder="+351 9XX XXX XXX"
+                value={newClientPhone}
+                onChange={(e) => setNewClientPhone(e.target.value)}
+                className="pl-9 h-12 text-base"
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setGender("female")}
+                className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
+                  gender === "female"
+                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    : "border-input bg-background text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                Feminino
+              </button>
+              <button
+                type="button"
+                onClick={() => setGender("male")}
+                className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
+                  gender === "male"
+                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    : "border-input bg-background text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                Masculino
+              </button>
+            </div>
           </div>
         )}
       </div>

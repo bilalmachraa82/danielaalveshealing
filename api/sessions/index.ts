@@ -271,6 +271,7 @@ async function handleSessionNotes(
 interface QuickBookingRequest {
   client_name: string;
   client_phone: string;
+  client_gender?: "female" | "male";
   scheduled_at: string;
   service_type: string;
 }
@@ -295,6 +296,7 @@ async function handleQuickBooking(
   const {
     client_name,
     client_phone,
+    client_gender,
     scheduled_at,
     service_type,
   } = req.body as QuickBookingRequest;
@@ -307,17 +309,19 @@ async function handleQuickBooking(
 
   // --- 1. Search for existing client by phone (exact match) ---
   const existingClients = await sql(
-    "SELECT id, first_name, last_name, email FROM clients WHERE phone = $1 LIMIT 1",
+    "SELECT id, first_name, last_name, email, gender FROM clients WHERE phone = $1 LIMIT 1",
     [client_phone]
   );
 
   let clientId: string;
   let clientIsNew = false;
   let clientEmail: string | null = null;
+  let clientGender: string | null = client_gender ?? null;
 
   if (existingClients.length > 0) {
     clientId = existingClients[0].id;
     clientEmail = existingClients[0].email;
+    clientGender = existingClients[0].gender ?? clientGender;
   } else {
     // --- 2. Create new client with just name + phone ---
     const nameParts = client_name.trim().split(/\s+/);
@@ -325,10 +329,10 @@ async function handleQuickBooking(
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null;
 
     const newClientRows = await sql(
-      `INSERT INTO clients (first_name, last_name, phone, source)
-       VALUES ($1, $2, $3, 'manual')
-       RETURNING id, email`,
-      [firstName, lastName, client_phone]
+      `INSERT INTO clients (first_name, last_name, phone, gender, source)
+       VALUES ($1, $2, $3, $4, 'manual')
+       RETURNING id, email, gender`,
+      [firstName, lastName, client_phone, client_gender ?? null]
     );
 
     clientId = newClientRows[0].id;
@@ -384,7 +388,32 @@ async function handleQuickBooking(
     minute: "2-digit",
   });
 
-  const whatsappText = `Ola ${firstName}! 😊 Aqui esta o link para preparar a sua sessao do dia ${formattedDate}: ${prepareUrl} — Daniela Alves, Healing & Wellness`;
+  // --- Build personalized WhatsApp message ---
+  const isFemale = clientGender === "female";
+  const greeting = isFemale ? "Querida" : "Querido";
+  const welcome = isFemale ? "Bem-vinda" : "Bem-vindo";
+  const serviceNames: Record<string, string> = {
+    healing_wellness: "Sessao Healing & Wellness",
+    pura_radiancia: "Imersao Pura Radiancia",
+    pure_earth_love: "Pure Earth Love",
+  };
+  const serviceName = serviceNames[service_type] ?? "sessao";
+
+  const whatsappText = [
+    `${greeting} ${firstName}! ✨🙏`,
+    ``,
+    `${welcome} ao espaco Daniela Alves Healing & Wellness!`,
+    ``,
+    `A sua *${serviceName}* esta agendada para *${formattedDate}*.`,
+    ``,
+    `Para que possamos preparar tudo com o maior cuidado e dedicacao, peco-lhe que preencha este breve formulario:`,
+    `👉 ${prepareUrl}`,
+    ``,
+    `📍 R. do Regueiro do Tanque 3, Fontanelas, Sao Joao das Lampas`,
+    ``,
+    `Com amor e gratidao,`,
+    `Daniela 💜`,
+  ].join("\n");
 
   const cleanPhone = client_phone.replace(/[^0-9]/g, "");
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappText)}`;
