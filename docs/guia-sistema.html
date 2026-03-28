@@ -2439,6 +2439,53 @@
   </section>
 
   <!-- ============================================================
+       11. DIGITALIZAR FICHAS (OCR)
+  ============================================================ -->
+  <section id="ocr" class="section">
+    <div class="container">
+      <div class="section-badge">11</div>
+      <h2 class="section-title">Digitalizar Fichas Manuscritas</h2>
+      <p class="section-subtitle">
+        Importe as fichas de clientes existentes (escritas à mão) para o sistema digital.
+        O sistema usa inteligência artificial para ler e extrair automaticamente todos os dados.
+      </p>
+
+      <div style="display:grid; gap:1.5rem; grid-template-columns:1fr; max-width:700px; margin:2rem auto;">
+        <div style="background:var(--purple-pale); border-radius:var(--radius-md); padding:1.5rem; border-left:4px solid var(--purple);">
+          <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--purple-dark); margin-bottom:.5rem;">Como funciona</h3>
+          <ol style="list-style:decimal; padding-left:1.2rem; font-size:.92rem; line-height:1.7; color:var(--dark-mid);">
+            <li>Abrir <strong>Digitalizar Fichas</strong> no menu lateral</li>
+            <li>Fotografar cada página da ficha do cliente (ou carregar PDFs/imagens)</li>
+            <li>Etiquetar cada imagem: <em>"Anamnese pág. 1"</em>, <em>"Anamnese pág. 2"</em>, <em>"Notas de sessão"</em></li>
+            <li>Clicar <strong>"Processar"</strong> — a IA lê e extrai os dados automaticamente</li>
+            <li>Rever e corrigir os dados extraídos (nome, respostas, notas)</li>
+            <li>Clicar <strong>"Guardar"</strong> — o cliente é criado no sistema com toda a informação</li>
+          </ol>
+        </div>
+
+        <div style="background:var(--gold-pale); border-radius:var(--radius-md); padding:1.5rem; border-left:4px solid var(--gold);">
+          <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--gold-dark); margin-bottom:.5rem;">O que é extraído automaticamente</h3>
+          <ul style="list-style:none; padding:0; font-size:.92rem; line-height:1.7; color:var(--dark-mid);">
+            <li>&#10003; <strong>Dados pessoais</strong> — nome, telefone, email, data nascimento, profissão</li>
+            <li>&#10003; <strong>17 perguntas de saúde</strong> — medicação, cirurgias, doenças crónicas, etc.</li>
+            <li>&#10003; <strong>8 perguntas estilo de vida</strong> — alimentação, sono, exercício, etc.</li>
+            <li>&#10003; <strong>Mapa corporal</strong> — zonas de dor marcadas</li>
+            <li>&#10003; <strong>Notas de sessão</strong> — datas, tratamentos, temas emocionais, suplementos</li>
+            <li>&#10003; <strong>Abreviações terapêuticas</strong> — Em., E.Cod, TSC, NVE, Mass., Floral</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--cream-dark); border-radius:var(--radius-md); padding:1.2rem; text-align:center;">
+          <p style="font-size:.85rem; color:var(--dark-light);">
+            <strong>Suporta:</strong> Fotografias do telemóvel, PDFs digitalizados, imagens escaneadas<br>
+            <strong>Custo:</strong> ~0.006€ por página (~3€ para importar 500 fichas)
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
        FOOTER
   ============================================================ -->
   <footer class="footer">
