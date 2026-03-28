@@ -334,6 +334,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             searchResults={searchResults}
             isSearching={isSearching}
             showDropdown={showDropdown}
+            setShowDropdown={setShowDropdown}
             selectedClient={selectedClient}
             newClientPhone={newClientPhone}
             setNewClientPhone={setNewClientPhone}
