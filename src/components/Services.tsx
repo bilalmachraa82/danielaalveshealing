@@ -32,7 +32,7 @@ const Services = () => {
           'A unique journey, guided by 15 years of experience and intuition, offering a safe space for healing and transformation. After an initial assessment, we determine the best approach based on your needs and goals, using various massage techniques, manual lymphatic drainage, aromatherapy, sound therapy, energy techniques or emotional release.'
         ),
         duration: t('Duração: ~2h', 'Duration: ~2h'),
-        price: t('Preço: 122€', 'Price: 122€'),
+        price: t('Preço: 150€', 'Price: 150€'),
       },
       wa: encodeURIComponent(t('Olá Daniela, gostaria de agendar uma Sessão Healing & Wellness.', 'Hello Daniela, I would like to book a Healing & Wellness Session.')),
     },
