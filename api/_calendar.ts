@@ -16,24 +16,35 @@ const SERVICE_LABELS: Record<string, string> = {
 };
 
 function getCalendarClient() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
   const calendarId = process.env.GOOGLE_CALENDAR_ID;
+  if (!calendarId) return null;
 
-  if (!email || !privateKey || !calendarId) {
-    return null;
+  // Try JSON credentials first (most reliable for Vercel)
+  const jsonCreds = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (jsonCreds) {
+    const credentials = JSON.parse(jsonCreds);
+    const auth = new GoogleAuth({
+      credentials: {
+        client_email: credentials.client_email,
+        private_key: credentials.private_key,
+      },
+      scopes: ["https://www.googleapis.com/auth/calendar"],
+    });
+    const calendar = google.calendar({ version: "v3", auth });
+    return { calendar, calendarId };
   }
 
-  // Handle both escaped \\n (from env vars) and real newlines
+  // Fallback to separate env vars
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+  if (!email || !privateKey) return null;
+
   const cleanKey = privateKey.includes("\\n")
     ? privateKey.replace(/\\n/g, "\n")
     : privateKey;
 
   const auth = new GoogleAuth({
-    credentials: {
-      client_email: email,
-      private_key: cleanKey,
-    },
+    credentials: { client_email: email, private_key: cleanKey },
     scopes: ["https://www.googleapis.com/auth/calendar"],
   });
 
