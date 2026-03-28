@@ -19,6 +19,7 @@ import {
   Settings,
   Heart,
   Upload,
+  ScanLine,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -37,6 +38,11 @@ const navItems = [
     title: "Importar Clientes",
     url: "/admin/clientes/importar",
     icon: Upload,
+  },
+  {
+    title: "Digitalizar Fichas",
+    url: "/admin/clientes/ocr",
+    icon: ScanLine,
   },
   {
     title: "Sessões",

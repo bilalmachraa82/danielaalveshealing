@@ -21,6 +21,7 @@ const SessionCreate = lazy(() => import("./pages/admin/SessionCreate"));
 const SessionDetail = lazy(() => import("./pages/admin/SessionDetail"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
 const ClientImport = lazy(() => import("./pages/admin/ClientImport"));
+const ClientOCRImport = lazy(() => import("./pages/admin/ClientOCRImport"));
 const AdminLayout = lazy(() =>
   import("./components/admin/layout/AdminLayout").then((m) => ({
     default: m.AdminLayout,
@@ -77,6 +78,7 @@ const App = () => (
                 <Route path="clientes" element={<ClientList />} />
                 <Route path="clientes/novo" element={<ClientCreate />} />
                 <Route path="clientes/importar" element={<ClientImport />} />
+                <Route path="clientes/ocr" element={<ClientOCRImport />} />
                 <Route path="clientes/:id" element={<ClientDetail />} />
                 <Route path="clientes/:id/editar" element={<ClientEdit />} />
                 <Route path="sessoes" element={<SessionList />} />

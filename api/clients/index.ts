@@ -1,5 +1,9 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
+import {
+  extractAnamnesisFromImages,
+  extractSessionNotesFromImages,
+} from "../_ocr.js";
 
 export default async function handler(
   req: VercelRequest,
@@ -27,6 +31,11 @@ export default async function handler(
     // /api/clients/import
     if (pathSegments[0] === "import") {
       return await handleClientImport(req, res, sql);
+    }
+
+    // /api/clients/ocr/*
+    if (pathSegments[0] === "ocr") {
+      return await handleOcr(req, res, sql, pathSegments.slice(1));
     }
 
     // /api/clients/[id]/tags
@@ -374,4 +383,272 @@ async function handleClientImport(
   }
 
   return res.status(200).json({ imported, skipped, errors });
+}
+
+// ============================================================
+// /api/clients/ocr/* — OCR-based client file import
+// ============================================================
+
+interface OcrImage {
+  base64: string;
+  mediaType: string;
+}
+
+interface OcrAnamnesisRequest {
+  images: OcrImage[];
+}
+
+interface OcrSessionNotesRequest {
+  images: OcrImage[];
+}
+
+interface OcrSaveRequest {
+  client_id?: string;
+  client: {
+    first_name: string;
+    last_name?: string;
+    date_of_birth?: string | null;
+    height_cm?: number | null;
+    weight_kg?: number | null;
+    profession?: string | null;
+    phone?: string | null;
+    email?: string | null;
+  };
+  health_general: Record<string, { has: boolean; details: string }>;
+  lifestyle: Record<string, { answer: string }>;
+  body_map_notes?: string;
+  pain_trigger?: { has: boolean; details: string };
+  massage_experience?: { has: boolean; details: string };
+  session_objectives?: string;
+  declaration_date?: string | null;
+  sessions?: Array<{
+    date: string;
+    raw_text: string;
+    treatments?: string[];
+    body_areas?: string[];
+    emotional_themes?: string[];
+    supplements_florals?: string[];
+    observations?: string;
+    follow_up?: string;
+  }>;
+}
+
+async function handleOcr(
+  req: VercelRequest,
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>,
+  pathSegments: string[]
+) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const action = pathSegments[0];
+
+  // POST /api/clients/ocr/anamnesis — extract anamnesis from images
+  if (action === "anamnesis") {
+    const { images } = req.body as OcrAnamnesisRequest;
+
+    if (!images || !Array.isArray(images) || images.length === 0) {
+      return res.status(400).json({ error: "At least one image is required" });
+    }
+
+    if (images.length > 4) {
+      return res.status(400).json({ error: "Maximum 4 images allowed" });
+    }
+
+    const extracted = await extractAnamnesisFromImages(images);
+    return res.json({ extracted });
+  }
+
+  // POST /api/clients/ocr/session-notes — extract session notes from images
+  if (action === "session-notes") {
+    const { images } = req.body as OcrSessionNotesRequest;
+
+    if (!images || !Array.isArray(images) || images.length === 0) {
+      return res.status(400).json({ error: "At least one image is required" });
+    }
+
+    if (images.length > 6) {
+      return res.status(400).json({ error: "Maximum 6 images allowed" });
+    }
+
+    const extracted = await extractSessionNotesFromImages(images);
+    return res.json({ extracted });
+  }
+
+  // POST /api/clients/ocr/save — save reviewed/corrected data
+  if (action === "save") {
+    const data = req.body as OcrSaveRequest;
+
+    if (!data.client?.first_name?.trim()) {
+      return res.status(400).json({ error: "Client first_name is required" });
+    }
+
+    let clientId = data.client_id ?? null;
+
+    // --- 1. Create or update client ---
+    if (!clientId) {
+      const clientRows = await sql(
+        `INSERT INTO clients (first_name, last_name, email, phone, date_of_birth, height_cm, weight_kg, profession, source)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'manual')
+         RETURNING id`,
+        [
+          data.client.first_name.trim(),
+          data.client.last_name?.trim() ?? null,
+          data.client.email?.trim().toLowerCase() ?? null,
+          data.client.phone?.trim() ?? null,
+          data.client.date_of_birth ?? null,
+          data.client.height_cm ?? null,
+          data.client.weight_kg ?? null,
+          data.client.profession?.trim() ?? null,
+        ]
+      );
+      clientId = clientRows[0].id;
+    } else {
+      // Update existing client with any new info from OCR
+      await sql(
+        `UPDATE clients
+         SET height_cm = COALESCE($2, height_cm),
+             weight_kg = COALESCE($3, weight_kg),
+             profession = COALESCE($4, profession),
+             date_of_birth = COALESCE($5, date_of_birth)
+         WHERE id = $1`,
+        [
+          clientId,
+          data.client.height_cm ?? null,
+          data.client.weight_kg ?? null,
+          data.client.profession?.trim() ?? null,
+          data.client.date_of_birth ?? null,
+        ]
+      );
+    }
+
+    // --- 2. Create anamnesis form ---
+    let anamnesisId: string | null = null;
+
+    if (data.health_general || data.lifestyle) {
+      const anamnesisRows = await sql(
+        `INSERT INTO anamnesis_forms (
+           client_id, health_general, lifestyle, body_map_data,
+           has_pain_trigger, pain_trigger_task,
+           previous_massage_experience, previous_massage_details,
+           session_objectives, declaration_accepted, declaration_date,
+           status, completed_at
+         )
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'completed', NOW())
+         RETURNING id`,
+        [
+          clientId,
+          JSON.stringify(data.health_general ?? {}),
+          JSON.stringify(data.lifestyle ?? {}),
+          JSON.stringify([]),
+          data.pain_trigger?.has ?? null,
+          data.pain_trigger?.details ?? null,
+          data.massage_experience?.has ?? null,
+          data.massage_experience?.details ?? null,
+          data.session_objectives ?? null,
+          true,
+          data.declaration_date ?? null,
+        ]
+      );
+      anamnesisId = anamnesisRows[0].id;
+    }
+
+    // --- 3. Create sessions from OCR session notes ---
+    let sessionsCreated = 0;
+
+    if (data.sessions && data.sessions.length > 0) {
+      for (const sessionData of data.sessions) {
+        if (!sessionData.date) continue;
+
+        // Create a session record
+        const sessionRows = await sql(
+          `INSERT INTO sessions (client_id, scheduled_at, service_type, status, notes)
+           VALUES ($1, $2, 'healing_wellness', 'completed', $3)
+           RETURNING id`,
+          [
+            clientId,
+            sessionData.date,
+            sessionData.raw_text ?? null,
+          ]
+        );
+
+        const sessionId = sessionRows[0].id;
+
+        // Build SOAP-style note from OCR data
+        const subjective = [
+          sessionData.emotional_themes?.length
+            ? `Temas emocionais: ${sessionData.emotional_themes.join(", ")}`
+            : null,
+          sessionData.observations || null,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const objective = [
+          sessionData.body_areas?.length
+            ? `Zonas trabalhadas: ${sessionData.body_areas.join(", ")}`
+            : null,
+          sessionData.treatments?.length
+            ? `Tratamentos: ${sessionData.treatments.join(", ")}`
+            : null,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        const plan = [
+          sessionData.supplements_florals?.length
+            ? `Florais/Suplementos: ${sessionData.supplements_florals.join(", ")}`
+            : null,
+          sessionData.follow_up || null,
+        ]
+          .filter(Boolean)
+          .join("\n");
+
+        await sql(
+          `INSERT INTO session_notes (session_id, subjective, objective, plan)
+           VALUES ($1, $2, $3, $4)`,
+          [
+            sessionId,
+            subjective || null,
+            objective || null,
+            plan || null,
+          ]
+        );
+
+        sessionsCreated++;
+      }
+    }
+
+    // --- 4. Tag client as "Digitalizado" ---
+    try {
+      const tagRows = await sql(
+        `INSERT INTO tags (name, color)
+         VALUES ('Digitalizado', '#985F97')
+         ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+         RETURNING id`,
+        []
+      );
+      const tagId = tagRows[0]?.id;
+      if (tagId && clientId) {
+        await sql(
+          `INSERT INTO client_tags (client_id, tag_id)
+           VALUES ($1, $2)
+           ON CONFLICT (client_id, tag_id) DO NOTHING`,
+          [clientId, tagId]
+        );
+      }
+    } catch {
+      // Non-critical
+    }
+
+    return res.status(201).json({
+      client_id: clientId,
+      anamnesis_id: anamnesisId,
+      sessions_created: sessionsCreated,
+    });
+  }
+
+  return res.status(404).json({ error: "OCR endpoint not found" });
 }
