@@ -98,11 +98,40 @@ Extract each dated session entry separately. Return ONLY valid JSON:
 // ---------------------------------------------------------------------------
 
 type ImageMediaType = "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+type DocumentMediaType = "application/pdf";
 
 export function getAnthropicClient(): Anthropic {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY not configured");
   return new Anthropic({ apiKey: key });
+}
+
+function isDocumentType(mediaType: string): mediaType is DocumentMediaType {
+  return mediaType === "application/pdf";
+}
+
+function buildContentBlock(
+  base64: string,
+  mediaType: string
+): Anthropic.ImageBlockParam | Anthropic.DocumentBlockParam {
+  if (isDocumentType(mediaType)) {
+    return {
+      type: "document",
+      source: {
+        type: "base64",
+        media_type: mediaType,
+        data: base64,
+      },
+    };
+  }
+  return {
+    type: "image",
+    source: {
+      type: "base64",
+      media_type: mediaType as ImageMediaType,
+      data: base64,
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -122,14 +151,7 @@ export async function extractAnamnesisFromImage(
       {
         role: "user",
         content: [
-          {
-            type: "image",
-            source: {
-              type: "base64",
-              media_type: mediaType as ImageMediaType,
-              data: imageBase64,
-            },
-          },
+          buildContentBlock(imageBase64, mediaType),
           { type: "text", text: ANAMNESIS_PROMPT },
         ],
       },
@@ -155,14 +177,7 @@ export async function extractAnamnesisFromImages(
   const content: Anthropic.MessageCreateParams["messages"][0]["content"] = [];
 
   for (const img of images) {
-    content.push({
-      type: "image",
-      source: {
-        type: "base64",
-        media_type: img.mediaType as ImageMediaType,
-        data: img.base64,
-      },
-    });
+    content.push(buildContentBlock(img.base64, img.mediaType));
   }
   content.push({ type: "text", text: ANAMNESIS_PROMPT });
 
@@ -196,14 +211,7 @@ export async function extractSessionNotesFromImage(
       {
         role: "user",
         content: [
-          {
-            type: "image",
-            source: {
-              type: "base64",
-              media_type: mediaType as ImageMediaType,
-              data: imageBase64,
-            },
-          },
+          buildContentBlock(imageBase64, mediaType),
           { type: "text", text: SESSION_NOTES_PROMPT },
         ],
       },
@@ -229,14 +237,7 @@ export async function extractSessionNotesFromImages(
   const content: Anthropic.MessageCreateParams["messages"][0]["content"] = [];
 
   for (const img of images) {
-    content.push({
-      type: "image",
-      source: {
-        type: "base64",
-        media_type: img.mediaType as ImageMediaType,
-        data: img.base64,
-      },
-    });
+    content.push(buildContentBlock(img.base64, img.mediaType));
   }
   content.push({ type: "text", text: SESSION_NOTES_PROMPT });
 

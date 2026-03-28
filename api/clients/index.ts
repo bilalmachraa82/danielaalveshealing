@@ -38,6 +38,11 @@ export default async function handler(
       return await handleOcr(req, res, sql, pathSegments.slice(1));
     }
 
+    // /api/clients/[id]/wellness
+    if (pathSegments.length === 2 && pathSegments[1] === "wellness") {
+      return await handleClientWellness(req, res, sql, pathSegments[0]);
+    }
+
     // /api/clients/[id]/tags
     if (pathSegments.length === 2 && pathSegments[1] === "tags") {
       return await handleClientTags(req, res, sql, pathSegments[0]);
@@ -173,6 +178,48 @@ async function handleClientById(
   }
 
   return res.status(405).json({ error: "Method not allowed" });
+}
+
+// ============================================================
+// /api/clients/[id]/wellness — Wellness progress data
+// ============================================================
+
+async function handleClientWellness(
+  req: VercelRequest,
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>,
+  clientId: string
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const rows = await sql(
+    `SELECT date, feeling_physically, feeling_psychologically, feeling_emotionally, feeling_energetically
+     FROM (
+       SELECT s.scheduled_at AS date,
+              sif.feeling_physically,
+              sif.feeling_psychologically,
+              sif.feeling_emotionally,
+              sif.feeling_energetically
+       FROM session_intake_forms sif
+       JOIN sessions s ON s.id = sif.session_id
+       WHERE sif.client_id = $1 AND sif.feeling_physically IS NOT NULL
+       UNION ALL
+       SELECT s.scheduled_at AS date,
+              rc.feeling_physically,
+              rc.feeling_psychologically,
+              rc.feeling_emotionally,
+              rc.feeling_energetically
+       FROM returning_checkins rc
+       JOIN sessions s ON s.id = rc.session_id
+       WHERE rc.client_id = $1
+     ) combined
+     ORDER BY date ASC`,
+    [clientId]
+  );
+
+  return res.json(rows);
 }
 
 async function handleClientTags(

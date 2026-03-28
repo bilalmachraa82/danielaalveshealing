@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
+import WellnessProgress from "@/components/admin/clients/WellnessProgress";
 
 const SERVICE_LABELS: Record<string, string> = {
   healing_wellness: "Healing & Wellness",
@@ -188,6 +189,8 @@ export default function ClientDetail() {
         </div>
 
         <div className="md:col-span-2 space-y-6">
+          <WellnessProgress clientId={id} />
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>

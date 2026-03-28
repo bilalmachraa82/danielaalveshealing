@@ -11,6 +11,10 @@
   "crons": [
     { "path": "/api/cron/post-session", "schedule": "0 20 * * *" },
     { "path": "/api/cron/review-request", "schedule": "0 10 * * *" },
-    { "path": "/api/cron/rebooking", "schedule": "0 10 * * 1" }
+    { "path": "/api/cron/rebooking", "schedule": "0 10 * * 1" },
+    { "path": "/api/cron/checkin-24h", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/nudge-7d", "schedule": "0 10 * * 3" },
+    { "path": "/api/cron/birthday", "schedule": "0 8 * * *" },
+    { "path": "/api/cron/feedback-request", "schedule": "0 10 * * *" }
   ]
 }

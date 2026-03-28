@@ -105,7 +105,8 @@ interface SaveResult {
 // Constants
 // ---------------------------------------------------------------------------
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB (increased for PDFs)
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB for images
 const MAX_DIMENSION = 1568; // Claude's internal limit
 
 const HEALTH_LABELS: Record<string, string> = {
@@ -191,6 +192,25 @@ function resizeImageToBase64(
   });
 }
 
+function isPdf(file: File): boolean {
+  return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+}
+
+function readFileAsBase64(
+  file: File
+): Promise<{ base64: string; mediaType: string }> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const base64 = dataUrl.split(",")[1];
+      resolve({ base64, mediaType: "application/pdf" });
+    };
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsDataURL(file);
+  });
+}
+
 function emptyExtracted(): ExtractedData {
   const healthGeneral: Record<string, HealthItem> = {};
   for (const key of Object.keys(HEALTH_LABELS)) {
@@ -254,13 +274,16 @@ function StepUpload({
       const files: File[] = [];
       for (let i = 0; i < fileList.length; i++) {
         const file = fileList[i];
-        if (!file.type.startsWith("image/")) {
-          toast.error(`${file.name} nao e uma imagem`);
+        const isImage = file.type.startsWith("image/");
+        const isPdfFile = isPdf(file);
+        if (!isImage && !isPdfFile) {
+          toast.error(`${file.name} nao e uma imagem nem PDF`);
           continue;
         }
-        if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        const sizeLimit = isPdfFile ? MAX_FILE_SIZE_BYTES : MAX_IMAGE_SIZE_BYTES;
+        if (file.size > sizeLimit) {
           toast.error(
-            `${file.name} excede 5MB. Por favor, comprima a imagem antes de enviar.`
+            `${file.name} excede ${isPdfFile ? "10MB" : "5MB"}. Por favor, comprima o ficheiro antes de enviar.`
           );
           continue;
         }
@@ -303,14 +326,14 @@ function StepUpload({
               Arraste as fotos ou toque para fotografar / selecionar
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              JPG, PNG ou WEBP (max. 5MB por imagem)
+              JPG, PNG, WEBP ou PDF (max. 5MB imagens, 10MB PDF)
             </p>
           </div>
         </div>
         <input
           ref={fileRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.pdf,application/pdf"
           capture="environment"
           multiple
           className="hidden"
@@ -332,11 +355,19 @@ function StepUpload({
             {images.map((img) => (
               <Card key={img.id} className="overflow-hidden">
                 <div className="relative aspect-[3/4] bg-muted">
-                  <img
-                    src={img.preview}
-                    alt={`Imagem ${img.tag}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {img.mediaType === "application/pdf" ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                      <ScanLine className="h-12 w-12" />
+                      <span className="text-xs font-medium">{img.file.name}</span>
+                      <Badge variant="secondary" className="text-xs">PDF</Badge>
+                    </div>
+                  ) : (
+                    <img
+                      src={img.preview}
+                      alt={`Imagem ${img.tag}`}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                   <Button
                     variant="destructive"
                     size="icon"
@@ -1045,10 +1076,19 @@ export default function ClientOCRImport() {
     const newImages: UploadedImage[] = [];
 
     for (const file of files) {
-      const { base64, mediaType } = await resizeImageToBase64(
-        file,
-        MAX_DIMENSION
-      );
+      let base64: string;
+      let mediaType: string;
+
+      if (isPdf(file)) {
+        const result = await readFileAsBase64(file);
+        base64 = result.base64;
+        mediaType = result.mediaType;
+      } else {
+        const result = await resizeImageToBase64(file, MAX_DIMENSION);
+        base64 = result.base64;
+        mediaType = result.mediaType;
+      }
+
       const preview = URL.createObjectURL(file);
       const tag: ImageTag =
         newImages.length === 0 && file.name.toLowerCase().includes("sessao")
