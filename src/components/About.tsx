@@ -83,8 +83,10 @@ const About = () => {
               <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
                 <img
                   src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
-                  alt="Daniela Alves"
+                  alt="Daniela Alves - Terapeuta Holística com 17 anos de experiência em Sintra"
                   className="w-full h-auto"
+                  width={384}
+                  height={512}
                   loading="lazy"
                 />
               </div>

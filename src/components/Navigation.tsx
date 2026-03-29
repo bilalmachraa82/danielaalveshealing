@@ -44,7 +44,9 @@ const Navigation = () => {
           <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img
               src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/logo.png"
-              alt="Daniela Alves Healing & Wellness"
+              alt="Daniela Alves - Terapeuta Holística em Sintra"
+              width={160}
+              height={40}
               className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
               loading="eager"
             />

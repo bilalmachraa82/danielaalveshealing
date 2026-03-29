@@ -46,8 +46,10 @@ const GiftVoucher = () => {
             <div className="rounded-2xl overflow-hidden shadow-2xl relative z-10">
               <img
                 src={voucherImage}
-                alt={t('Cheque-Oferta', 'Gift Voucher')}
+                alt={t('Cheque-Oferta Daniela Alves Healing & Wellness', 'Gift Voucher Daniela Alves Healing & Wellness')}
                 className="w-full h-auto"
+                width={600}
+                height={400}
                 loading="lazy"
               />
             </div>

@@ -5,8 +5,8 @@ const LoadingScreen = () => {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setFadeOut(true), 1800);
-    const removeTimer = setTimeout(() => setVisible(false), 2600);
+    const fadeTimer = setTimeout(() => setFadeOut(true), 600);
+    const removeTimer = setTimeout(() => setVisible(false), 1000);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(removeTimer);
