@@ -97,7 +97,7 @@ const Hero = () => {
         <div className={`mt-12 transition-all duration-1000 delay-[900ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <Button
             size="lg"
-            className="bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full px-10 py-6 text-sm tracking-[0.15em] uppercase backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-foreground rounded-full px-10 py-6 text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300 hover:shadow-[0_8px_30px_hsl(var(--gold)/0.3)] hover:scale-105"
             onClick={() => document.querySelector('#servicos')?.scrollIntoView({ behavior: 'smooth' })}
           >
             {t('Descobrir Terapias', 'Discover Therapies')}
