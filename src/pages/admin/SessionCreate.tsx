@@ -61,9 +61,9 @@ async function sendForms(
 }
 
 const SERVICE_OPTIONS = [
-  { value: "healing_wellness", label: "Sessão Healing & Wellness", price: 12200 },
-  { value: "pura_radiancia", label: "Imersão Pura Radiância", price: null },
-  { value: "pure_earth_love", label: "Pure Earth Love", price: null },
+  { value: "healing_wellness", label: "Sessão Healing Touch", price: 15000 },
+  { value: "pura_radiancia", label: "Imersão Pura Radiância", price: 45000 },
+  { value: "pure_earth_love", label: "Pure Earth Love", price: 8000 },
   { value: "other", label: "Outro", price: null },
 ];
 

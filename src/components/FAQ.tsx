@@ -10,15 +10,15 @@ const FAQ = () => {
     {
       q: t('O que esperar na primeira sessão?', 'What to expect in the first session?'),
       a: t(
-        'Após um diagnóstico inicial, verificamos qual a melhor abordagem tendo em vista as suas necessidades e objectivos, podendo incluir técnicas de massagem, terapia de som, kinesiologia e aromaterapia.',
-        'After an initial assessment, we determine the best approach based on your needs and goals, which may include massage techniques, sound therapy, kinesiology and aromatherapy.'
+        'Com base numa leitura inicial, a sessão é ajustada às suas necessidades e ao momento. Numa visão integrativa, podem ser usadas diferentes técnicas: massagem, drenagem linfática manual, aromaterapia, terapia de som, meditação, técnicas energéticas ou de libertação emocional.',
+        'Based on an initial reading, the session is adjusted to your needs and moment. In an integrative vision, different techniques may be used: massage, manual lymphatic drainage, aromatherapy, sound therapy, meditation, energy techniques or emotional release.'
       ),
     },
     {
       q: t('Qual a duração de uma sessão?', 'How long is a session?'),
       a: t(
-        'As sessões Healing & Wellness têm a duração aproximada de 2 horas. A experiência Pura Radiância tem uma duração superior.',
-        'Healing & Wellness sessions last approximately 2 hours. The Pure Radiance experience lasts longer.'
+        'As sessões Healing Touch têm a duração aproximada de 2 horas (150€). A Imersão Pura Radiância dura aproximadamente 4 horas (450€). A sessão de aromaterapia Pure Earth Love dura cerca de 30 minutos (80€, inclui o produto personalizado).',
+        'Healing Touch sessions last approximately 2 hours (150€). The Pure Radiance Immersion lasts approximately 4 hours (450€). The Pure Earth Love aromatherapy session takes about 30 minutes (80€, includes the personalized product).'
       ),
     },
     {

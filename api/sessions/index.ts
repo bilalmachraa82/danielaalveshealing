@@ -393,7 +393,7 @@ async function handleQuickBooking(
   const greeting = isFemale ? "Querida" : "Querido";
   const welcome = isFemale ? "Bem-vinda" : "Bem-vindo";
   const serviceNames: Record<string, string> = {
-    healing_wellness: "Sessao Healing & Wellness",
+    healing_wellness: "Sessao Healing Touch",
     pura_radiancia: "Imersao Pura Radiancia",
     pure_earth_love: "Pure Earth Love",
   };

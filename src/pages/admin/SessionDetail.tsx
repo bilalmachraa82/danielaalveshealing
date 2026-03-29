@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import type { SessionStatus } from "@/lib/types/database.types";
 
 const SERVICE_LABELS: Record<string, string> = {
-  healing_wellness: "Sessão Healing & Wellness",
+  healing_wellness: "Sessão Healing Touch",
   pura_radiancia: "Imersão Pura Radiância",
   pure_earth_love: "Pure Earth Love",
   other: "Outro",

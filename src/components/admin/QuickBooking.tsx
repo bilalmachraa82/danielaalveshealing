@@ -56,9 +56,9 @@ interface SelectedClient {
 type ServiceType = "healing_wellness" | "pura_radiancia" | "pure_earth_love";
 
 const SERVICE_OPTIONS: { value: ServiceType; label: string; price: string }[] = [
-  { value: "healing_wellness", label: "Healing & Wellness", price: "122" },
-  { value: "pura_radiancia", label: "Pura Radiancia", price: "" },
-  { value: "pure_earth_love", label: "Pure Earth Love", price: "" },
+  { value: "healing_wellness", label: "Healing Touch", price: "150" },
+  { value: "pura_radiancia", label: "Imersão Pura Radiância", price: "450" },
+  { value: "pure_earth_love", label: "Pure Earth Love", price: "80" },
 ];
 
 // ---- useDebounce hook ----

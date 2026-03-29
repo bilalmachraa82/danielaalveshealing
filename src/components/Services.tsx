@@ -17,40 +17,40 @@ const Services = () => {
   const services = [
     {
       icon: Flower2,
-      title: t('Sessões Healing & Wellness', 'Healing & Wellness Sessions'),
+      title: t('Sessão Healing Touch', 'Healing Touch Session'),
       desc: t(
-        'Sessão terapêutica personalizada para um equilíbrio e bem estar profundos.',
-        'Personalized therapeutic session for deep balance and well-being.'
+        'Sessão terapêutica personalizada para promover um equilíbrio e bem-estar profundos.',
+        'Personalized therapeutic session to promote deep balance and well-being.'
       ),
       quote: t(
-        '"O corpo sabe como voltar ao equilíbrio — às vezes só precisa de ajuda para libertar o que ficou preso."',
-        '"The body knows how to return to balance — sometimes it just needs help releasing what got stuck."'
+        '"O corpo sabe como regressar ao equilíbrio. Por vezes, só precisa de apoio para libertar o que ficou retido."',
+        '"The body knows how to return to balance. Sometimes it just needs support to release what got stuck."'
       ),
       modal: {
         text: t(
-          'Uma viagem única, guiada por 15 anos de experiência e pela intuição, oferecendo um espaço seguro de cura e transformação. Após um diagnóstico inicial, verificamos qual a melhor abordagem tendo em vista as necessidades e objectivos, podendo usar várias técnicas de massagem, drenagem linfática manual, aromaterapia, terapia de som, técnicas energéticas ou de libertação emocional.',
-          'A unique journey, guided by 15 years of experience and intuition, offering a safe space for healing and transformation. After an initial assessment, we determine the best approach based on your needs and goals, using various massage techniques, manual lymphatic drainage, aromatherapy, sound therapy, energy techniques or emotional release.'
+          'Embora várias pessoas venham inicialmente para uma massagem terapêutica, o trabalho realizado vai muito além do relaxamento físico.\n\nCada sessão é uma viagem única, guiada por 17 anos de experiência, oferecendo um espaço seguro de cura e transformação, onde a escuta, o toque consciente e a presença apoiam a integração emocional e o alinhamento interno.\n\nCom base numa leitura inicial, a sessão é ajustada às necessidades e ao momento de cada pessoa.\n\nNuma visão integrativa de saúde e bem-estar, podem ser usadas diferentes técnicas: massagem, drenagem linfática manual, aromaterapia, terapia de som, meditação, técnicas energéticas ou de libertação emocional.',
+          'Although many people initially come for a therapeutic massage, the work goes far beyond physical relaxation.\n\nEach session is a unique journey, guided by 17 years of experience, offering a safe space for healing and transformation, where listening, conscious touch and presence support emotional integration and internal alignment.\n\nBased on an initial reading, the session is adjusted to each person\'s needs and moment.\n\nIn an integrative vision of health and well-being, different techniques may be used: massage, manual lymphatic drainage, aromatherapy, sound therapy, meditation, energy techniques or emotional release.'
         ),
         duration: t('Duração: ~2h', 'Duration: ~2h'),
         price: t('Preço: 150€', 'Price: 150€'),
       },
-      wa: encodeURIComponent(t('Olá Daniela, gostaria de agendar uma Sessão Healing & Wellness.', 'Hello Daniela, I would like to book a Healing & Wellness Session.')),
+      wa: encodeURIComponent(t('Olá Daniela, gostaria de agendar uma Sessão Healing Touch.', 'Hello Daniela, I would like to book a Healing Touch Session.')),
     },
     {
       icon: Sun,
       title: t('Imersão Pura Radiância', 'Pure Radiance Immersion'),
       desc: t(
-        'Uma experiência exclusiva de pura nutrição e cuidado, com mais tempo para Recuperar, Reenergizar e Relaxar.',
-        'An exclusive experience of pure nourishment and care, with more time to Recover, Re-energize and Relax.'
+        'Uma experiência exclusiva de pura nutrição e cuidado, com mais tempo para Relaxar, Recentrar e Reconectar.',
+        'An exclusive experience of pure nourishment and care, with more time to Relax, Recenter and Reconnect.'
       ),
-      quote: t('"Um momento de Reconexão."', '"A moment of Reconnection."'),
+      quote: t('"Mais do que uma sessão, é um tempo Ritual."', '"More than a session, it is a Ritual time."'),
       modal: {
         text: t(
-          'Uma imersão profunda que combina massagem, terapia de som, aromaterapia e rituais xamânicos para uma experiência transformadora completa. Mais tempo dedicado a cada fase do tratamento para resultados mais profundos.',
-          'A deep immersion combining massage, sound therapy, aromatherapy and shamanic rituals for a complete transformative experience. More time dedicated to each phase for deeper results.'
+          'A Imersão Pure Radiance é um mini-retiro individual, ideal para quem precisa de uma pausa relaxante, transformadora e intencional.\n\nUm espaço mais longo, de forma a poder sair mais facilmente do ritmo do dia-a-dia, desligar-se do que está fora e a regressar a si.\n\nRealizada num ambiente rodeado de natureza e serenidade, em que cada detalhe é pensado para apoiar o seu processo e bem-estar.\n\nMais do que uma sessão, é um tempo Ritual — um convite a reconectar-se com a sua Essência.',
+          'The Pure Radiance Immersion is an individual mini-retreat, ideal for those who need a relaxing, transformative and intentional pause.\n\nA longer space, allowing you to more easily step out of the daily rhythm, disconnect from the outside and return to yourself.\n\nHeld in an environment surrounded by nature and serenity, where every detail is designed to support your process and well-being.\n\nMore than a session, it is a Ritual time — an invitation to reconnect with your Essence.'
         ),
-        duration: t('Duração: +3h', 'Duration: +3h'),
-        price: '',
+        duration: t('Duração: ~4h', 'Duration: ~4h'),
+        price: t('Preço: 450€', 'Price: 450€'),
       },
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre a Imersão Pura Radiância.', 'Hello Daniela, I would like to know more about the Pure Radiance Immersion.')),
     },
@@ -58,20 +58,20 @@ const Services = () => {
       icon: Leaf,
       title: 'Pure Earth Love',
       desc: t(
-        'Produtos de Aromaterapia exclusivos e personalizados.',
-        'Exclusive and personalized Aromatherapy products.'
+        'Produtos de Aromaterapia exclusivos e personalizados. Este é Puro Amor da Terra para si!',
+        'Exclusive and personalized Aromatherapy products. This is Pure Earth Love for you!'
       ),
       quote: t(
-        '"Para adquirir o seu agende uma sessão para delinearmos o seu perfil e necessidades."',
-        '"To acquire yours, schedule a session so we can outline your profile and needs."'
+        '"Que cada gota de Pure Earth Love seja um abraço aromático, inspirando a florescer mais a sua luz interior!"',
+        '"May each drop of Pure Earth Love be an aromatic embrace, inspiring your inner light to bloom!"'
       ),
       modal: {
         text: t(
-          'Aromaterapia personalizada com óleos essenciais 100% naturais. Requer uma consulta inicial para criar o seu perfil aromático e identificar as suas necessidades específicas.',
-          'Personalized aromatherapy with 100% natural essential oils. Requires an initial consultation to create your aromatic profile and identify your specific needs.'
+          'Pure Earth Love é uma linha de aromaterapia personalizada que potencia os benefícios dos óleos essenciais 100% naturais com uma abordagem intuitiva e amorosa.\n\nAtravés de uma breve sessão (presencial ou online), delineamos as suas necessidades e definimos uma fórmula única, pensada para apoiar o seu equilíbrio e bem-estar.\n\nCada produto é preparado de forma consciente e intencional, como uma extensão do processo terapêutico — um suporte subtil para integrar e prolongar os efeitos do trabalho realizado e um cuidado contínuo, que pode ser levado consigo no dia-a-dia.',
+          'Pure Earth Love is a personalized aromatherapy line that enhances the benefits of 100% natural essential oils with an intuitive and loving approach.\n\nThrough a brief session (in-person or online), we outline your needs and define a unique formula, designed to support your balance and well-being.\n\nEach product is prepared consciously and intentionally, as an extension of the therapeutic process — a subtle support to integrate and prolong the effects of the work done and a continuous care that you can take with you in your daily life.'
         ),
-        duration: '',
-        price: '',
+        duration: t('Duração: ~30 min (presencial ou online)', 'Duration: ~30 min (in-person or online)'),
+        price: t('Preço: 80€ (inclui o produto personalizado)', 'Price: 80€ (includes the personalized product)'),
       },
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre os produtos Pure Earth Love.', 'Hello Daniela, I would like to know more about Pure Earth Love products.')),
     },
@@ -171,27 +171,31 @@ const Services = () => {
       {/* Modals */}
       {services.map((s, i) => (
         <Dialog key={i} open={openModal === i} onOpenChange={() => setOpenModal(null)}>
-          <DialogContent className="max-w-lg border-0 shadow-2xl overflow-hidden" style={{ background: 'linear-gradient(170deg, hsl(var(--background)) 0%, hsl(var(--cream)) 40%, hsl(var(--mist)) 100%)' }}>
+          <DialogContent className="max-w-lg border-0 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col" style={{ background: 'linear-gradient(170deg, hsl(var(--background)) 0%, hsl(var(--cream)) 40%, hsl(var(--mist)) 100%)' }}>
             {/* Top gold accent line */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
             {/* Left gold bar with glow */}
             <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-gold via-gold/40 to-transparent rounded-l-lg shadow-[2px_0_12px_hsl(var(--gold)/0.15)]" />
             {/* Decorative quote */}
             <span className="absolute top-4 right-6 font-serif text-7xl text-gold/[0.06] select-none pointer-events-none leading-none">"</span>
-            <DialogHeader className="pl-5">
+            <DialogHeader className="pl-5 shrink-0">
               <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{ROMAN[i]} — {t('Terapia', 'Therapy')}</p>
               <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">{s.title}</DialogTitle>
               <DialogDescription className="sr-only">{s.title}</DialogDescription>
             </DialogHeader>
-            <div className="pl-5">
-              <p className="text-muted-foreground text-sm leading-relaxed text-pretty">{s.modal.text}</p>
+            <div className="pl-5 overflow-y-auto flex-1 min-h-0">
+              <div className="text-muted-foreground text-sm leading-relaxed text-pretty space-y-3">
+                {s.modal.text.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
               {(s.modal.duration || s.modal.price) && (
-                <div className="flex gap-6 text-sm mt-5 pt-4 border-t border-gold/10">
+                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mt-5 pt-4 border-t border-gold/10">
                   {s.modal.duration && <span className="text-foreground/70 tracking-wide font-light">{s.modal.duration}</span>}
                   {s.modal.price && <span className="font-serif text-lg text-gold tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</span>}
                 </div>
               )}
-              <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 block">
+              <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 mb-2 block">
                 <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
                   <MessageCircle className="h-4 w-4" />
                   {t('Agendar via WhatsApp', 'Book via WhatsApp')}

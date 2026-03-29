@@ -21,7 +21,7 @@ import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 
 const SERVICE_LABELS: Record<string, string> = {
-  healing_wellness: "Healing & Wellness",
+  healing_wellness: "Healing Touch",
   pura_radiancia: "Pura Radiância",
   pure_earth_love: "Pure Earth Love",
   other: "Outro",
