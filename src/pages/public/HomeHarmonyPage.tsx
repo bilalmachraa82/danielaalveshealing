@@ -240,7 +240,7 @@ const HomeHarmonyPage = () => {
       {/* ─── Image band ─── */}
       <div className="w-full h-[120px] md:h-[180px] overflow-hidden">
         <div className="w-full h-full" style={{
-          backgroundImage: `url("https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=1920&q=80")`,
+          backgroundImage: `url("https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1920&q=80")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 55%',
         }} />
