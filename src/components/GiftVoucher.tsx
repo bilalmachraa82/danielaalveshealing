@@ -9,9 +9,8 @@ const GiftVoucher = () => {
   const { t, lang } = useLanguage();
   const { ref, isVisible } = useScrollAnimation();
 
-  const voucherImage = lang === 'pt'
-    ? 'https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-pt.jpg'
-    : 'https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/cheque-oferta-en.jpg';
+  const voucherWebp = lang === 'pt' ? '/images/cheque-oferta-pt.webp' : '/images/cheque-oferta-en.webp';
+  const voucherJpg = lang === 'pt' ? '/images/cheque-oferta-pt.jpg' : '/images/cheque-oferta-en.jpg';
 
   return (
     <section
@@ -44,14 +43,17 @@ const GiftVoucher = () => {
             {/* Gold gradient shadow */}
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
             <div className="rounded-2xl overflow-hidden shadow-2xl relative z-10">
-              <img
-                src={voucherImage}
-                alt={t('Cheque-Oferta Daniela Alves Healing & Wellness', 'Gift Voucher Daniela Alves Healing & Wellness')}
-                className="w-full h-auto"
-                width={600}
-                height={400}
-                loading="lazy"
-              />
+              <picture>
+                <source srcSet={voucherWebp} type="image/webp" />
+                <img
+                  src={voucherJpg}
+                  alt={t('Cheque-Oferta Daniela Alves Healing & Wellness', 'Gift Voucher Daniela Alves Healing & Wellness')}
+                  className="w-full h-auto"
+                  width={600}
+                  height={400}
+                  loading="lazy"
+                />
+              </picture>
             </div>
             {/* Overlap accent */}
             <div className="absolute -bottom-6 -right-6 w-40 h-40 bg-gold/[0.06] rounded-full blur-2xl" />

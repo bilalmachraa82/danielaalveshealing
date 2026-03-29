@@ -32,10 +32,10 @@ const Hero = () => {
         muted
         loop
         playsInline
-        poster="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
+        poster="/images/moi.webp"
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/hero-video.mp4" type="video/mp4" />
+        <source src="/images/hero-video.mp4" type="video/mp4" />
       </video>
 
       {/* Mute/Unmute toggle */}

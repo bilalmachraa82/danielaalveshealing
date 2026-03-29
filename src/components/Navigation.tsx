@@ -42,14 +42,17 @@ const Navigation = () => {
         <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
           {/* Logo */}
           <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <img
-              src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/logo.png"
-              alt="Daniela Alves - Terapeuta Holística em Sintra"
-              width={160}
-              height={40}
-              className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
-              loading="eager"
-            />
+            <picture>
+              <source srcSet="/images/logo.webp" type="image/webp" />
+              <img
+                src="/images/logo.png"
+                alt="Daniela Alves - Terapeuta Holística em Sintra"
+                width={160}
+                height={40}
+                className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
+                loading="eager"
+              />
+            </picture>
           </a>
 
           {/* Desktop links */}

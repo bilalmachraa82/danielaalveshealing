@@ -44,7 +44,7 @@ const About = () => {
 
       {/* Ambient background layer */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.05]" style={{
-        backgroundImage: `url("https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg")`,
+        backgroundImage: `url("/images/moi.webp")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         filter: 'blur(30px) saturate(0.2)',
@@ -89,14 +89,21 @@ const About = () => {
             <div className="relative">
               <div className="absolute -inset-4 border border-gold/15 rounded-t-[140px] rounded-b-3xl" />
               <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
-                <img
-                  src="https://raw.githubusercontent.com/bilalmachraa82/Daniela-Healing/master/images/Moi-optimized.jpg"
-                  alt="Daniela Alves - Terapeuta Holística com 17 anos de experiência em Sintra"
-                  className="w-full h-auto"
-                  width={384}
-                  height={512}
-                  loading="lazy"
-                />
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcSet="/images/moi-400w.webp 400w, /images/moi-800w.webp 800w, /images/moi.webp 1022w"
+                    sizes="(max-width: 768px) 100vw, 384px"
+                  />
+                  <img
+                    src="/images/moi.jpg"
+                    alt="Daniela Alves - Terapeuta Holística com 17 anos de experiência em Sintra"
+                    className="w-full h-auto"
+                    width={384}
+                    height={512}
+                    loading="lazy"
+                  />
+                </picture>
               </div>
               <svg className="absolute -bottom-8 -right-8 w-24 h-24 text-gold/10 z-0" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.5">
                 <path d="M50 5C50 30 30 50 5 50C30 50 50 70 50 95C50 70 70 50 95 50C70 50 50 30 50 5Z" />
