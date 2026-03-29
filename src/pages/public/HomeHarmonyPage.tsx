@@ -69,9 +69,9 @@ const HomeHarmonyPage = () => {
       {/* ─── Hero — Warm interior, directional gradient ─── */}
       <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0" style={{
-          backgroundImage: `url("https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&q=80")`,
+          backgroundImage: `url("https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80")`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center 40%',
+          backgroundPosition: 'center',
         }} />
         <div className="absolute inset-0 bg-gradient-to-b from-foreground/55 via-foreground/65 to-foreground/85" />
 
@@ -129,7 +129,7 @@ const HomeHarmonyPage = () => {
           {/* Full-bleed image band — editorial breath */}
           <div className="w-screen relative left-1/2 -translate-x-1/2 h-[120px] md:h-[160px] mb-32 overflow-hidden">
             <div className="absolute inset-0" style={{
-              backgroundImage: `url("https://images.unsplash.com/photo-1600210492493-0946911123ea?w=1920&q=80")`,
+              backgroundImage: `url("https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=1920&q=80")`,
               backgroundSize: 'cover',
               backgroundPosition: 'center 55%',
             }} />
@@ -275,7 +275,7 @@ const HomeHarmonyPage = () => {
 
         {/* Subtle interior accent behind heading */}
         <div className="absolute top-0 left-0 right-0 h-[300px] opacity-[0.04]" style={{
-          backgroundImage: `url("https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=60")`,
+          backgroundImage: `url("https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1920&q=60")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           maskImage: 'linear-gradient(to bottom, black, transparent)',

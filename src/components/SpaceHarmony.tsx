@@ -12,7 +12,7 @@ const SpaceHarmony = () => {
     <section id="espaco" className="py-24 lg:py-36 relative overflow-hidden">
       {/* Immersive background image with overlay */}
       <div className="absolute inset-0" style={{
-        backgroundImage: `url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80")`,
+        backgroundImage: `url("https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&q=80")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }} />
