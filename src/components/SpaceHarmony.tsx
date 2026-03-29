@@ -55,12 +55,12 @@ const SpaceHarmony = () => {
             <span className="absolute -top-6 -left-4 font-serif text-8xl text-gold/10 leading-none select-none">"</span>
             <p className="text-white/70 leading-relaxed text-pretty mb-4 relative z-10">
               {t(
-                'Harmonização de ambientes para criar espaços de paz e energia positiva. Uma visão holística que transforma a sua casa num santuário.',
-                'Space harmonization to create environments of peace and positive energy. A holistic vision that transforms your home into a sanctuary.'
+                'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia. Quando a casa está harmoniosa, as várias áreas da nossa vida fluem com mais leveza, alegria, saúde e bem-estar.',
+                'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily. When the home is harmonious, various areas of our life flow with more lightness, joy, health and well-being.'
               )}
             </p>
             <p className="font-serif italic text-sm text-gold/60 mb-8">
-              {t('"O espaço onde vives é o reflexo de quem és."', '"The space where you live is a reflection of who you are."')}
+              {t('"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"', '"May your Home be a true Haven that amplifies your Inner Harmony!"')}
             </p>
             <Button
               variant="ghost"
@@ -74,7 +74,7 @@ const SpaceHarmony = () => {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg border-0 shadow-2xl overflow-hidden" style={{ background: 'linear-gradient(170deg, hsl(var(--background)) 0%, hsl(var(--cream)) 40%, hsl(var(--mist)) 100%)' }}>
+        <DialogContent className="max-w-lg border-0 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col" style={{ background: 'linear-gradient(170deg, hsl(var(--background)) 0%, hsl(var(--cream)) 40%, hsl(var(--mist)) 100%)' }}>
           {/* Top gold accent line */}
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold to-transparent" />
           {/* Left gold bar with glow */}
@@ -86,14 +86,42 @@ const SpaceHarmony = () => {
             <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">Home Harmony</DialogTitle>
             <DialogDescription className="sr-only">Home Harmony</DialogDescription>
           </DialogHeader>
-          <div className="pl-5">
-            <p className="text-muted-foreground text-sm leading-relaxed text-pretty">
-              {t(
-                'Uma visão holística do espaço, harmonização energética, organização intuitiva e uma abordagem sustentável para transformar a sua casa num santuário de paz e bem-estar.',
-                'A holistic vision of space, energy harmonization, intuitive organization and a sustainable approach to transform your home into a sanctuary of peace and well-being.'
-              )}
-            </p>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="mt-6 block">
+          <div className="pl-5 overflow-y-auto flex-1 min-h-0">
+            <div className="text-muted-foreground text-sm leading-relaxed text-pretty space-y-3">
+              <p>{t(
+                'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia e um dos locais onde passamos mais tempo, influenciando-nos de forma directa e indirecta.',
+                'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily and one of the places where we spend the most time, influencing us directly and indirectly.'
+              )}</p>
+              <p>{t(
+                'Idealmente é um local que nos nutre e acolhe, um local seguro, confortável, prático e bonito de acordo com os nossos gostos e necessidades.',
+                'Ideally it is a place that nourishes and welcomes us, a safe, comfortable, practical and beautiful place according to our tastes and needs.'
+              )}</p>
+              <p>{t(
+                'O Home Harmony é um serviço de organização holística que apoia a transformação do seu espaço de forma consciente, prática e alinhada consigo.',
+                'Home Harmony is a holistic organization service that supports the transformation of your space in a conscious, practical and aligned way.'
+              )}</p>
+              <p>{t(
+                'Mais do que organizar, este trabalho propõe uma abordagem integrada entre pessoa e espaço — onde não só se cria ordem e funcionalidade, mas também uma relação mais harmoniosa com a casa.',
+                'More than organizing, this work proposes an integrated approach between person and space — where not only order and functionality are created, but also a more harmonious relationship with the home.'
+              )}</p>
+              <p>{t(
+                'Com base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma intuitiva e personalizada, respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.',
+                'Based on a reading of the moment and your needs, we adjust the space intuitively and personally, respecting your rhythm, your tastes and the reality of your daily life.'
+              )}</p>
+              <p>{t(
+                'Sem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um espaço vivo, acolhedor e funcional, que o(a) apoie e reflita.',
+                'Without rigidity or perfectionism — it is not about creating a "perfect" home, but a living, welcoming and functional space that supports and reflects you.'
+              )}</p>
+              <p>{t(
+                'Este processo decorre geralmente ao longo de várias visitas, permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
+                'This process generally takes place over several visits, allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
+              )}</p>
+            </div>
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mt-5 pt-4 border-t border-gold/10">
+              <span className="text-foreground/70 tracking-wide font-light">{t('Duração: a combinar', 'Duration: to be arranged')}</span>
+              <span className="font-serif text-lg text-gold tracking-wide">{t('Preço: por consulta', 'Price: by consultation')}</span>
+            </div>
+            <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="mt-6 mb-2 block">
               <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
                 <MessageCircle className="h-4 w-4" />
                 {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
