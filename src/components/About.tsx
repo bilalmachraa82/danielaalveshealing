@@ -56,7 +56,7 @@ const About = () => {
           <div className="order-2 md:order-1">
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('A Terapeuta', 'The Therapist')}</p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-10 text-balance">
-              {t('Daniela Alves — 17 Anos de Terapia Holística', 'Daniela Alves — 17 Years of Holistic Therapy')}
+              {t('Sobre Mim', 'About Me')}
             </h2>
             <div className="space-y-6">
               {paragraphs.map((p, i) => (
