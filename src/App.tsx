@@ -34,6 +34,7 @@ const IntakePage = lazy(() => import("./pages/public/IntakePage"));
 const SatisfactionPage = lazy(() => import("./pages/public/SatisfactionPage"));
 const PreparePage = lazy(() => import("./pages/public/PreparePage"));
 const PrivacyPolicy = lazy(() => import("./pages/public/PrivacyPolicy"));
+const HomeHarmonyPage = lazy(() => import("./pages/public/HomeHarmonyPage"));
 
 const loadingSpinner = (
   <div className="flex h-screen items-center justify-center">
@@ -71,6 +72,9 @@ const App = () => (
 
               {/* Public - Privacy Policy */}
               <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
+
+              {/* Public - Home Harmony */}
+              <Route path="/home-harmony" element={<HomeHarmonyPage />} />
 
               {/* Admin - Login */}
               <Route path="/admin/login" element={<LoginPage />} />

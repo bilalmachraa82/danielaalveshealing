@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Flower2, Sun, Leaf, MessageCircle } from 'lucide-react';
 
 const WA_BASE = 'https://wa.me/351914173445?text=';
-const ROMAN = ['I', 'II', 'III'];
 
 const Services = () => {
   const { t } = useLanguage();
@@ -139,11 +138,6 @@ const Services = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-gold/0 to-gold/[0.05] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               <CardContent className="p-10 lg:p-12 flex flex-col items-center text-center h-full relative">
-                {/* Roman numeral — editorial detail */}
-                <span className="absolute top-6 right-8 font-serif text-5xl font-extralight text-primary/[0.06] select-none pointer-events-none group-hover:text-primary/[0.12] transition-colors duration-700">
-                  {ROMAN[i]}
-                </span>
-
                 {/* Icon with gradient background */}
                 <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_0_30px_hsl(var(--gold)/0.2)]" style={{
                   background: 'linear-gradient(135deg, hsl(var(--gold) / 0.15), hsl(var(--primary) / 0.1))',
@@ -179,7 +173,7 @@ const Services = () => {
             {/* Decorative quote */}
             <span className="absolute top-4 right-6 font-serif text-7xl text-gold/[0.06] select-none pointer-events-none leading-none">"</span>
             <DialogHeader className="pl-5 shrink-0">
-              <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{ROMAN[i]} — {t('Terapia', 'Therapy')}</p>
+              <p className="text-[10px] tracking-[0.3em] uppercase text-gold mb-2">{t('Terapia', 'Therapy')}</p>
               <DialogTitle className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider">{s.title}</DialogTitle>
               <DialogDescription className="sr-only">{s.title}</DialogDescription>
             </DialogHeader>
@@ -190,9 +184,9 @@ const Services = () => {
                 ))}
               </div>
               {(s.modal.duration || s.modal.price) && (
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mt-5 pt-4 border-t border-gold/10">
-                  {s.modal.duration && <span className="text-foreground/70 tracking-wide font-light">{s.modal.duration}</span>}
-                  {s.modal.price && <span className="font-serif text-lg text-gold tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</span>}
+                <div className="space-y-1 text-sm mt-5 pt-4 border-t border-gold/10">
+                  {s.modal.duration && <p className="text-foreground/70 tracking-wide font-light">{s.modal.duration}</p>}
+                  {s.modal.price && <p className="font-serif text-lg text-gold tracking-wide" style={{ fontVariantNumeric: 'oldstyle-nums' }}>{s.modal.price}</p>}
                 </div>
               )}
               <a href={`${WA_BASE}${s.wa}`} target="_blank" rel="noopener noreferrer" className="mt-6 mb-2 block">
