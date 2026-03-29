@@ -21,7 +21,7 @@ const TrustStrip = () => {
             <span className="hidden sm:block mx-6 w-1 h-1 rounded-full bg-gold/50" />
             <div className="flex items-center gap-2">
               <Award className="h-3.5 w-3.5 text-gold" />
-              <span className="text-xs tracking-wide text-white/90">{t('15+ anos de experiência', '15+ years of experience')}</span>
+              <span className="text-xs tracking-wide text-white/90">{t('17 anos de experiência', '17 years of experience')}</span>
             </div>
             <span className="hidden sm:block mx-6 w-1 h-1 rounded-full bg-gold/50" />
             <div className="flex items-center gap-2">
