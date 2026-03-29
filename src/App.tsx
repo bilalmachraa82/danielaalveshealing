@@ -33,6 +33,7 @@ const AnamnesisPage = lazy(() => import("./pages/public/AnamnesisPage"));
 const IntakePage = lazy(() => import("./pages/public/IntakePage"));
 const SatisfactionPage = lazy(() => import("./pages/public/SatisfactionPage"));
 const PreparePage = lazy(() => import("./pages/public/PreparePage"));
+const PrivacyPolicy = lazy(() => import("./pages/public/PrivacyPolicy"));
 
 const loadingSpinner = (
   <div className="flex h-screen items-center justify-center">
@@ -67,6 +68,9 @@ const App = () => (
 
               {/* Public - Unified preparation form (token-based, no auth) */}
               <Route path="/preparar/:token" element={<PreparePage />} />
+
+              {/* Public - Privacy Policy */}
+              <Route path="/politica-privacidade" element={<PrivacyPolicy />} />
 
               {/* Admin - Login */}
               <Route path="/admin/login" element={<LoginPage />} />

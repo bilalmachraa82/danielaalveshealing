@@ -345,6 +345,7 @@ async function handleQuickBooking(
     healing_wellness: 12200,
     pura_radiancia: 0,
     pure_earth_love: 0,
+    home_harmony: 0,
   };
   const priceCents = priceCentsMap[service_type] ?? null;
 
@@ -396,6 +397,7 @@ async function handleQuickBooking(
     healing_wellness: "Sessao Healing Touch",
     pura_radiancia: "Imersao Pura Radiancia",
     pure_earth_love: "Pure Earth Love",
+    home_harmony: "Home Harmony",
   };
   const serviceName = serviceNames[service_type] ?? "sessao";
 
@@ -423,6 +425,7 @@ async function handleQuickBooking(
     healing_wellness: 120,
     pura_radiancia: 180,
     pure_earth_love: 60,
+    home_harmony: 120,
   };
 
   let calendarEventId: string | null = null;

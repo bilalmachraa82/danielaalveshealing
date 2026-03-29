@@ -28,6 +28,7 @@ const SERVICE_LABELS: Record<string, string> = {
   healing_wellness: "Healing Touch",
   pura_radiancia: "Pura Radiância",
   pure_earth_love: "Pure Earth Love",
+  home_harmony: "Home Harmony",
   other: "Outro",
 };
 

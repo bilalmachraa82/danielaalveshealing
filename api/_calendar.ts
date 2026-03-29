@@ -5,6 +5,7 @@ const SERVICE_COLORS: Record<string, string> = {
   healing_wellness: "3",   // Purple (Grape)
   pura_radiancia: "5",     // Banana (Gold)
   pure_earth_love: "10",   // Basil (Green)
+  home_harmony: "7",       // Peacock (Teal)
   other: "8",              // Graphite
 };
 
@@ -12,6 +13,7 @@ const SERVICE_LABELS: Record<string, string> = {
   healing_wellness: "Healing Touch",
   pura_radiancia: "Imersão Pura Radiância",
   pure_earth_love: "Pure Earth Love",
+  home_harmony: "Home Harmony",
   other: "Sessão",
 };
 

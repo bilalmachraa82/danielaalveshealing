@@ -11,12 +11,20 @@ const About = () => {
       'The language of touch, listening and caring for others has always been a part of me. From an early age, I discovered a natural connection with the art of caring and a deep sensitivity to understand each person\'s needs.'
     ),
     t(
+      'Ao longo de 17 anos de prática, formei-me em diversas modalidades terapêuticas: massagem terapêutica e desportiva, drenagem linfática manual (método Vodder), aromaterapia clínica com óleos essenciais certificados, terapia de som com taças tibetanas e gongos, meditação guiada, técnicas energéticas (Reiki nível III) e técnicas de libertação emocional.',
+      'Over 17 years of practice, I trained in various therapeutic modalities: therapeutic and sports massage, manual lymphatic drainage (Vodder method), clinical aromatherapy with certified essential oils, sound therapy with Tibetan bowls and gongs, guided meditation, energy techniques (Reiki level III) and emotional release techniques.'
+    ),
+    t(
       'Este percurso tem-me proporcionado um olhar mais abrangente da realidade: o olhar científico é uma via externa e o olhar para dentro é uma via interna de conhecimento. Muito do conhecimento que busco sei agora que está também dentro, bastando para isso dar-lhe espaço e boas condições para se revelar.',
       'This journey has given me a broader view of reality: the scientific view is an external path and looking inward is an internal path of knowledge. Much of the knowledge I seek I now know is also within, just needing space and good conditions to reveal itself.'
     ),
     t(
-      'Através de uma abordagem integrativa, combino diversas técnicas terapêuticas, incluindo massagem, xamanismo e canto, criando um espaço sagrado onde a transformação acontece naturalmente. Em cada sessão, honro o corpo como um templo de sabedoria, permitindo que a cura flua através do toque consciente e da energia amorosa.',
-      'Through an integrative approach, I combine various therapeutic techniques, including massage, shamanism and chanting, creating a sacred space where transformation happens naturally. In each session, I honor the body as a temple of wisdom, allowing healing to flow through conscious touch and loving energy.'
+      'A minha filosofia terapêutica assenta na integração corpo-mente-alma. Acredito que o corpo possui uma sabedoria inata para se equilibrar e regenerar — o meu papel é criar as condições ideais para que esse processo aconteça naturalmente. Cada pessoa é única, e cada sessão é uma viagem personalizada, guiada pela intuição e pela experiência.',
+      'My therapeutic philosophy is based on body-mind-soul integration. I believe the body has an innate wisdom to balance and regenerate itself — my role is to create the ideal conditions for this process to happen naturally. Each person is unique, and each session is a personalized journey, guided by intuition and experience.'
+    ),
+    t(
+      'Através de uma abordagem integrativa, combino diversas técnicas terapêuticas, incluindo massagem, xamanismo e canto, criando um espaço sagrado onde a transformação acontece naturalmente. O meu espaço em Fontanelas, Sintra, rodeado de natureza, foi pensado para oferecer um refúgio de paz e serenidade — o cenário ideal para o trabalho terapêutico profundo.',
+      'Through an integrative approach, I combine various therapeutic techniques, including massage, shamanism and chanting, creating a sacred space where transformation happens naturally. My space in Fontanelas, Sintra, surrounded by nature, was designed to offer a refuge of peace and serenity — the ideal setting for deep therapeutic work.'
     ),
   ];
 
@@ -48,7 +56,7 @@ const About = () => {
           <div className="order-2 md:order-1">
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('A Terapeuta', 'The Therapist')}</p>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-10 text-balance">
-              {t('Sobre Mim', 'About Me')}
+              {t('Daniela Alves — 17 Anos de Terapia Holística', 'Daniela Alves — 17 Years of Holistic Therapy')}
             </h2>
             <div className="space-y-6">
               {paragraphs.map((p, i) => (

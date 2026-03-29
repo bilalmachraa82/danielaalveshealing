@@ -64,6 +64,7 @@ const SERVICE_OPTIONS = [
   { value: "healing_wellness", label: "Sessão Healing Touch", price: 15000 },
   { value: "pura_radiancia", label: "Imersão Pura Radiância", price: 45000 },
   { value: "pure_earth_love", label: "Pure Earth Love", price: 8000 },
+  { value: "home_harmony", label: "Home Harmony", price: null },
   { value: "other", label: "Outro", price: null },
 ];
 
