@@ -27,7 +27,7 @@ const SpaceHarmony = () => {
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section header */}
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Espaços', 'Spaces')}</p>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Organização Holística de Espaços', 'Holistic Space Organization')}</p>
           <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-white tracking-wider mb-6 text-balance">
             {t('Cuidar do Teu Espaço', 'Caring for Your Space')}
           </h2>
