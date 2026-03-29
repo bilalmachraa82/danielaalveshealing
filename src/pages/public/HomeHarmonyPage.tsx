@@ -66,14 +66,14 @@ const HomeHarmonyPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ─── Hero ─── */}
-      <section className="relative min-h-[65vh] flex items-center justify-center overflow-hidden">
+      {/* ─── Hero — Warm interior, directional gradient ─── */}
+      <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0" style={{
-          backgroundImage: `url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80")`,
+          backgroundImage: `url("https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1920&q=80")`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 40%',
         }} />
-        <div className="absolute inset-0 bg-foreground/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/55 via-foreground/65 to-foreground/85" />
 
         <Link to="/" className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors">
           <ArrowLeft className="h-4 w-4" />
@@ -81,15 +81,15 @@ const HomeHarmonyPage = () => {
         </Link>
 
         <div ref={heroRef} className={`relative z-10 text-center px-4 max-w-3xl mx-auto transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-6">{t('Organização Holística de Espaços', 'Holistic Space Organization')}</p>
           <div className="w-20 h-20 rounded-full border border-gold/30 flex items-center justify-center mx-auto mb-8 bg-white/5 backdrop-blur-sm">
             <Home className="h-9 w-9 text-gold" strokeWidth={1} />
           </div>
-          <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Organização Holística de Espaços', 'Holistic Space Organization')}</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-wider mb-8">
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-wider mb-10">
             Home Harmony
           </h1>
-          <div className="w-12 h-px bg-gold/50 mx-auto mb-8" />
-          <p className="font-serif text-lg md:text-xl text-white/60 italic max-w-xl mx-auto leading-relaxed">
+          <div className="w-12 h-px bg-gold/50 mx-auto mb-10" />
+          <p className="font-serif text-xl md:text-2xl text-white/65 italic max-w-xl mx-auto leading-relaxed">
             {t(
               '"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"',
               '"May your Home be a true Haven that amplifies your Inner Harmony!"'
@@ -98,27 +98,25 @@ const HomeHarmonyPage = () => {
         </div>
       </section>
 
-      {/* ─── Editorial Opening ─── */}
-      <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--section-warm) / 0.72) 50%, hsl(var(--section-lilac)) 100%)' }}>
-        {/* Decorative botanical */}
+      {/* ─── Editorial Opening — Pull quote ─── */}
+      <section className="py-32 lg:py-40 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--section-warm) / 0.72) 50%, hsl(var(--section-lilac)) 100%)' }}>
         <svg className="absolute top-16 right-0 w-40 h-40 text-gold/[0.04] pointer-events-none" viewBox="0 0 160 160" fill="none" stroke="currentColor" strokeWidth="0.5">
           <path d="M80 10C80 50 50 80 10 80C50 80 80 110 80 150C80 110 110 80 150 80C110 80 80 50 80 10Z" />
           <circle cx="80" cy="80" r="25" />
         </svg>
 
-        <div className="container mx-auto px-4 lg:px-8 max-w-4xl relative z-10">
-          {/* Pull quote — editorial opening */}
-          <div ref={introRef} className={`text-center mb-20 transition-all duration-700 ${introVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="container mx-auto px-4 lg:px-8 max-w-5xl relative z-10">
+          {/* Pull quote — large editorial opening */}
+          <div ref={introRef} className={`text-center mb-32 transition-all duration-700 ${introVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-6">Home Harmony</p>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-8">
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-10">
               {t('Cuidar do Teu Espaço', 'Caring for Your Space')}
             </h2>
-            <div className="w-12 h-px bg-gold/40 mx-auto mb-12" />
+            <div className="w-12 h-px bg-gold/40 mx-auto mb-14" />
 
-            {/* Large editorial pull quote */}
             <div className="relative max-w-2xl mx-auto">
               <span className="absolute -top-8 -left-4 font-serif text-7xl text-gold/15 select-none leading-none">"</span>
-              <p className="font-serif text-xl md:text-2xl font-light text-foreground/80 leading-relaxed italic px-6">
+              <p className="font-serif text-2xl md:text-3xl font-extralight text-foreground/80 leading-[1.6] px-6">
                 {t(
                   'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia.',
                   'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily.'
@@ -128,50 +126,57 @@ const HomeHarmonyPage = () => {
             </div>
           </div>
 
-          {/* Philosophy — editorial two-block layout */}
-          <div ref={bodyRef} className={`transition-all duration-700 delay-200 ${bodyVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="grid md:grid-cols-2 gap-x-16 gap-y-10 mb-16">
-              {/* Left column */}
-              <div className="space-y-6">
-                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+          {/* Full-bleed image band — editorial breath */}
+          <div className="w-screen relative left-1/2 -translate-x-1/2 h-[120px] md:h-[160px] mb-32 overflow-hidden">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("https://images.unsplash.com/photo-1600210492493-0946911123ea?w=1920&q=80")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center 55%',
+            }} />
+          </div>
+
+          {/* Philosophy — editorial two-column */}
+          <div ref={bodyRef} className={`transition-all duration-700 ${bodyVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="grid md:grid-cols-2 gap-x-20 lg:gap-x-24 gap-y-10 mb-20">
+              <div className="space-y-7">
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
                   {t(
                     'Idealmente, a casa é um local que nos nutre e acolhe — ',
                     'Ideally, the home is a place that nourishes and welcomes us — '
                   )}
-                  <strong className="text-foreground">{t('seguro, confortável, prático e bonito', 'safe, comfortable, practical and beautiful')}</strong>
+                  <strong className="text-foreground font-medium">{t('seguro, confortável, prático e bonito', 'safe, comfortable, practical and beautiful')}</strong>
                   {t(
                     ', de acordo com os nossos gostos e necessidades.',
                     ', according to our tastes and needs.'
                   )}
                 </p>
-                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
                   {t(
                     'Quando a casa está harmoniosa, as várias áreas da nossa vida fluem com mais ',
                     'When the home is harmonious, various areas of our life flow with more '
                   )}
-                  <strong className="text-foreground">{t('leveza, alegria, saúde e bem-estar', 'lightness, joy, health and well-being')}</strong>.
+                  <strong className="text-foreground font-medium">{t('leveza, alegria, saúde e bem-estar', 'lightness, joy, health and well-being')}</strong>.
                 </p>
               </div>
 
-              {/* Right column */}
-              <div className="space-y-6">
-                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+              <div className="space-y-7">
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
                   {t(
                     'O Home Harmony é um serviço de organização holística que apoia a ',
                     'Home Harmony is a holistic organization service that supports the '
                   )}
-                  <strong className="text-foreground">{t('transformação do seu espaço', 'transformation of your space')}</strong>
+                  <strong className="text-foreground font-medium">{t('transformação do seu espaço', 'transformation of your space')}</strong>
                   {t(
                     ' de forma consciente, prática e alinhada consigo.',
                     ' in a conscious, practical and aligned way.'
                   )}
                 </p>
-                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
                   {t(
                     'Mais do que organizar, este trabalho propõe uma ',
                     'More than organizing, this work proposes an '
                   )}
-                  <strong className="text-foreground">{t('abordagem integrada entre pessoa e espaço', 'integrated approach between person and space')}</strong>
+                  <strong className="text-foreground font-medium">{t('abordagem integrada entre pessoa e espaço', 'integrated approach between person and space')}</strong>
                   {t(
                     ' — onde não só se cria ordem e funcionalidade, mas também uma relação mais harmoniosa com a casa.',
                     ' — where not only order and functionality are created, but also a more harmonious relationship with the home.'
@@ -181,71 +186,75 @@ const HomeHarmonyPage = () => {
             </div>
 
             {/* Gold divider */}
-            <div className="flex items-center gap-4 max-w-xs mx-auto mb-16">
+            <div className="flex items-center gap-4 max-w-xs mx-auto mb-20">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-gold/30" />
-              <Home className="h-4 w-4 text-gold/30" strokeWidth={1.5} />
+              <span className="text-gold/30 text-lg">✦</span>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/30" />
             </div>
           </div>
 
-          {/* Process — structured with visual hierarchy */}
-          <div ref={processRef} className={`transition-all duration-700 delay-300 ${processVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="max-w-2xl mx-auto space-y-8">
-              <div className="glass-card rounded-xl p-8 md:p-10 border border-gold/10">
-                <h3 className="font-serif text-xl md:text-2xl font-light text-foreground tracking-wider mb-6">
-                  {t('O Processo', 'The Process')}
-                </h3>
-                <div className="space-y-5 text-foreground/75 text-base leading-relaxed">
-                  <p>
-                    {t(
-                      'Com base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma ',
-                      'Based on a reading of the moment and your needs, we adjust the space '
-                    )}
-                    <strong className="text-foreground">{t('intuitiva e personalizada', 'intuitively and personally')}</strong>
-                    {t(
-                      ', respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.',
-                      ', respecting your rhythm, your tastes and the reality of your daily life.'
-                    )}
-                  </p>
-                  <p>
-                    {t(
-                      'Sem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um ',
-                      'Without rigidity or perfectionism — it is not about creating a "perfect" home, but a '
-                    )}
-                    <strong className="text-foreground">{t('espaço vivo, acolhedor e funcional', 'living, welcoming and functional space')}</strong>
-                    {t(
-                      ', que o(a) apoie e reflita.',
-                      ' that supports and reflects you.'
-                    )}
-                  </p>
-                  <p>
-                    {t(
-                      'Este processo decorre geralmente ao longo de ',
-                      'This process generally takes place over '
-                    )}
-                    <strong className="text-foreground">{t('várias visitas', 'several visits')}</strong>
-                    {t(
-                      ', permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
-                      ', allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
-                    )}
-                  </p>
+          {/* Process — left gold rule, editorial */}
+          <div ref={processRef} className={`transition-all duration-700 ${processVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="max-w-2xl mx-auto">
+              <h3 className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider mb-10 text-center">
+                {t('O Processo', 'The Process')}
+              </h3>
+
+              <div className="border-l-2 border-gold/25 pl-8 md:pl-12 space-y-6">
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
+                  {t(
+                    'Com base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma ',
+                    'Based on a reading of the moment and your needs, we adjust the space '
+                  )}
+                  <strong className="text-foreground font-medium">{t('intuitiva e personalizada', 'intuitively and personally')}</strong>
+                  {t(
+                    ', respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.',
+                    ', respecting your rhythm, your tastes and the reality of your daily life.'
+                  )}
+                </p>
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
+                  {t(
+                    'Sem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um ',
+                    'Without rigidity or perfectionism — it is not about creating a "perfect" home, but a '
+                  )}
+                  <strong className="text-foreground font-medium">{t('espaço vivo, acolhedor e funcional', 'living, welcoming and functional space')}</strong>
+                  {t(
+                    ', que o(a) apoie e reflita.',
+                    ' that supports and reflects you.'
+                  )}
+                </p>
+                <p className="text-foreground/80 text-[17px] leading-[1.85]">
+                  {t(
+                    'Este processo decorre geralmente ao longo de ',
+                    'This process generally takes place over '
+                  )}
+                  <strong className="text-foreground font-medium">{t('várias visitas', 'several visits')}</strong>
+                  {t(
+                    ', permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
+                    ', allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
+                  )}
+                </p>
+              </div>
+
+              {/* Pricing — premium bordered block */}
+              <div className="border border-gold/15 rounded-2xl py-8 px-10 mt-14 text-center">
+                <p className="font-serif italic text-foreground/60 text-base mb-6">
+                  {t('Um processo personalizado, construído ao seu ritmo.', 'A personalized process, built at your pace.')}
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <div className="text-center">
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Duração', 'Duration')}</p>
+                    <p className="font-serif text-lg text-foreground tracking-wide">{t('A combinar', 'To be arranged')}</p>
+                  </div>
+                  <div className="hidden sm:block w-px h-10 bg-gold/20" />
+                  <div className="text-center">
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Investimento', 'Investment')}</p>
+                    <p className="font-serif text-lg text-gold tracking-wide">{t('Por consulta', 'By consultation')}</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Pricing — premium badge */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-6">
-                <div className="text-center">
-                  <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Duração', 'Duration')}</p>
-                  <p className="font-serif text-lg text-foreground tracking-wide">{t('A combinar', 'To be arranged')}</p>
-                </div>
-                <div className="hidden sm:block w-px h-10 bg-gold/20" />
-                <div className="text-center">
-                  <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Investimento', 'Investment')}</p>
-                  <p className="font-serif text-lg text-gold tracking-wide">{t('Por consulta', 'By consultation')}</p>
-                </div>
-              </div>
-
-              <div className="text-center">
+              <div className="text-center mt-10">
                 <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony.', 'Hello Daniela, I would like to know more about Home Harmony.'))}`} target="_blank" rel="noopener noreferrer">
                   <Button className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-10 text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
                     <MessageCircle className="h-4 w-4" />
@@ -259,41 +268,57 @@ const HomeHarmonyPage = () => {
       </section>
 
       {/* ─── Home Harmony Deluxe ─── */}
-      <section className="py-24 lg:py-32 relative overflow-hidden noise-overlay" style={{
+      <section className="py-32 lg:py-40 relative overflow-hidden noise-overlay" style={{
         background: 'radial-gradient(circle at 50% 35%, hsl(var(--primary) / 0.18) 0%, transparent 34%), linear-gradient(180deg, hsl(var(--section-lilac-strong)) 0%, hsl(var(--section-lilac)) 55%, hsl(var(--section-warm-soft)) 100%)',
       }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.08] rounded-full blur-3xl pointer-events-none" />
 
+        {/* Subtle interior accent behind heading */}
+        <div className="absolute top-0 left-0 right-0 h-[300px] opacity-[0.04]" style={{
+          backgroundImage: `url("https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1920&q=60")`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          maskImage: 'linear-gradient(to bottom, black, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black, transparent)',
+        }} />
+
         <div ref={deluxeRef} className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className={`text-center mb-6 transition-all duration-700 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Experiência Completa', 'Complete Experience')}</p>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-6 text-balance">
-              Home Harmony <span className="text-gold">Deluxe</span>
-            </h2>
-            <div className="w-12 h-px bg-gold/40 mx-auto mb-10" />
+          {/* Gold diamond ornament */}
+          <div className="flex items-center gap-4 max-w-xs mx-auto mb-10">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-gold/25" />
+            <span className="text-gold/40 text-sm">✦</span>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/25" />
           </div>
 
-          <div className={`max-w-2xl mx-auto mb-16 transition-all duration-700 delay-200 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="text-center space-y-5">
-              <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+          <div className={`text-center mb-8 transition-all duration-700 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Experiência Completa', 'Complete Experience')}</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-[0.04em] mb-6 text-balance">
+              Home Harmony <span className="text-gold">Deluxe</span>
+            </h2>
+            <div className="w-12 h-px bg-gold/40 mx-auto mb-12" />
+          </div>
+
+          <div className={`max-w-2xl mx-auto mb-20 transition-all duration-700 delay-200 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="text-center space-y-6">
+              <p className="text-foreground/80 text-[17px] leading-[1.85]">
                 {t(
                   'Para uma abordagem ainda mais abrangente, o Home Harmony Deluxe integra ',
                   'For an even more comprehensive approach, Home Harmony Deluxe integrates '
                 )}
-                <strong className="text-foreground">{t('serviços complementares', 'complementary services')}</strong>
+                <strong className="text-foreground font-medium">{t('serviços complementares', 'complementary services')}</strong>
                 {t(
                   ', realizados em parceria exclusiva com profissionais de confiança.',
                   ', carried out in exclusive partnership with trusted professionals.'
                 )}
               </p>
-              <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+              <p className="text-foreground/80 text-[17px] leading-[1.85]">
                 {t(
                   'Esta versão integra não só a organização e harmonização do espaço, como também as ',
                   'This version integrates not only space organization and harmonization, but also the '
                 )}
-                <strong className="text-foreground">{t('dimensões energética e de autoconhecimento', 'energetic and self-knowledge dimensions')}</strong>.
+                <strong className="text-foreground font-medium">{t('dimensões energética e de autoconhecimento', 'energetic and self-knowledge dimensions')}</strong>.
               </p>
-              <p className="font-serif italic text-lg md:text-xl text-foreground/70 mt-2 leading-relaxed">
+              <p className="font-serif italic text-xl md:text-2xl text-foreground/65 mt-4 leading-relaxed">
                 {t(
                   'Um processo pensado para quem deseja uma transformação mais profunda — na casa e na forma como se relaciona com ela.',
                   'A process designed for those who desire a deeper transformation — in the home and in the way they relate to it.'
@@ -301,7 +326,7 @@ const HomeHarmonyPage = () => {
               </p>
             </div>
 
-            <div className="mt-10 text-center">
+            <div className="mt-12 text-center">
               <span className="inline-block text-sm tracking-[0.15em] uppercase text-gold border border-gold/25 px-6 py-2.5 rounded-full bg-gold/[0.03]">
                 {t('Escolha os complementos que fazem sentido para si', 'Choose the add-ons that make sense for you')}
               </span>
@@ -324,7 +349,7 @@ const HomeHarmonyPage = () => {
                 <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-gold to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-b from-gold/0 to-gold/[0.05] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                <CardContent className="p-8 lg:p-10 flex flex-col h-full relative">
+                <CardContent className="p-10 lg:p-12 flex flex-col h-full relative">
                   <div className="w-14 h-14 rounded-full flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110" style={{
                     background: 'linear-gradient(135deg, hsl(var(--gold) / 0.15), hsl(var(--primary) / 0.1))',
                     border: '1px solid hsl(var(--gold) / 0.3)',
@@ -332,13 +357,13 @@ const HomeHarmonyPage = () => {
                     <p.icon className="h-6 w-6 text-gold" strokeWidth={1.5} />
                   </div>
 
-                  <h3 className="font-serif text-xl md:text-2xl font-light text-foreground mb-1 tracking-wider">{p.title}</h3>
-                  <p className="text-[11px] tracking-[0.2em] uppercase text-gold/70 mb-5">{t('com', 'with')} {p.partner}</p>
+                  <h3 className="font-serif text-xl md:text-2xl font-light text-foreground mb-1 tracking-[0.04em]">{p.title}</h3>
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-gold/70 mb-6">{t('com', 'with')} {p.partner}</p>
 
-                  <p className="text-foreground/75 text-base leading-relaxed mb-3 text-pretty">{p.desc}</p>
-                  <p className="text-foreground/75 text-base leading-relaxed mb-6 text-pretty">{p.detail}</p>
+                  <p className="text-foreground/75 text-[17px] leading-[1.85] mb-3 text-pretty">{p.desc}</p>
+                  <p className="text-foreground/75 text-[17px] leading-[1.85] mb-6 text-pretty">{p.detail}</p>
 
-                  <div className="mt-auto space-y-4">
+                  <div className="mt-auto space-y-5">
                     <p className="text-sm text-gold/60 italic">{p.note}</p>
                     <a href={`${WA_BASE}${p.wa}`} target="_blank" rel="noopener noreferrer">
                       <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
@@ -355,19 +380,19 @@ const HomeHarmonyPage = () => {
       </section>
 
       {/* ─── CTA Final ─── */}
-      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--background)) 100%)' }}>
+      <section className="py-32 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--background)) 100%)' }}>
         <div className="container mx-auto px-4 lg:px-8 text-center relative z-10">
           <div className="max-w-xl mx-auto">
-            <div className="relative mb-8">
+            <div className="relative mb-10">
               <span className="absolute -top-6 left-1/2 -translate-x-12 font-serif text-6xl text-gold/15 select-none leading-none">"</span>
-              <p className="font-serif italic text-xl md:text-2xl text-foreground/70 leading-relaxed px-6">
+              <p className="font-serif italic text-2xl md:text-3xl text-foreground/65 leading-relaxed px-6">
                 {t(
                   'Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!',
                   'May your Home be a true Haven that amplifies your Inner Harmony!'
                 )}
               </p>
             </div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-10">— Daniela Alves</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-12">— Daniela Alves</p>
             <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony.', 'Hello Daniela, I would like to know more about Home Harmony.'))}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-12 py-6 text-sm tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
                 <MessageCircle className="h-4 w-4" />
