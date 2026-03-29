@@ -4,10 +4,10 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Flower2, Sun, Leaf, Home, MessageCircle } from 'lucide-react';
+import { Flower2, Sun, Leaf, MessageCircle } from 'lucide-react';
 
 const WA_BASE = 'https://wa.me/351914173445?text=';
-const ROMAN = ['I', 'II', 'III', 'IV'];
+const ROMAN = ['I', 'II', 'III'];
 
 const Services = () => {
   const { t } = useLanguage();
@@ -75,27 +75,6 @@ const Services = () => {
       },
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre os produtos Pure Earth Love.', 'Hello Daniela, I would like to know more about Pure Earth Love products.')),
     },
-    {
-      icon: Home,
-      title: 'Home Harmony',
-      desc: t(
-        'Organização Holística de Espaços — quando a casa está harmoniosa, as várias áreas da vida fluem com mais leveza.',
-        'Holistic Space Organization — when the home is harmonious, various areas of life flow with more lightness.'
-      ),
-      quote: t(
-        '"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"',
-        '"May your Home be a true Haven that amplifies your Inner Harmony!"'
-      ),
-      modal: {
-        text: t(
-          'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia e um dos locais onde passamos mais tempo, influenciando-nos de forma directa e indirecta.\n\nIdealmente é um local que nos nutre e acolhe, um local seguro, confortável, prático e bonito de acordo com os nossos gostos e necessidades.\n\nO Home Harmony é um serviço de organização holística que apoia a transformação do seu espaço de forma consciente, prática e alinhada consigo. Mais do que organizar, este trabalho propõe uma abordagem integrada entre pessoa e espaço — onde não só se cria ordem e funcionalidade, mas também uma relação mais harmoniosa com a casa.\n\nCom base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma intuitiva e personalizada, respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.\n\nSem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um espaço vivo, acolhedor e funcional, que o(a) apoie e reflita.\n\nEste processo decorre geralmente ao longo de várias visitas, permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
-          'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily and one of the places where we spend the most time, influencing us directly and indirectly.\n\nIdeally it is a place that nourishes and welcomes us, a safe, comfortable, practical and beautiful place according to our tastes and needs.\n\nHome Harmony is a holistic organization service that supports the transformation of your space in a conscious, practical and aligned way. More than organizing, this work proposes an integrated approach between person and space — where not only order and functionality are created, but also a more harmonious relationship with the home.\n\nBased on a reading of the moment and your needs, we adjust the space intuitively and personally, respecting your rhythm, your tastes and the reality of your daily life.\n\nWithout rigidity or perfectionism — it is not about creating a "perfect" home, but a living, welcoming and functional space that supports and reflects you.\n\nThis process generally takes place over several visits, allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
-        ),
-        duration: t('Duração: a combinar', 'Duration: to be arranged'),
-        price: t('Preço: por consulta', 'Price: by consultation'),
-      },
-      wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o serviço Home Harmony.', 'Hello Daniela, I would like to know more about the Home Harmony service.')),
-    },
   ];
 
   return (
@@ -146,7 +125,7 @@ const Services = () => {
               key={i}
               className={`group relative overflow-hidden border-0 transition-all duration-700 hover:-translate-y-3 hover:shadow-[0_25px_60px_-15px_hsl(var(--primary)/0.2)] ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-              } ${i === 3 ? 'md:col-start-2' : ''}`}
+              }`}
               style={{
                 transitionDelay: isVisible ? `${i * 200}ms` : '0ms',
                 marginTop: i === 1 ? '2rem' : '0',
