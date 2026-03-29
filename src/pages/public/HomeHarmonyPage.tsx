@@ -7,7 +7,7 @@ import { Home, Sparkles, Compass, Star, MessageCircle, ArrowLeft, Eye, Palette, 
 import { Link } from 'react-router-dom';
 
 const WA_BASE = 'https://wa.me/351914173445?text=';
-const WA_CONSULTA = `${WA_BASE}${encodeURIComponent('Olá Daniela, gostaria de agendar uma consulta inicial para o Home Harmony.')}`;
+const WA_CONSULTA = `${WA_BASE}${encodeURIComponent('Olá Daniela, gostaria de agendar uma Sessão Descoberta para o Home Harmony.')}`;
 const WA_DELUXE = `${WA_BASE}${encodeURIComponent('Olá Daniela, gostaria de saber mais sobre o Home Harmony Deluxe.')}`;
 
 const HomeHarmonyPage = () => {
@@ -57,8 +57,8 @@ const HomeHarmonyPage = () => {
     {
       q: t('Como funciona o processo passo-a-passo?', 'How does the step-by-step process work?'),
       a: t(
-        'Tudo começa com uma consulta inicial gratuita (presencial ou online, ~30 min) onde fazemos uma leitura do espaço e das suas necessidades. A partir daí, criamos um plano personalizado com objetivos claros e avançamos ao longo de 4 a 6 visitas presenciais, transformando cada área ao seu ritmo. Recebe um plano de manutenção no final para que os resultados perdurem.',
-        'Everything starts with a free initial consultation (in-person or online, ~30 min) where we read the space and your needs. From there, we create a personalized plan with clear goals and progress over 4 to 6 in-person visits, transforming each area at your pace. You receive a maintenance plan at the end so results last.'
+        'Tudo começa com uma Sessão Descoberta online, onde exploramos as suas necessidades e a relação com o espaço. A partir daí, criamos um plano personalizado com objetivos claros e avançamos ao longo de várias visitas presenciais, transformando cada área ao seu ritmo. Recebe um plano de manutenção no final para que os resultados perdurem.',
+        'Everything starts with a Discovery Session online, where we explore your needs and your relationship with the space. From there, we create a personalized plan with clear goals and progress over several in-person visits, transforming each area at your pace. You receive a maintenance plan at the end so results last.'
       ),
     },
     {
@@ -78,15 +78,15 @@ const HomeHarmonyPage = () => {
     {
       q: t('Qual o investimento?', 'What is the investment?'),
       a: t(
-        'O investimento é personalizado com base na dimensão do espaço e complementos escolhidos. Home Harmony: a partir de €2.500. Home Harmony Deluxe: a partir de €5.000. Agende uma consulta inicial gratuita para receber uma proposta detalhada e sem compromisso.',
-        'The investment is personalized based on the size of the space and chosen add-ons. Home Harmony: from €2,500. Home Harmony Deluxe: from €5,000. Schedule a free initial consultation to receive a detailed, no-obligation proposal.'
+        'O investimento é personalizado com base na dimensão do espaço e complementos escolhidos. Home Harmony: a partir de €750. Home Harmony Deluxe: a partir de €900. Agende uma Sessão Descoberta online para receber uma proposta detalhada e sem compromisso.',
+        'The investment is personalized based on the size of the space and chosen add-ons. Home Harmony: from €750. Home Harmony Deluxe: from €900. Schedule an online Discovery Session to receive a detailed, no-obligation proposal.'
       ),
     },
     {
       q: t('Trabalham apenas em Sintra?', 'Do you only work in Sintra?'),
       a: t(
-        'As sessões presenciais realizam-se na zona de Sintra, Lisboa e Cascais. A limpeza energética com Bilal Machraa também está disponível à distância. Para projetos fora destas zonas, entre em contacto para avaliarmos a viabilidade.',
-        'In-person sessions take place in the Sintra, Lisbon and Cascais area. Energy cleansing with Bilal Machraa is also available remotely. For projects outside these areas, get in touch so we can assess feasibility.'
+        'As sessões presenciais realizam-se em todo o território português. A limpeza energética com Bilal Machraa também está disponível à distância. A Sessão Descoberta inicial é sempre online.',
+        'In-person sessions take place throughout Portugal. Energy cleansing with Bilal Machraa is also available remotely. The initial Discovery Session is always online.'
       ),
     },
     {
@@ -134,17 +134,17 @@ const HomeHarmonyPage = () => {
 
           <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-10">
             {t(
-              'A única abordagem em Sintra que integra organização, harmonização energética e autoconhecimento num só processo.',
-              'The only approach in Sintra that integrates organization, energy harmonization and self-knowledge in one process.'
+              'A única abordagem em Portugal que integra organização, harmonização energética e autoconhecimento num só processo.',
+              'The only approach in Portugal that integrates organization, energy harmonization and self-knowledge in one process.'
             )}
           </p>
 
           <a href={WA_CONSULTA} target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-foreground gap-2.5 rounded-full px-10 py-6 text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300 hover:shadow-[0_8px_30px_hsl(var(--gold)/0.3)] hover:scale-105">
-              {t('Agendar Consulta Gratuita', 'Schedule Free Consultation')}
+              {t('Agendar Sessão de Esclarecimento', 'Schedule Discovery Session')}
             </Button>
           </a>
-          <p className="text-white/35 text-sm mt-3">{t('30 min · Sem compromisso · Presencial ou online', '30 min · No obligation · In-person or online')}</p>
+          <p className="text-white/35 text-sm mt-3">{t('Online · Sem compromisso', 'Online · No obligation')}</p>
         </div>
       </section>
 
@@ -153,18 +153,18 @@ const HomeHarmonyPage = () => {
         <div className={`container mx-auto px-4 lg:px-8 transition-all duration-700 ${diffVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-center">
             <div>
-              <p className="font-serif text-2xl md:text-3xl text-foreground tracking-wider">17+</p>
-              <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-1">{t('Anos de Experiência', 'Years of Experience')}</p>
-            </div>
-            <div className="hidden md:block w-px h-10 bg-gold/20" />
-            <div>
-              <p className="font-serif text-2xl md:text-3xl text-foreground tracking-wider">{t('Sintra · Lisboa · Cascais', 'Sintra · Lisbon · Cascais')}</p>
+              <p className="font-serif text-2xl md:text-3xl text-foreground tracking-wider">Portugal</p>
               <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-1">{t('Zona de Atuação', 'Service Area')}</p>
             </div>
             <div className="hidden md:block w-px h-10 bg-gold/20" />
             <div>
               <p className="font-serif text-2xl md:text-3xl text-gold tracking-wider">{t('Única', 'Unique')}</p>
               <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-1">{t('Integração Holística Completa', 'Complete Holistic Integration')}</p>
+            </div>
+            <div className="hidden md:block w-px h-10 bg-gold/20" />
+            <div>
+              <p className="font-serif text-2xl md:text-3xl text-foreground tracking-wider">{t('Sessão Descoberta', 'Discovery Session')}</p>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mt-1">{t('Online · Sem Compromisso', 'Online · No Obligation')}</p>
             </div>
           </div>
         </div>
@@ -264,11 +264,11 @@ const HomeHarmonyPage = () => {
                   <span className="text-[10px] tracking-[0.25em] uppercase text-gold/60">{t('Semana 0', 'Week 0')}</span>
                   <div className="h-px flex-1 bg-gold/10" />
                 </div>
-                <h3 className="font-serif text-xl font-light text-foreground tracking-wider mb-3">{t('Consulta Inicial Gratuita', 'Free Initial Consultation')}</h3>
+                <h3 className="font-serif text-xl font-light text-foreground tracking-wider mb-3">{t('Sessão Descoberta', 'Discovery Session')}</h3>
                 <p className="text-foreground/75 text-[17px] leading-[1.85]">
                   {t(
-                    'Uma conversa de 30 minutos (presencial ou online) para compreender o seu momento, as suas necessidades e a relação com o espaço. A partir desta leitura, recebe uma proposta detalhada com objetivos, timeline e investimento.',
-                    'A 30-minute conversation (in-person or online) to understand your moment, your needs and your relationship with the space. From this reading, you receive a detailed proposal with goals, timeline and investment.'
+                    'Uma sessão online para compreender o seu momento, as suas necessidades e a relação com o espaço. A partir desta leitura, recebe uma proposta detalhada com objetivos, timeline e investimento.',
+                    'An online session to understand your moment, your needs and your relationship with the space. From this reading, you receive a detailed proposal with goals, timeline and investment.'
                   )}
                 </p>
               </div>
@@ -303,7 +303,7 @@ const HomeHarmonyPage = () => {
             <div className="text-center mt-14">
               <a href={WA_CONSULTA} target="_blank" rel="noopener noreferrer">
                 <Button className="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-foreground gap-2.5 rounded-full px-10 text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300 hover:shadow-[0_8px_30px_hsl(var(--gold)/0.3)]">
-                  {t('Agendar Consulta Gratuita', 'Schedule Free Consultation')}
+                  {t('Agendar Sessão de Esclarecimento', 'Schedule Discovery Session')}
                 </Button>
               </a>
             </div>
@@ -333,7 +333,7 @@ const HomeHarmonyPage = () => {
 
               <ul className="space-y-4 mb-10">
                 {[
-                  t('Consulta inicial gratuita (30 min)', 'Free initial consultation (30 min)'),
+                  t('Sessão Descoberta online', 'Online Discovery Session'),
                   t('Leitura intuitiva do espaço', 'Intuitive space reading'),
                   t('Plano de transformação personalizado', 'Personalized transformation plan'),
                   t('4-6 sessões presenciais ao seu ritmo', '4-6 in-person sessions at your pace'),
@@ -349,7 +349,7 @@ const HomeHarmonyPage = () => {
 
               <div className="pt-6 border-t border-gold/10 text-center">
                 <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Investimento', 'Investment')}</p>
-                <p className="font-serif text-xl text-foreground tracking-wide">{t('A partir de', 'From')} <span className="text-gold">€2.500</span></p>
+                <p className="font-serif text-xl text-foreground tracking-wide">{t('A partir de', 'From')} <span className="text-gold">€750</span></p>
                 <p className="text-xs text-foreground/40 mb-6">{t('Conforme dimensão do projeto', 'Based on project size')}</p>
                 <a href={WA_CONSULTA} target="_blank" rel="noopener noreferrer">
                   <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2 rounded-full text-xs tracking-[0.12em] uppercase font-light transition-all duration-300 hover:shadow-lg">
@@ -405,7 +405,7 @@ const HomeHarmonyPage = () => {
 
               <div className="pt-6 border-t border-gold/15 text-center">
                 <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Investimento', 'Investment')}</p>
-                <p className="font-serif text-xl text-foreground tracking-wide">{t('A partir de', 'From')} <span className="text-gold">€5.000</span></p>
+                <p className="font-serif text-xl text-foreground tracking-wide">{t('A partir de', 'From')} <span className="text-gold">€900</span></p>
                 <p className="text-xs text-foreground/40 mb-6">{t('Com complementos estratégicos', 'With strategic add-ons')}</p>
                 <a href={WA_DELUXE} target="_blank" rel="noopener noreferrer">
                   <Button className="w-full bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-foreground gap-2 rounded-full text-xs tracking-[0.12em] uppercase font-medium transition-all duration-300 hover:shadow-[0_8px_30px_hsl(var(--gold)/0.3)]">
@@ -421,7 +421,7 @@ const HomeHarmonyPage = () => {
           <div className={`mt-10 text-center transition-all duration-700 delay-400 ${compareVisible ? 'opacity-100' : 'opacity-0'}`}>
             <div className="inline-flex items-center gap-3 text-sm text-foreground/50 bg-background/60 backdrop-blur-sm px-6 py-3 rounded-full border border-gold/10">
               <ShieldCheck className="h-4 w-4 text-gold/60" />
-              {t('Consulta inicial gratuita e sem compromisso. Proposta detalhada antes de qualquer decisão.', 'Free initial consultation with no obligation. Detailed proposal before any decision.')}
+              {t('Sessão Descoberta online e sem compromisso. Proposta detalhada antes de qualquer decisão.', 'Online Discovery Session with no obligation. Detailed proposal before any decision.')}
             </div>
           </div>
         </div>
@@ -510,10 +510,10 @@ const HomeHarmonyPage = () => {
             <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-10">— Daniela Alves</p>
             <a href={WA_CONSULTA} target="_blank" rel="noopener noreferrer">
               <Button size="lg" className="bg-gradient-to-r from-gold to-gold-dark hover:from-gold-dark hover:to-gold text-foreground gap-2.5 rounded-full px-12 py-6 text-sm tracking-[0.12em] uppercase font-medium transition-all duration-300 hover:shadow-[0_8px_30px_hsl(var(--gold)/0.3)] hover:scale-105">
-                {t('Agendar a Minha Consulta Gratuita', 'Schedule My Free Consultation')}
+                {t('Agendar Sessão de Esclarecimento', 'Schedule Discovery Session')}
               </Button>
             </a>
-            <p className="text-muted-foreground/40 text-sm mt-4">{t('30 min · Sem compromisso · O primeiro passo para transformar o seu espaço.', '30 min · No obligation · The first step to transforming your space.')}</p>
+            <p className="text-muted-foreground/40 text-sm mt-4">{t('Online · Sem compromisso · O primeiro passo para transformar o seu espaço.', 'Online · No obligation · The first step to transforming your space.')}</p>
           </div>
         </div>
       </section>
