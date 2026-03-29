@@ -134,8 +134,8 @@ const HomeHarmonyPage = () => {
 
           <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-10">
             {t(
-              'A única abordagem em Portugal que integra organização, harmonização energética e autoconhecimento num só processo.',
-              'The only approach in Portugal that integrates organization, energy harmonization and self-knowledge in one process.'
+              'Mais do que organizar — um processo consciente e integrado entre pessoa e espaço, ao serviço do seu bem-estar.',
+              'More than organizing — a conscious and integrated process between person and space, in service of your well-being.'
             )}
           </p>
 
