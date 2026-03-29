@@ -55,7 +55,7 @@ const SpaceHarmony = () => {
                 'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily. When the home is harmonious, various areas of our life flow with more lightness, joy, health and well-being.'
               )}
             </p>
-            <p className="font-serif italic text-sm text-gold/60 mb-8">
+            <p className="font-serif italic text-base md:text-lg text-gold/70 mb-8">
               {t('"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"', '"May your Home be a true Haven that amplifies your Inner Harmony!"')}
             </p>
             <Link to="/home-harmony">

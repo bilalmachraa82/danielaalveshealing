@@ -10,7 +10,9 @@ const WA_BASE = 'https://wa.me/351914173445?text=';
 const HomeHarmonyPage = () => {
   const { t } = useLanguage();
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation(0.05);
-  const { ref: baseRef, isVisible: baseVisible } = useScrollAnimation();
+  const { ref: introRef, isVisible: introVisible } = useScrollAnimation();
+  const { ref: bodyRef, isVisible: bodyVisible } = useScrollAnimation();
+  const { ref: processRef, isVisible: processVisible } = useScrollAnimation();
   const { ref: deluxeRef, isVisible: deluxeVisible } = useScrollAnimation();
   const { ref: cardsRef, isVisible: cardsVisible } = useScrollAnimation();
 
@@ -20,14 +22,14 @@ const HomeHarmonyPage = () => {
       title: t('Limpeza Energética', 'Energy Cleansing'),
       partner: 'Bilal Machraa',
       desc: t(
-        'Uma abordagem subtil e poderosa, que atua ao nível energético do espaço. Por vezes, certos ambientes podem refletir ou sustentar padrões menos harmoniosos, que influenciam o bem-estar de quem lá vive, ainda que de forma não evidente.',
-        'A subtle and powerful approach that works at the energetic level of the space. Sometimes, certain environments may reflect or sustain less harmonious patterns that influence the well-being of those who live there, even if not obviously.'
+        'Uma abordagem subtil e poderosa, que atua ao nível energético do espaço.',
+        'A subtle and powerful approach that works at the energetic level of the space.'
       ),
       detail: t(
-        'Esta Limpeza Energética facilita a libertação de memórias, energias estagnadas e padrões invisíveis que possam estar a bloquear o bem-estar, devolvendo ao espaço a sua frequência natural e contribuindo para um ambiente renovado, mais alinhado e acolhedor.',
-        'This Energy Cleansing facilitates the release of memories, stagnant energies and invisible patterns that may be blocking well-being, returning the space to its natural frequency and contributing to a renewed, more aligned and welcoming environment.'
+        'Facilita a libertação de memórias, energias estagnadas e padrões invisíveis que possam estar a bloquear o bem-estar, devolvendo ao espaço a sua frequência natural.',
+        'Facilitates the release of memories, stagnant energies and invisible patterns that may be blocking well-being, returning the space to its natural frequency.'
       ),
-      note: t('Disponível presencialmente ou à distância', 'Available in-person or remotely'),
+      note: t('Presencial ou à distância', 'In-person or remote'),
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre a Limpeza Energética com o Home Harmony.', 'Hello Daniela, I would like to know more about Energy Cleansing with Home Harmony.')),
     },
     {
@@ -35,14 +37,14 @@ const HomeHarmonyPage = () => {
       title: 'Feng Shui',
       partner: 'Cristina Dionísio',
       desc: t(
-        'O Feng Shui é uma abordagem milenar que procura harmonizar os espaços de forma a apoiar o bem-estar e a prosperidade em todas as áreas da vida.',
-        'Feng Shui is an ancient approach that seeks to harmonize spaces to support well-being and prosperity in all areas of life.'
+        'Abordagem milenar que harmoniza os espaços para apoiar o bem-estar e a prosperidade em todas as áreas da vida.',
+        'Ancient approach that harmonizes spaces to support well-being and prosperity in all areas of life.'
       ),
       detail: t(
-        'Parte do princípio de que os ambientes influenciam diretamente a forma como nos sentimos, pensamos e vivemos — e através do posicionamento estratégico de elementos, cores e formas, potencializa o fluxo dessa energia positiva, transformando cada ambiente num catalisador de prosperidade e realização.',
-        'It is based on the principle that environments directly influence how we feel, think and live — and through the strategic positioning of elements, colors and shapes, it enhances the flow of positive energy, transforming each environment into a catalyst for prosperity and fulfillment.'
+        'Através do posicionamento estratégico de elementos, cores e formas, potencializa o fluxo de energia positiva, transformando cada ambiente num catalisador de realização.',
+        'Through strategic positioning of elements, colors and shapes, it enhances positive energy flow, transforming each environment into a catalyst for fulfillment.'
       ),
-      note: t('Leitura do fluxo energético + orientações práticas', 'Energy flow reading + practical guidance'),
+      note: t('Leitura energética + orientações práticas', 'Energy reading + practical guidance'),
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre Feng Shui com o Home Harmony.', 'Hello Daniela, I would like to know more about Feng Shui with Home Harmony.')),
     },
     {
@@ -50,22 +52,22 @@ const HomeHarmonyPage = () => {
       title: t('Astrologia do Ki', 'Ki Astrology'),
       partner: 'Cristina Dionísio',
       desc: t(
-        'A Astrologia do Ki é uma ferramenta de autoconhecimento que permite compreender padrões pessoais, tendências e dinâmicas relacionais de forma prática e aplicada.',
-        'Ki Astrology is a self-knowledge tool that allows understanding personal patterns, tendencies and relational dynamics in a practical and applied way.'
+        'Ferramenta de autoconhecimento que permite compreender padrões pessoais e dinâmicas relacionais de forma prática.',
+        'Self-knowledge tool for understanding personal patterns and relational dynamics in a practical way.'
       ),
       detail: t(
-        'Através de uma leitura personalizada, são oferecidas orientações simples e integráveis no dia-a-dia, promovendo maior alinhamento entre a essência individual e o espaço habitado. Uma abordagem que une conhecimento ancestral e aplicação prática, ao serviço de uma vida mais consciente e equilibrada.',
-        'Through a personalized reading, simple and integrable guidance is offered for daily life, promoting greater alignment between individual essence and the inhabited space. An approach that combines ancestral knowledge and practical application, in service of a more conscious and balanced life.'
+        'Orientações simples e integráveis no dia-a-dia, promovendo maior alinhamento entre a essência individual e o espaço habitado.',
+        'Simple guidance for daily life, promoting greater alignment between individual essence and the inhabited space.'
       ),
-      note: t('Leitura personalizada + orientações para o dia-a-dia', 'Personalized reading + daily guidance'),
+      note: t('Leitura personalizada + orientações', 'Personalized reading + guidance'),
       wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre Astrologia do Ki com o Home Harmony.', 'Hello Daniela, I would like to know more about Ki Astrology with Home Harmony.')),
     },
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+      {/* ─── Hero ─── */}
+      <section className="relative min-h-[65vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0" style={{
           backgroundImage: `url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80")`,
           backgroundSize: 'cover',
@@ -73,11 +75,7 @@ const HomeHarmonyPage = () => {
         }} />
         <div className="absolute inset-0 bg-foreground/75" />
 
-        {/* Back link */}
-        <Link
-          to="/"
-          className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
-        >
+        <Link to="/" className="absolute top-6 left-6 z-20 inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors">
           <ArrowLeft className="h-4 w-4" />
           {t('Voltar', 'Back')}
         </Link>
@@ -87,114 +85,224 @@ const HomeHarmonyPage = () => {
             <Home className="h-9 w-9 text-gold" strokeWidth={1} />
           </div>
           <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Organização Holística de Espaços', 'Holistic Space Organization')}</p>
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-wider mb-6">
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-wider mb-8">
             Home Harmony
           </h1>
-          <div className="w-12 h-px bg-gold/50 mx-auto" />
+          <div className="w-12 h-px bg-gold/50 mx-auto mb-8" />
+          <p className="font-serif text-lg md:text-xl text-white/60 italic max-w-xl mx-auto leading-relaxed">
+            {t(
+              '"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"',
+              '"May your Home be a true Haven that amplifies your Inner Harmony!"'
+            )}
+          </p>
         </div>
       </section>
 
-      {/* Home Harmony — Base */}
+      {/* ─── Editorial Opening ─── */}
       <section className="py-24 lg:py-32 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--section-warm) / 0.72) 50%, hsl(var(--section-lilac)) 100%)' }}>
-        <div ref={baseRef} className="container mx-auto px-4 lg:px-8 max-w-3xl relative z-10">
-          <div className={`transition-all duration-700 ${baseVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="text-center mb-12">
-              <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">Home Harmony</p>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-6">
-                {t('Cuidar do Teu Espaço', 'Caring for Your Space')}
-              </h2>
-              <div className="w-12 h-px bg-gold/40 mx-auto" />
+        {/* Decorative botanical */}
+        <svg className="absolute top-16 right-0 w-40 h-40 text-gold/[0.04] pointer-events-none" viewBox="0 0 160 160" fill="none" stroke="currentColor" strokeWidth="0.5">
+          <path d="M80 10C80 50 50 80 10 80C50 80 80 110 80 150C80 110 110 80 150 80C110 80 80 50 80 10Z" />
+          <circle cx="80" cy="80" r="25" />
+        </svg>
+
+        <div className="container mx-auto px-4 lg:px-8 max-w-4xl relative z-10">
+          {/* Pull quote — editorial opening */}
+          <div ref={introRef} className={`text-center mb-20 transition-all duration-700 ${introVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-6">Home Harmony</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-8">
+              {t('Cuidar do Teu Espaço', 'Caring for Your Space')}
+            </h2>
+            <div className="w-12 h-px bg-gold/40 mx-auto mb-12" />
+
+            {/* Large editorial pull quote */}
+            <div className="relative max-w-2xl mx-auto">
+              <span className="absolute -top-8 -left-4 font-serif text-7xl text-gold/15 select-none leading-none">"</span>
+              <p className="font-serif text-xl md:text-2xl font-light text-foreground/80 leading-relaxed italic px-6">
+                {t(
+                  'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia.',
+                  'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily.'
+                )}
+              </p>
+              <span className="absolute -bottom-8 -right-4 font-serif text-7xl text-gold/15 select-none leading-none">"</span>
+            </div>
+          </div>
+
+          {/* Philosophy — editorial two-block layout */}
+          <div ref={bodyRef} className={`transition-all duration-700 delay-200 ${bodyVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="grid md:grid-cols-2 gap-x-16 gap-y-10 mb-16">
+              {/* Left column */}
+              <div className="space-y-6">
+                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                  {t(
+                    'Idealmente, a casa é um local que nos nutre e acolhe — ',
+                    'Ideally, the home is a place that nourishes and welcomes us — '
+                  )}
+                  <strong className="text-foreground">{t('seguro, confortável, prático e bonito', 'safe, comfortable, practical and beautiful')}</strong>
+                  {t(
+                    ', de acordo com os nossos gostos e necessidades.',
+                    ', according to our tastes and needs.'
+                  )}
+                </p>
+                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                  {t(
+                    'Quando a casa está harmoniosa, as várias áreas da nossa vida fluem com mais ',
+                    'When the home is harmonious, various areas of our life flow with more '
+                  )}
+                  <strong className="text-foreground">{t('leveza, alegria, saúde e bem-estar', 'lightness, joy, health and well-being')}</strong>.
+                </p>
+              </div>
+
+              {/* Right column */}
+              <div className="space-y-6">
+                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                  {t(
+                    'O Home Harmony é um serviço de organização holística que apoia a ',
+                    'Home Harmony is a holistic organization service that supports the '
+                  )}
+                  <strong className="text-foreground">{t('transformação do seu espaço', 'transformation of your space')}</strong>
+                  {t(
+                    ' de forma consciente, prática e alinhada consigo.',
+                    ' in a conscious, practical and aligned way.'
+                  )}
+                </p>
+                <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                  {t(
+                    'Mais do que organizar, este trabalho propõe uma ',
+                    'More than organizing, this work proposes an '
+                  )}
+                  <strong className="text-foreground">{t('abordagem integrada entre pessoa e espaço', 'integrated approach between person and space')}</strong>
+                  {t(
+                    ' — onde não só se cria ordem e funcionalidade, mas também uma relação mais harmoniosa com a casa.',
+                    ' — where not only order and functionality are created, but also a more harmonious relationship with the home.'
+                  )}
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-5 text-muted-foreground leading-relaxed text-pretty">
-              <p>{t(
-                'Se o corpo é o Templo onde habitamos, a casa é o espaço que nos acolhe e sustenta no dia-a-dia e um dos locais onde passamos mais tempo, influenciando-nos de forma directa e indirecta.',
-                'If the body is the Temple where we dwell, the home is the space that welcomes and sustains us daily and one of the places where we spend the most time, influencing us directly and indirectly.'
-              )}</p>
-              <p>{t(
-                'Idealmente é um local que nos nutre e acolhe, um local seguro, confortável, prático e bonito de acordo com os nossos gostos e necessidades.',
-                'Ideally it is a place that nourishes and welcomes us, a safe, comfortable, practical and beautiful place according to our tastes and needs.'
-              )}</p>
-              <p>{t(
-                'Quando a casa está harmoniosa, as várias áreas da nossa vida fluem com mais leveza, alegria, saúde e bem-estar.',
-                'When the home is harmonious, various areas of our life flow with more lightness, joy, health and well-being.'
-              )}</p>
-              <p>{t(
-                'O Home Harmony é um serviço de organização holística que apoia a transformação do seu espaço de forma consciente, prática e alinhada consigo.',
-                'Home Harmony is a holistic organization service that supports the transformation of your space in a conscious, practical and aligned way.'
-              )}</p>
-              <p>{t(
-                'Mais do que organizar, este trabalho propõe uma abordagem integrada entre pessoa e espaço — onde não só se cria ordem e funcionalidade, mas também uma relação mais harmoniosa com a casa.',
-                'More than organizing, this work proposes an integrated approach between person and space — where not only order and functionality are created, but also a more harmonious relationship with the home.'
-              )}</p>
-              <p>{t(
-                'Com base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma intuitiva e personalizada, respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.',
-                'Based on a reading of the moment and your needs, we adjust the space intuitively and personally, respecting your rhythm, your tastes and the reality of your daily life.'
-              )}</p>
-              <p>{t(
-                'Sem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um espaço vivo, acolhedor e funcional, que o(a) apoie e reflita.',
-                'Without rigidity or perfectionism — it is not about creating a "perfect" home, but a living, welcoming and functional space that supports and reflects you.'
-              )}</p>
-              <p>{t(
-                'Este processo decorre geralmente ao longo de várias visitas, permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
-                'This process generally takes place over several visits, allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
-              )}</p>
+            {/* Gold divider */}
+            <div className="flex items-center gap-4 max-w-xs mx-auto mb-16">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-gold/30" />
+              <Home className="h-4 w-4 text-gold/30" strokeWidth={1.5} />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/30" />
             </div>
+          </div>
 
-            <p className="font-serif italic text-center text-primary/70 mt-10 text-lg tracking-wide">
-              {t('"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"', '"May your Home be a true Haven that amplifies your Inner Harmony!"')}
-            </p>
+          {/* Process — structured with visual hierarchy */}
+          <div ref={processRef} className={`transition-all duration-700 delay-300 ${processVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="max-w-2xl mx-auto space-y-8">
+              <div className="glass-card rounded-xl p-8 md:p-10 border border-gold/10">
+                <h3 className="font-serif text-xl md:text-2xl font-light text-foreground tracking-wider mb-6">
+                  {t('O Processo', 'The Process')}
+                </h3>
+                <div className="space-y-5 text-foreground/75 text-base leading-relaxed">
+                  <p>
+                    {t(
+                      'Com base numa leitura do momento e das suas necessidades, vamos ajustando o espaço de forma ',
+                      'Based on a reading of the moment and your needs, we adjust the space '
+                    )}
+                    <strong className="text-foreground">{t('intuitiva e personalizada', 'intuitively and personally')}</strong>
+                    {t(
+                      ', respeitando o seu ritmo, os seus gostos e a realidade do seu dia-a-dia.',
+                      ', respecting your rhythm, your tastes and the reality of your daily life.'
+                    )}
+                  </p>
+                  <p>
+                    {t(
+                      'Sem rigidez ou perfeccionismo — não se trata de criar uma casa "perfeita", mas um ',
+                      'Without rigidity or perfectionism — it is not about creating a "perfect" home, but a '
+                    )}
+                    <strong className="text-foreground">{t('espaço vivo, acolhedor e funcional', 'living, welcoming and functional space')}</strong>
+                    {t(
+                      ', que o(a) apoie e reflita.',
+                      ' that supports and reflects you.'
+                    )}
+                  </p>
+                  <p>
+                    {t(
+                      'Este processo decorre geralmente ao longo de ',
+                      'This process generally takes place over '
+                    )}
+                    <strong className="text-foreground">{t('várias visitas', 'several visits')}</strong>
+                    {t(
+                      ', permitindo uma transformação progressiva, sustentável e integrada, com atenção ao uso de materiais e soluções mais naturais e saudáveis.',
+                      ', allowing for a progressive, sustainable and integrated transformation, with attention to the use of more natural and healthy materials and solutions.'
+                    )}
+                  </p>
+                </div>
+              </div>
 
-            <div className="space-y-1 text-sm mt-8 pt-5 border-t border-gold/15 text-center">
-              <p className="text-foreground/70 tracking-wide font-light">{t('Duração: a combinar', 'Duration: to be arranged')}</p>
-              <p className="font-serif text-lg text-gold tracking-wide">{t('Preço: por consulta', 'Price: by consultation')}</p>
-            </div>
+              {/* Pricing — premium badge */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-6">
+                <div className="text-center">
+                  <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Duração', 'Duration')}</p>
+                  <p className="font-serif text-lg text-foreground tracking-wide">{t('A combinar', 'To be arranged')}</p>
+                </div>
+                <div className="hidden sm:block w-px h-10 bg-gold/20" />
+                <div className="text-center">
+                  <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">{t('Investimento', 'Investment')}</p>
+                  <p className="font-serif text-lg text-gold tracking-wide">{t('Por consulta', 'By consultation')}</p>
+                </div>
+              </div>
 
-            <div className="text-center mt-8">
-              <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony.', 'Hello Daniela, I would like to know more about Home Harmony.'))}`} target="_blank" rel="noopener noreferrer">
-                <Button className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-10 text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
-                  <MessageCircle className="h-4 w-4" />
-                  {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
-                </Button>
-              </a>
+              <div className="text-center">
+                <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony.', 'Hello Daniela, I would like to know more about Home Harmony.'))}`} target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-10 text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
+                    <MessageCircle className="h-4 w-4" />
+                    {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
+                  </Button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Home Harmony Deluxe */}
+      {/* ─── Home Harmony Deluxe ─── */}
       <section className="py-24 lg:py-32 relative overflow-hidden noise-overlay" style={{
         background: 'radial-gradient(circle at 50% 35%, hsl(var(--primary) / 0.18) 0%, transparent 34%), linear-gradient(180deg, hsl(var(--section-lilac-strong)) 0%, hsl(var(--section-lilac)) 55%, hsl(var(--section-warm-soft)) 100%)',
       }}>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/[0.08] rounded-full blur-3xl pointer-events-none" />
 
         <div ref={deluxeRef} className="container mx-auto px-4 lg:px-8 relative z-10">
-          <div className={`text-center mb-8 transition-all duration-700 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className={`text-center mb-6 transition-all duration-700 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Experiência Completa', 'Complete Experience')}</p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-wider mb-6 text-balance">
-              Home Harmony Deluxe
+              Home Harmony <span className="text-gold">Deluxe</span>
             </h2>
-            <div className="w-12 h-px bg-gold/40 mx-auto mb-8" />
+            <div className="w-12 h-px bg-gold/40 mx-auto mb-10" />
           </div>
 
-          <div className={`max-w-3xl mx-auto mb-16 transition-all duration-700 delay-200 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="space-y-5 text-muted-foreground leading-relaxed text-pretty text-center">
-              <p>{t(
-                'Para uma abordagem ainda mais abrangente e integrada, o Home Harmony Deluxe inclui a possibilidade de integrar serviços complementares, realizados em parceria exclusiva com profissionais de confiança de cada área.',
-                'For an even more comprehensive and integrated approach, Home Harmony Deluxe includes the possibility of integrating complementary services, carried out in exclusive partnership with trusted professionals in each area.'
-              )}</p>
-              <p>{t(
-                'Esta versão integra não só a organização e harmonização do espaço, como também as dimensões energética e de autoconhecimento.',
-                'This version integrates not only the organization and harmonization of the space, but also the energetic and self-knowledge dimensions.'
-              )}</p>
-              <p className="font-serif italic text-primary/70">{t(
-                'Este é um processo pensado para quem deseja uma transformação mais profunda — na casa e na forma como se relaciona com ela.',
-                'This is a process designed for those who desire a deeper transformation — in the home and in the way they relate to it.'
-              )}</p>
+          <div className={`max-w-2xl mx-auto mb-16 transition-all duration-700 delay-200 ${deluxeVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className="text-center space-y-5">
+              <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                {t(
+                  'Para uma abordagem ainda mais abrangente, o Home Harmony Deluxe integra ',
+                  'For an even more comprehensive approach, Home Harmony Deluxe integrates '
+                )}
+                <strong className="text-foreground">{t('serviços complementares', 'complementary services')}</strong>
+                {t(
+                  ', realizados em parceria exclusiva com profissionais de confiança.',
+                  ', carried out in exclusive partnership with trusted professionals.'
+                )}
+              </p>
+              <p className="text-foreground/80 text-base md:text-lg leading-relaxed">
+                {t(
+                  'Esta versão integra não só a organização e harmonização do espaço, como também as ',
+                  'This version integrates not only space organization and harmonization, but also the '
+                )}
+                <strong className="text-foreground">{t('dimensões energética e de autoconhecimento', 'energetic and self-knowledge dimensions')}</strong>.
+              </p>
+              <p className="font-serif italic text-lg md:text-xl text-foreground/70 mt-2 leading-relaxed">
+                {t(
+                  'Um processo pensado para quem deseja uma transformação mais profunda — na casa e na forma como se relaciona com ela.',
+                  'A process designed for those who desire a deeper transformation — in the home and in the way they relate to it.'
+                )}
+              </p>
             </div>
 
-            <div className="mt-8 text-center">
-              <span className="inline-block text-xs tracking-[0.2em] uppercase text-gold/80 border border-gold/20 px-5 py-2 rounded-full">
+            <div className="mt-10 text-center">
+              <span className="inline-block text-sm tracking-[0.15em] uppercase text-gold border border-gold/25 px-6 py-2.5 rounded-full bg-gold/[0.03]">
                 {t('Escolha os complementos que fazem sentido para si', 'Choose the add-ons that make sense for you')}
               </span>
             </div>
@@ -225,19 +333,20 @@ const HomeHarmonyPage = () => {
                   </div>
 
                   <h3 className="font-serif text-xl md:text-2xl font-light text-foreground mb-1 tracking-wider">{p.title}</h3>
-                  <p className="text-[10px] tracking-[0.2em] uppercase text-gold/70 mb-5">{t('com', 'with')} {p.partner}</p>
+                  <p className="text-[11px] tracking-[0.2em] uppercase text-gold/70 mb-5">{t('com', 'with')} {p.partner}</p>
 
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-3 text-pretty">{p.desc}</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-5 text-pretty">{p.detail}</p>
+                  <p className="text-foreground/75 text-base leading-relaxed mb-3 text-pretty">{p.desc}</p>
+                  <p className="text-foreground/75 text-base leading-relaxed mb-6 text-pretty">{p.detail}</p>
 
-                  <p className="text-xs text-foreground/50 italic mt-auto mb-5">{p.note}</p>
-
-                  <a href={`${WA_BASE}${p.wa}`} target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
-                      <MessageCircle className="h-4 w-4" />
-                      {t('Saber mais', 'Learn more')}
-                    </Button>
-                  </a>
+                  <div className="mt-auto space-y-4">
+                    <p className="text-sm text-gold/60 italic">{p.note}</p>
+                    <a href={`${WA_BASE}${p.wa}`} target="_blank" rel="noopener noreferrer">
+                      <Button className="w-full bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
+                        <MessageCircle className="h-4 w-4" />
+                        {t('Saber mais', 'Learn more')}
+                      </Button>
+                    </a>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -245,18 +354,27 @@ const HomeHarmonyPage = () => {
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="py-20 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--background)) 100%)' }}>
+      {/* ─── CTA Final ─── */}
+      <section className="py-24 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, hsl(var(--section-warm-soft)) 0%, hsl(var(--background)) 100%)' }}>
         <div className="container mx-auto px-4 lg:px-8 text-center relative z-10">
-          <p className="font-serif italic text-lg text-primary/60 mb-6 max-w-xl mx-auto">
-            {t('"Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!"', '"May your Home be a true Haven that amplifies your Inner Harmony!"')}
-          </p>
-          <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony Deluxe.', 'Hello Daniela, I would like to know more about Home Harmony Deluxe.'))}`} target="_blank" rel="noopener noreferrer">
-            <Button size="lg" className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-12 py-6 text-xs tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
-              <MessageCircle className="h-4 w-4" />
-              {t('Contactar via WhatsApp', 'Contact via WhatsApp')}
-            </Button>
-          </a>
+          <div className="max-w-xl mx-auto">
+            <div className="relative mb-8">
+              <span className="absolute -top-6 left-1/2 -translate-x-12 font-serif text-6xl text-gold/15 select-none leading-none">"</span>
+              <p className="font-serif italic text-xl md:text-2xl text-foreground/70 leading-relaxed px-6">
+                {t(
+                  'Que a sua Casa seja um verdadeiro Lar que amplia a sua Harmonia Interior!',
+                  'May your Home be a true Haven that amplifies your Inner Harmony!'
+                )}
+              </p>
+            </div>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-10">— Daniela Alves</p>
+            <a href={`${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony.', 'Hello Daniela, I would like to know more about Home Harmony.'))}`} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="bg-foreground hover:bg-foreground/90 text-background gap-2.5 rounded-full px-12 py-6 text-sm tracking-[0.15em] uppercase font-light transition-all duration-300 hover:shadow-lg">
+                <MessageCircle className="h-4 w-4" />
+                {t('Marcar Consulta', 'Book Consultation')}
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
     </div>

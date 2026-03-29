@@ -148,7 +148,7 @@ const Services = () => {
 
                 <h3 className="font-serif text-2xl md:text-3xl font-light text-foreground mb-5 tracking-wider">{s.title}</h3>
                 <p className="text-muted-foreground text-base leading-relaxed mb-5 flex-grow text-pretty">{s.desc}</p>
-                <p className="font-serif italic text-sm text-primary/60 mb-8 leading-relaxed">{s.quote}</p>
+                <p className="font-serif italic text-base text-primary/70 mb-8 leading-relaxed">{s.quote}</p>
                 <Button
                   variant="ghost"
                   className="rounded-full text-xs tracking-[0.15em] uppercase text-foreground/60 hover:text-foreground hover:bg-muted transition-all group-hover:text-gold"
