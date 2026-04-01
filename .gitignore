@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 .vercel
 google-service-account.json
+.worktrees/
