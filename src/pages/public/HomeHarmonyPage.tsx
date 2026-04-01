@@ -64,15 +64,15 @@ const HomeHarmonyPage = () => {
     {
       q: t('Quanto tempo demora a transformação?', 'How long does the transformation take?'),
       a: t(
-        'O programa tipicamente decorre entre 4 a 12 semanas, com 4 a 6 sessões presenciais. A duração exata depende da dimensão do espaço e da profundidade desejada. Cada caso é único e o ritmo é sempre definido consigo — sem pressão, sem rigidez.',
-        'The program typically runs between 4 to 12 weeks, with 4 to 6 in-person sessions. The exact duration depends on the size of the space and the desired depth. Each case is unique and the pace is always set with you — no pressure, no rigidity.'
+        'O programa tipicamente decorre entre 4 a 12 semanas, com 3 sessões presenciais. A duração exata depende da dimensão do espaço e da profundidade desejada. Cada caso é único e o ritmo é sempre definido consigo — sem pressão, sem rigidez.',
+        'The program typically runs between 4 to 12 weeks, with 3 in-person sessions. The exact duration depends on the size of the space and the desired depth. Each case is unique and the pace is always set with you — no pressure, no rigidity.'
       ),
     },
     {
       q: t('Qual a diferença entre Home Harmony e Home Harmony Deluxe?', 'What is the difference between Home Harmony and Home Harmony Deluxe?'),
       a: t(
-        'O Home Harmony foca-se na organização holística: leitura do espaço, reorganização prática e harmonização funcional (4-6 visitas, plano de manutenção). O Deluxe é para quem quer ir mais fundo — integra serviços complementares como limpeza energética, Feng Shui e Astrologia do Ki, para uma transformação nas dimensões física, energética e de autoconhecimento. Escolhe apenas os complementos que fazem sentido para si.',
-        'Home Harmony focuses on holistic organization: space reading, practical reorganization and functional harmonization (4-6 visits, maintenance plan). Deluxe is for those who want to go deeper — it integrates complementary services like energy cleansing, Feng Shui and Ki Astrology, for a transformation across physical, energetic and self-knowledge dimensions. You choose only the add-ons that make sense for you.'
+        'O Home Harmony foca-se na organização holística: leitura do espaço, reorganização prática e harmonização funcional (3 visitas, plano de manutenção). O Deluxe é para quem quer ir mais fundo — integra serviços complementares como limpeza energética, Feng Shui e Astrologia do Ki, para uma transformação nas dimensões física, energética e de autoconhecimento. Escolhe apenas os complementos que fazem sentido para si.',
+        'Home Harmony focuses on holistic organization: space reading, practical reorganization and functional harmonization (3 visits, maintenance plan). Deluxe is for those who want to go deeper — it integrates complementary services like energy cleansing, Feng Shui and Ki Astrology, for a transformation across physical, energetic and self-knowledge dimensions. You choose only the add-ons that make sense for you.'
       ),
     },
     {
@@ -127,7 +127,7 @@ const HomeHarmonyPage = () => {
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-white/60 text-sm md:text-base mb-4 max-w-2xl mx-auto">
             <span>{t('Organização que perdura', 'Organization that lasts')}</span>
             <span className="text-gold/40">·</span>
-            <span>{t('4-6 visitas personalizadas', '4-6 personalized visits')}</span>
+            <span>{t('3 visitas personalizadas', '3 personalized visits')}</span>
             <span className="text-gold/40">·</span>
             <span>{t('Materiais naturais', 'Natural materials')}</span>
           </div>
@@ -280,8 +280,8 @@ const HomeHarmonyPage = () => {
                 <h3 className="font-serif text-xl font-light text-foreground tracking-wider mb-3">{t('Transformação Progressiva', 'Progressive Transformation')}</h3>
                 <p className="text-foreground/75 text-[17px] leading-[1.85]">
                   {t(
-                    'Ao longo de 4 a 6 visitas presenciais, reorganizamos e harmonizamos cada área — de forma intuitiva, personalizada e ao seu ritmo. Sem rigidez, sem perfeccionismo. Um espaço vivo, acolhedor e funcional que o(a) apoia e reflita.',
-                    'Over 4 to 6 in-person visits, we reorganize and harmonize each area — intuitively, personally and at your pace. No rigidity, no perfectionism. A living, welcoming and functional space that supports and reflects you.'
+                    'Ao longo de 3 visitas presenciais, reorganizamos e harmonizamos cada área — de forma intuitiva, personalizada e ao seu ritmo. Sem rigidez, sem perfeccionismo. Um espaço vivo, acolhedor e funcional que o(a) apoia e reflita.',
+                    'Over 3 in-person visits, we reorganize and harmonize each area — intuitively, personally and at your pace. No rigidity, no perfectionism. A living, welcoming and functional space that supports and reflects you.'
                   )}
                 </p>
               </div>
@@ -329,14 +329,14 @@ const HomeHarmonyPage = () => {
             <div className="rounded-2xl border border-gold/10 p-8 md:p-10" style={{ background: 'linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--mist)) 100%)' }}>
               <h3 className="font-serif text-2xl md:text-3xl font-extralight text-foreground tracking-wider mb-1">Home Harmony</h3>
               <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{t('O Essencial', 'The Essential')}</p>
-              <p className="text-sm text-foreground/50 mb-8">{t('4-12 semanas · 4-6 visitas', '4-12 weeks · 4-6 visits')}</p>
+              <p className="text-sm text-foreground/50 mb-8">{t('4-12 semanas · 3 visitas', '4-12 weeks · 3 visits')}</p>
 
               <ul className="space-y-4 mb-10">
                 {[
                   t('Sessão Descoberta online', 'Online Discovery Session'),
                   t('Leitura intuitiva do espaço', 'Intuitive space reading'),
                   t('Plano de transformação personalizado', 'Personalized transformation plan'),
-                  t('4-6 sessões presenciais ao seu ritmo', '4-6 in-person sessions at your pace'),
+                  t('3 sessões presenciais ao seu ritmo', '3 in-person sessions at your pace'),
                   t('Organização funcional com materiais naturais', 'Functional organization with natural materials'),
                   t('Plano de manutenção incluído', 'Maintenance plan included'),
                 ].map((item, i) => (

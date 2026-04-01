@@ -11,8 +11,8 @@ const About = () => {
       'The language of touch, listening and caring for others has always been a part of me. From an early age, I discovered a natural connection with the art of caring and a deep sensitivity to understand each person\'s needs.'
     ),
     t(
-      'Ao longo de 17 anos de prática, formei-me em diversas modalidades terapêuticas: massagem terapêutica e desportiva, drenagem linfática manual (método Vodder), aromaterapia clínica com óleos essenciais certificados, terapia de som com taças tibetanas e gongos, meditação guiada, técnicas energéticas (Reiki nível III) e técnicas de libertação emocional.',
-      'Over 17 years of practice, I trained in various therapeutic modalities: therapeutic and sports massage, manual lymphatic drainage (Vodder method), clinical aromatherapy with certified essential oils, sound therapy with Tibetan bowls and gongs, guided meditation, energy techniques (Reiki level III) and emotional release techniques.'
+      'Ao longo de 17 anos de prática, formei-me em diversas modalidades terapêuticas: massagem terapêutica, drenagem linfática manual (método Leduc), aromaterapia, terapia de som com taças tibetanas, meditação guiada, técnicas xamânicas, energéticas e de libertação emocional.',
+      'Over 17 years of practice, I trained in various therapeutic modalities: therapeutic massage, manual lymphatic drainage (Leduc method), aromatherapy, sound therapy with Tibetan bowls, guided meditation, shamanic, energy and emotional release techniques.'
     ),
     t(
       'Este percurso tem-me proporcionado um olhar mais abrangente da realidade: o olhar científico é uma via externa e o olhar para dentro é uma via interna de conhecimento. Muito do conhecimento que busco sei agora que está também dentro, bastando para isso dar-lhe espaço e boas condições para se revelar.',
