@@ -41,9 +41,11 @@ interface QuickBookingResult {
   client_is_new: boolean;
   prepare_url: string;
   whatsapp_url: string;
+  preferred_language: Language;
 }
 
 type Gender = "female" | "male";
+type Language = "pt" | "en";
 
 interface SelectedClient {
   id: string | null;
@@ -104,6 +106,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
   const [selectedClient, setSelectedClient] = useState<SelectedClient | null>(null);
   const [newClientPhone, setNewClientPhone] = useState("");
   const [gender, setGender] = useState<Gender>("female");
+  const [preferredLanguage, setPreferredLanguage] = useState<Language>("pt");
   const [scheduledAt, setScheduledAt] = useState(getDefaultDateTime);
   const [serviceType, setServiceType] = useState<ServiceType>("healing_wellness");
 
@@ -184,6 +187,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     setSelectedClient(null);
     setNewClientPhone("");
     setGender("female");
+    setPreferredLanguage("pt");
     setScheduledAt(getDefaultDateTime());
     setServiceType("healing_wellness");
     setIsSubmitting(false);
@@ -251,6 +255,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
           client_name: selectedClient.name,
           client_phone: phone,
           client_gender: selectedClient.isNew ? gender : undefined,
+          client_language: selectedClient.isNew ? preferredLanguage : undefined,
           scheduled_at: scheduledAt,
           service_type: serviceType,
         }),
@@ -279,7 +284,15 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [selectedClient, newClientPhone, scheduledAt, serviceType, queryClient]);
+  }, [
+    selectedClient,
+    newClientPhone,
+    gender,
+    preferredLanguage,
+    scheduledAt,
+    serviceType,
+    queryClient,
+  ]);
 
   async function handleCopyLink() {
     if (!bookingResult) return;
@@ -324,6 +337,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             clientName={selectedClient?.name ?? ""}
             clientEmail={selectedClient?.email ?? null}
             formattedDate={formattedSessionDate}
+            preferredLanguage={bookingResult.preferred_language}
             linkCopied={linkCopied}
             onCopyLink={handleCopyLink}
             onClose={handleClose}
@@ -341,6 +355,8 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             setNewClientPhone={setNewClientPhone}
             gender={gender}
             setGender={setGender}
+            preferredLanguage={preferredLanguage}
+            setPreferredLanguage={setPreferredLanguage}
             scheduledAt={scheduledAt}
             setScheduledAt={setScheduledAt}
             serviceType={serviceType}
@@ -373,6 +389,8 @@ interface BookingFormProps {
   setNewClientPhone: (p: string) => void;
   gender: Gender;
   setGender: (g: Gender) => void;
+  preferredLanguage: Language;
+  setPreferredLanguage: (language: Language) => void;
   scheduledAt: string;
   setScheduledAt: (d: string) => void;
   serviceType: ServiceType;
@@ -398,6 +416,8 @@ function BookingForm({
   setNewClientPhone,
   gender,
   setGender,
+  preferredLanguage,
+  setPreferredLanguage,
   scheduledAt,
   setScheduledAt,
   serviceType,
@@ -578,6 +598,30 @@ function BookingForm({
                 Masculino
               </button>
             </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setPreferredLanguage("pt")}
+                className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
+                  preferredLanguage === "pt"
+                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    : "border-input bg-background text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                Português
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreferredLanguage("en")}
+                className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
+                  preferredLanguage === "en"
+                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    : "border-input bg-background text-muted-foreground hover:bg-muted/50"
+                }`}
+              >
+                English
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -649,6 +693,7 @@ interface SuccessViewProps {
   clientName: string;
   clientEmail: string | null;
   formattedDate: string;
+  preferredLanguage: Language;
   linkCopied: boolean;
   onCopyLink: () => void;
   onClose: () => void;
@@ -659,6 +704,7 @@ function SuccessView({
   clientName,
   clientEmail,
   formattedDate,
+  preferredLanguage,
   linkCopied,
   onCopyLink,
   onClose,
@@ -727,10 +773,16 @@ function SuccessView({
             variant="outline"
             className="w-full h-12 text-base"
             onClick={() => {
-              // For now, open mailto with the prepare link
-              const subject = encodeURIComponent("Preparacao da sessao - Daniela Alves");
+              const isEnglish = preferredLanguage === "en";
+              const subject = encodeURIComponent(
+                isEnglish
+                  ? "Session preparation - Daniela Alves"
+                  : "Preparação da sessão - Daniela Alves"
+              );
               const body = encodeURIComponent(
-                `Ola ${clientName.split(" ")[0]}!\n\nAqui esta o link para preparar a sua sessao:\n${result.prepare_url}\n\nCom amor,\nDaniela`
+                isEnglish
+                  ? `Hello ${clientName.split(" ")[0]}!\n\nHere is the link to prepare your session:\n${result.prepare_url}\n\nWith care,\nDaniela`
+                  : `Olá ${clientName.split(" ")[0]}!\n\nAqui está o link para preparar a sua sessão:\n${result.prepare_url}\n\nCom carinho,\nDaniela`
               );
               window.open(`mailto:${clientEmail}?subject=${subject}&body=${body}`);
             }}

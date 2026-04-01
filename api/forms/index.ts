@@ -19,6 +19,15 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
+import { deriveClientJourney } from "../../src/lib/communications/journey.ts";
+import {
+  buildAnamnesisEmailContent,
+  buildPreparationEmailContent,
+  getLocalizedServiceLabel,
+} from "../../src/lib/communications/templates.ts";
+import type { ExtendedServiceType } from "../../src/lib/communications/types.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -89,10 +98,121 @@ export default async function handler(
 // /api/forms/send — Create form tokens (no email)
 // ============================================================
 
-const SERVICE_FORM_TYPE_MAP: Record<string, string> = {
+const SERVICE_FORM_TYPE_MAP: Record<ExtendedServiceType, string> = {
   healing_wellness: "healing_touch",
   pura_radiancia: "pura_radiancia",
+  pure_earth_love: "healing_touch",
+  home_harmony: "healing_touch",
+  other: "healing_touch",
 };
+
+async function applyClientConsentUpdate(
+  sql: ReturnType<typeof getDb>,
+  clientId: string,
+  payload: Record<string, unknown>,
+  source: string
+) {
+  const flags = deriveConsentFlags(payload);
+  const now = new Date().toISOString();
+
+  await sql(
+    `UPDATE clients
+     SET consent_data_processing = $1,
+         consent_health_data = $2,
+         consent_health_data_at = CASE
+           WHEN $2 THEN COALESCE(consent_health_data_at, $3)
+           ELSE consent_health_data_at
+         END,
+         consent_health_data_source = CASE
+           WHEN $2 THEN $4
+           ELSE consent_health_data_source
+         END,
+         service_consent_email = $5,
+         service_consent_sms = $6,
+         service_consent_whatsapp = $7,
+         consent_marketing = $8,
+         marketing_consent_email = $9,
+         marketing_consent_sms = $10,
+         marketing_consent_whatsapp = $11,
+         consent_given_at = CASE
+           WHEN $1 THEN COALESCE(consent_given_at, $3)
+           ELSE consent_given_at
+         END,
+         consent_version = '2026-04',
+         consent_updated_at = $3,
+         updated_at = now()
+     WHERE id = $12`,
+    [
+      flags.consentDataProcessing,
+      flags.consentHealthData,
+      now,
+      source,
+      flags.service.email,
+      flags.service.sms,
+      flags.service.whatsapp,
+      flags.consentMarketing,
+      flags.marketing.email,
+      flags.marketing.sms,
+      flags.marketing.whatsapp,
+      clientId,
+    ]
+  );
+}
+
+async function getClientCommunicationContext(
+  sql: ReturnType<typeof getDb>,
+  clientId: string,
+  serviceType: ExtendedServiceType
+) {
+  const clientRows = await sql(
+    `SELECT id, first_name, last_name, email, gender, preferred_language, preferred_channel, source
+     FROM clients
+     WHERE id = $1`,
+    [clientId]
+  );
+
+  if (clientRows.length === 0) {
+    return null;
+  }
+
+  const [completedSessionCountRows, completedAnamnesisCountRows] =
+    await Promise.all([
+      sql(
+        "SELECT COUNT(*)::int AS count FROM sessions WHERE client_id = $1 AND status = 'completed'",
+        [clientId]
+      ),
+      sql(
+        "SELECT COUNT(*)::int AS count FROM anamnesis_forms WHERE client_id = $1 AND status = 'completed'",
+        [clientId]
+      ),
+    ]);
+
+  const completedSessions = Math.max(
+    completedSessionCountRows[0]?.count ?? 0,
+    completedAnamnesisCountRows[0]?.count ?? 0
+  );
+  const journey = deriveClientJourney({
+    completedSessions,
+    serviceType,
+    referralSourceKnown: clientRows[0].source != null &&
+      clientRows[0].source !== "manual",
+  });
+
+  return {
+    client: clientRows[0] as {
+      id: string;
+      first_name: string;
+      last_name: string | null;
+      email: string | null;
+      source: string | null;
+      preferred_language: "pt" | "en" | null;
+      preferred_channel: "email" | "sms" | "whatsapp" | null;
+      gender: "female" | "male" | null;
+    },
+    profile: buildClientCommunicationProfile(clientRows[0]),
+    journey,
+  };
+}
 
 async function handleFormsSend(
   req: VercelRequest,
@@ -112,7 +232,7 @@ async function handleFormsSend(
     });
   }
 
-  const formType = SERVICE_FORM_TYPE_MAP[service_type];
+  const formType = SERVICE_FORM_TYPE_MAP[service_type as ExtendedServiceType];
   if (!formType) {
     return res.status(400).json({
       error: `Invalid service_type. Expected: ${Object.keys(SERVICE_FORM_TYPE_MAP).join(", ")}`,
@@ -120,15 +240,19 @@ async function handleFormsSend(
   }
 
   // Verify client and session exist
-  const [clientRows, sessionRows] = await Promise.all([
-    sql("SELECT id FROM clients WHERE id = $1", [client_id]),
+  const [context, sessionRows] = await Promise.all([
+    getClientCommunicationContext(
+      sql,
+      client_id,
+      service_type as ExtendedServiceType
+    ),
     sql("SELECT id FROM sessions WHERE id = $1 AND client_id = $2", [
       session_id,
       client_id,
     ]),
   ]);
 
-  if (clientRows.length === 0) {
+  if (!context) {
     return res.status(404).json({ error: "Client not found" });
   }
 
@@ -139,9 +263,11 @@ async function handleFormsSend(
   const baseUrl = process.env.PUBLIC_URL ?? `https://${req.headers.host}`;
   const tokens: { anamnesis?: string; intake: string } = { intake: "" };
   const urls: { anamnesis?: string; intake: string } = { intake: "" };
+  const shouldSendAnamnesis =
+    (send_anamnesis ?? true) && context.journey.shouldSendAnamnesis;
 
   // Create anamnesis form if requested (first-time clients)
-  if (send_anamnesis) {
+  if (shouldSendAnamnesis) {
     const anamnesisToken = randomUUID();
     await sql(
       `INSERT INTO anamnesis_forms (client_id, token, token_expires_at, status)
@@ -162,14 +288,19 @@ async function handleFormsSend(
   tokens.intake = intakeToken;
   urls.intake = `${baseUrl}/forms/intake/${intakeToken}`;
 
-  return res.status(201).json({ tokens, urls });
+  return res.status(201).json({
+    tokens,
+    urls,
+    client_kind: context.journey.clientKind,
+    sent_anamnesis: shouldSendAnamnesis,
+  });
 }
 
 // ============================================================
 // /api/forms/emails/send — Create tokens + send emails (was emails/send-forms)
 // ============================================================
 
-type ServiceType = "healing_wellness" | "pura_radiancia";
+type ServiceType = ExtendedServiceType;
 
 interface SendFormsBody {
   client_id: string;
@@ -181,6 +312,9 @@ interface SendFormsBody {
 const EMAIL_SERVICE_FORM_TYPE_MAP: Record<ServiceType, string> = {
   healing_wellness: "healing_touch",
   pura_radiancia: "pura_radiancia",
+  pure_earth_love: "healing_touch",
+  home_harmony: "healing_touch",
+  other: "healing_touch",
 };
 
 async function handleEmailsSendForms(
@@ -212,22 +346,13 @@ async function handleEmailsSendForms(
     });
   }
 
-  // Fetch client data
-  const clientRows = await sql(
-    "SELECT id, first_name, last_name, email FROM clients WHERE id = $1",
-    [client_id]
-  );
+  const context = await getClientCommunicationContext(sql, client_id, service_type);
 
-  if (clientRows.length === 0) {
+  if (!context) {
     return res.status(404).json({ error: "Client not found" });
   }
 
-  const client = clientRows[0] as {
-    id: string;
-    first_name: string;
-    last_name: string | null;
-    email: string | null;
-  };
+  const { client, journey, profile } = context;
 
   if (!client.email) {
     return res.status(400).json({
@@ -237,7 +362,7 @@ async function handleEmailsSendForms(
 
   // Verify session exists
   const sessionRows = await sql(
-    "SELECT id FROM sessions WHERE id = $1 AND client_id = $2",
+    "SELECT id, scheduled_at FROM sessions WHERE id = $1 AND client_id = $2",
     [session_id, client_id]
   );
 
@@ -249,9 +374,15 @@ async function handleEmailsSendForms(
   const baseUrl = getAppUrl();
   const clientName = client.first_name;
   const sentEmails: string[] = [];
+  const shouldSendAnamnesis = (send_anamnesis ?? true) &&
+    journey.shouldSendAnamnesis;
+  const serviceLabel = getLocalizedServiceLabel(
+    service_type,
+    profile.preferredLanguage
+  );
 
   // --- Anamnesis email ---
-  if (send_anamnesis) {
+  if (shouldSendAnamnesis) {
     const anamnesisToken = randomUUID();
 
     await sql(
@@ -261,22 +392,22 @@ async function handleEmailsSendForms(
     );
 
     const anamnesisUrl = `${baseUrl}/anamnese/${anamnesisToken}`;
+    const anamnesisContent = buildAnamnesisEmailContent({
+      firstName: clientName,
+      preferredLanguage: profile.preferredLanguage,
+      anamnesisUrl,
+    });
     const anamnesisHtml = buildEmailHtml(
-      "Ficha de Saude",
-      [
-        `Ola ${clientName},`,
-        "Que bom ter-te connosco! Para que a sua experiencia seja verdadeiramente personalizada, peco-lhe que preencha esta breve ficha de saude antes da nossa sessao.",
-        "As suas respostas ajudam-me a compreender melhor o seu corpo e as suas necessidades, para que cada momento seja dedicado ao seu bem-estar.",
-        "Leva apenas alguns minutos e faz toda a diferenca.",
-      ],
-      "Preencher Ficha de Saude",
-      anamnesisUrl
+      anamnesisContent.title,
+      anamnesisContent.paragraphs,
+      anamnesisContent.ctaText,
+      anamnesisContent.ctaUrl
     );
 
     const anamnesisResult = await resend.emails.send({
       from: FROM_EMAIL,
       to: client.email,
-      subject: "Ficha de Saude \u2014 Daniela Alves Healing & Wellness",
+      subject: anamnesisContent.subject,
       html: anamnesisHtml,
     });
 
@@ -305,40 +436,24 @@ async function handleEmailsSendForms(
   const intakeUrl = `${baseUrl}${intakePath}`;
 
   const intakeEmailType = isImmersion ? "intake_immersion" : "intake_healing";
-
-  const intakeSubject = isImmersion
-    ? "Primeiro Passo para a Imersao Pura Radiancia"
-    : "Preparacao para a sua Sessao \u2014 Daniela Alves";
-
-  const intakeBodyParagraphs = isImmersion
-    ? [
-        `Ola ${clientName},`,
-        "Estou muito feliz por te acompanhar nesta jornada de transformacao! A Imersao Pura Radiancia e um momento so seu, e quero que seja inesquecivel.",
-        "Para que eu possa preparar cada detalhe a pensar em si, peco-lhe que preencha este breve questionario. Partilhe comigo as suas preferencias, intencoes e tudo o que a faca sentir especial.",
-        "Cada resposta ajuda-me a criar uma experiencia unica.",
-      ]
-    : [
-        `Ola ${clientName},`,
-        "A sua sessao esta quase a chegar e quero que seja um momento verdadeiramente especial para si.",
-        "Para que eu possa preparar tudo da melhor forma, peco-lhe que preencha este breve questionario. Demora apenas alguns minutos e ajuda-me a personalizar a sua experiencia.",
-        "Estou ansiosa por recebe-la!",
-      ];
-
-  const intakeCtaText = isImmersion
-    ? "Preparar a Minha Imersao"
-    : "Preparar a Minha Sessao";
-
+  const intakeContent = buildPreparationEmailContent({
+    firstName: clientName,
+    preferredLanguage: profile.preferredLanguage,
+    clientKind: journey.clientKind,
+    serviceLabel,
+    prepareUrl: intakeUrl,
+  });
   const intakeHtml = buildEmailHtml(
-    isImmersion ? "Preparacao para a Imersao" : "Preparacao para a Sessao",
-    intakeBodyParagraphs,
-    intakeCtaText,
-    intakeUrl
+    intakeContent.title,
+    intakeContent.paragraphs,
+    intakeContent.ctaText,
+    intakeContent.ctaUrl
   );
 
   const intakeResult = await resend.emails.send({
     from: FROM_EMAIL,
     to: client.email,
-    subject: intakeSubject,
+    subject: intakeContent.subject,
     html: intakeHtml,
   });
 
@@ -353,6 +468,8 @@ async function handleEmailsSendForms(
   return res.status(201).json({
     success: true,
     emails_sent: sentEmails,
+    client_kind: journey.clientKind,
+    sent_anamnesis: shouldSendAnamnesis,
   });
 }
 
@@ -438,7 +555,7 @@ async function handleAnamnesisPost(
 ) {
   // Validate token
   const rows = await sql(
-    "SELECT id, status, token_expires_at FROM anamnesis_forms WHERE token = $1",
+    "SELECT id, client_id, status, token_expires_at FROM anamnesis_forms WHERE token = $1",
     [token]
   );
 
@@ -457,6 +574,13 @@ async function handleAnamnesisPost(
   }
 
   const data = req.body ?? {};
+
+  await applyClientConsentUpdate(
+    sql,
+    form.client_id,
+    data,
+    "anamnesis_public"
+  );
 
   const updated = await sql(
     `UPDATE anamnesis_forms
@@ -721,7 +845,8 @@ async function handlePrepareGet(
        c.email,
        c.phone,
        c.date_of_birth,
-       c.gender
+       c.gender,
+       c.source
      FROM sessions s
      JOIN clients c ON c.id = s.client_id
      WHERE s.prepare_token = $1`,
@@ -762,6 +887,8 @@ async function handlePrepareGet(
   // Determine if personal data completion is needed
   const needsPersonalData =
     row.email === null || row.date_of_birth === null;
+  const referralSourceKnown =
+    row.source != null && row.source !== "manual";
 
   const formType = mapServiceTypeToFormType(row.service_type as PrepareServiceType);
 
@@ -782,6 +909,7 @@ async function handlePrepareGet(
     },
     is_returning: isReturning,
     needs_personal_data: needsPersonalData,
+    referral_source_known: referralSourceKnown,
     form_type: formType,
     last_session_date: lastSessionDate,
     total_sessions: totalCompleted,
@@ -824,6 +952,7 @@ async function handlePreparePost(
     client_updates,
     intake,
     returning_checkin,
+    consents,
   } = body;
 
   // ---- 1. Update client with non-null fields ----
@@ -854,6 +983,15 @@ async function handlePreparePost(
         values
       );
     }
+  }
+
+  if (consents && typeof consents === "object") {
+    await applyClientConsentUpdate(
+      sql,
+      clientId,
+      consents as Record<string, unknown>,
+      "prepare_public"
+    );
   }
 
   // ---- 2. Create session_intake_forms record (new clients) ----

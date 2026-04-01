@@ -60,6 +60,8 @@ const EMAIL_TYPE_LABELS: Record<string, string> = {
   satisfaction: "Satisfação",
   review_request: "Pedido de Review",
   reminder: "Lembrete",
+  pre_session_reminder: "Reminder Pré-Sessão",
+  post_session_checkin: "Check-In Pós-Sessão",
   rebooking: "Reagendamento",
   reactivation: "Reativação",
 };

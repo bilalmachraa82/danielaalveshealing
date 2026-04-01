@@ -100,6 +100,17 @@ export const anamnesisFormSchema = z.object({
   session_objectives: z.string().default(""),
 
   // Step 6 — declaration
+  consent_health_data: z
+    .boolean()
+    .refine((v) => v === true, {
+      message: "O consentimento de dados de saúde deve ser aceite para continuar.",
+    }),
+  service_consent_email: z.boolean().default(false),
+  service_consent_sms: z.boolean().default(false),
+  service_consent_whatsapp: z.boolean().default(false),
+  marketing_consent_email: z.boolean().default(false),
+  marketing_consent_sms: z.boolean().default(false),
+  marketing_consent_whatsapp: z.boolean().default(false),
   declaration_accepted: z
     .boolean()
     .refine((v) => v === true, {
@@ -168,5 +179,12 @@ export const anamnesisDefaultValues: AnamnesisFormInput = {
   previous_massage_details: "",
   session_objectives: "",
 
+  consent_health_data: false,
+  service_consent_email: false,
+  service_consent_sms: false,
+  service_consent_whatsapp: false,
+  marketing_consent_email: false,
+  marketing_consent_sms: false,
+  marketing_consent_whatsapp: false,
   declaration_accepted: false,
 };

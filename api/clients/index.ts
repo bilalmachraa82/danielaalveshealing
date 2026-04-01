@@ -4,6 +4,12 @@ import {
   extractAnamnesisFromImages,
   extractSessionNotesFromImages,
 } from "../_ocr.js";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
+import {
+  buildClientTimeline,
+  getEmailTimelineTitle,
+  getSessionActionTimelineTitle,
+} from "../../src/lib/communications/timeline.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -41,6 +47,11 @@ export default async function handler(
     // /api/clients/[id]/wellness
     if (pathSegments.length === 2 && pathSegments[1] === "wellness") {
       return await handleClientWellness(req, res, sql, pathSegments[0]);
+    }
+
+    // /api/clients/[id]/timeline
+    if (pathSegments.length === 2 && pathSegments[1] === "timeline") {
+      return await handleClientTimeline(req, res, sql, pathSegments[0]);
     }
 
     // /api/clients/[id]/tags
@@ -96,16 +107,26 @@ async function handleClientsList(
 
   if (req.method === "POST") {
     const data = req.body;
+    const consentFlags = deriveConsentFlags(data ?? {});
+    const consentTimestamp =
+      consentFlags.consentDataProcessing ||
+        consentFlags.consentMarketing ||
+        consentFlags.consentHealthData
+        ? new Date().toISOString()
+        : null;
 
     const rows = await sql(
-      `INSERT INTO clients (first_name, last_name, email, phone, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_marketing, consent_given_at, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+      `INSERT INTO clients (first_name, last_name, email, phone, gender, preferred_language, preferred_channel, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_health_data, service_consent_email, service_consent_sms, service_consent_whatsapp, consent_marketing, marketing_consent_email, marketing_consent_sms, marketing_consent_whatsapp, consent_given_at, consent_health_data_at, consent_version, consent_updated_at, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)
        RETURNING *`,
       [
         data.first_name,
         data.last_name ?? null,
         data.email || null,
         data.phone ?? null,
+        data.gender ?? null,
+        data.preferred_language ?? "pt",
+        data.preferred_channel ?? "email",
         data.date_of_birth ?? null,
         data.height_cm ?? null,
         data.weight_kg ?? null,
@@ -115,9 +136,19 @@ async function handleClientsList(
         data.postal_code ?? null,
         data.country ?? "PT",
         data.source ?? "manual",
-        data.consent_data_processing ?? false,
-        data.consent_marketing ?? false,
-        data.consent_data_processing ? new Date().toISOString() : null,
+        consentFlags.consentDataProcessing,
+        consentFlags.consentHealthData,
+        consentFlags.service.email,
+        consentFlags.service.sms,
+        consentFlags.service.whatsapp,
+        consentFlags.consentMarketing,
+        consentFlags.marketing.email,
+        consentFlags.marketing.sms,
+        consentFlags.marketing.whatsapp,
+        consentTimestamp,
+        consentFlags.consentHealthData ? consentTimestamp : null,
+        data.consent_version ?? "2026-04",
+        consentTimestamp,
         data.notes ?? null,
       ]
     );
@@ -146,6 +177,18 @@ async function handleClientById(
     const fields: string[] = [];
     const values: unknown[] = [];
     let paramIndex = 1;
+    const consentFlags = deriveConsentFlags(data ?? {});
+    const containsConsentKeys = [
+      "consent_data_processing",
+      "consent_health_data",
+      "service_consent_email",
+      "service_consent_sms",
+      "service_consent_whatsapp",
+      "consent_marketing",
+      "marketing_consent_email",
+      "marketing_consent_sms",
+      "marketing_consent_whatsapp",
+    ].some((key) => data?.[key] !== undefined);
 
     for (const [key, value] of Object.entries(data)) {
       if (value !== undefined) {
@@ -157,6 +200,41 @@ async function handleClientById(
 
     if (fields.length === 0) {
       return res.status(400).json({ error: "No fields to update" });
+    }
+
+    if (containsConsentKeys) {
+      fields.push(`consent_data_processing = $${paramIndex}`);
+      values.push(consentFlags.consentDataProcessing);
+      paramIndex++;
+
+      fields.push(`consent_health_data = $${paramIndex}`);
+      values.push(consentFlags.consentHealthData);
+      paramIndex++;
+
+      fields.push(`consent_marketing = $${paramIndex}`);
+      values.push(consentFlags.consentMarketing);
+      paramIndex++;
+
+      fields.push(`consent_updated_at = $${paramIndex}`);
+      values.push(new Date().toISOString());
+      paramIndex++;
+
+      if (consentFlags.consentHealthData) {
+        fields.push(
+          `consent_health_data_at = COALESCE(consent_health_data_at, $${paramIndex})`
+        );
+        values.push(new Date().toISOString());
+        paramIndex++;
+      }
+    }
+
+    if (
+      (data.consent_data_processing === true || consentFlags.consentDataProcessing) &&
+      data.consent_given_at === undefined
+    ) {
+      fields.push(`consent_given_at = COALESCE(consent_given_at, $${paramIndex})`);
+      values.push(new Date().toISOString());
+      paramIndex++;
     }
 
     values.push(id);
@@ -220,6 +298,210 @@ async function handleClientWellness(
   );
 
   return res.json(rows);
+}
+
+function formatTimelineMoment(value?: string | null) {
+  if (!value) return null;
+
+  return new Date(value).toLocaleString("pt-PT", {
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+async function handleClientTimeline(
+  req: VercelRequest,
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>,
+  clientId: string
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const clientRows = await sql("SELECT * FROM clients WHERE id = $1", [clientId]);
+  if (clientRows.length === 0) {
+    return res.status(404).json({ error: "Client not found" });
+  }
+
+  const client = clientRows[0];
+
+  const [sessionChanges, intakeForms, anamnesisForms, satisfactionForms, emails] =
+    await Promise.all([
+      sql(
+        `SELECT id, session_id, action, reason, previous_scheduled_at, new_scheduled_at, created_at
+         FROM session_change_log
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, form_type, status, created_at, completed_at
+         FROM session_intake_forms
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, status, created_at, completed_at
+         FROM anamnesis_forms
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, created_at, completed_at
+         FROM satisfaction_responses
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, email_type, status, sent_at
+         FROM email_log
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+    ]);
+
+  const sessionEvents = sessionChanges.map((change) => ({
+    id: `session-${change.id}`,
+    type: "session" as const,
+    title: getSessionActionTimelineTitle(change.action),
+    description:
+      change.reason ??
+      (change.action === "rescheduled" && change.new_scheduled_at
+        ? `Nova data: ${formatTimelineMoment(change.new_scheduled_at)}`
+        : null),
+    occurred_at: change.created_at,
+    session_id: change.session_id,
+    status: change.action,
+  }));
+
+  const intakeEvents = intakeForms.flatMap((form) => {
+    const label =
+      form.form_type === "pura_radiancia"
+        ? "Questionário Pura Radiância"
+        : "Questionário Healing Touch";
+
+    return [
+      {
+        id: `form-intake-sent-${form.id}`,
+        type: "form" as const,
+        title: `${label} enviado`,
+        description: "Link enviado ao cliente.",
+        occurred_at: form.created_at,
+        session_id: form.session_id,
+        status: form.status,
+      },
+      ...(form.completed_at
+        ? [
+            {
+              id: `form-intake-completed-${form.id}`,
+              type: "form" as const,
+              title: `${label} concluído`,
+              description: "Questionário preenchido pelo cliente.",
+              occurred_at: form.completed_at,
+              session_id: form.session_id,
+              status: "completed",
+            },
+          ]
+        : []),
+    ];
+  });
+
+  const anamnesisEvents = anamnesisForms.flatMap((form) => [
+    {
+      id: `form-anamnesis-sent-${form.id}`,
+      type: "form" as const,
+      title: "Anamnese enviada",
+      description: "Ficha de saúde enviada ao cliente.",
+      occurred_at: form.created_at,
+      status: form.status,
+    },
+    ...(form.completed_at
+      ? [
+          {
+            id: `form-anamnesis-completed-${form.id}`,
+            type: "form" as const,
+            title: "Anamnese concluída",
+            description: "Ficha de saúde concluída pelo cliente.",
+            occurred_at: form.completed_at,
+            status: "completed",
+          },
+        ]
+      : []),
+  ]);
+
+  const satisfactionEvents = satisfactionForms.flatMap((form) =>
+    form.completed_at
+      ? [
+          {
+            id: `form-satisfaction-${form.id}`,
+            type: "form" as const,
+            title: "Satisfação concluída",
+            description: "Questionário de satisfação preenchido.",
+            occurred_at: form.completed_at,
+            session_id: form.session_id,
+            status: "completed",
+          },
+        ]
+      : []
+  );
+
+  const communicationEvents = emails.map((email) => ({
+    id: `communication-${email.id}`,
+    type: "communication" as const,
+    title: getEmailTimelineTitle(email.email_type),
+    description: `Estado: ${email.status}`,
+    occurred_at: email.sent_at,
+    session_id: email.session_id,
+    status: email.status,
+    channel: "email" as const,
+  }));
+
+  const consentEvents = [
+    client.consent_given_at
+      ? {
+          id: `consent-processing-${client.id}`,
+          type: "consent" as const,
+          title: "Consentimento RGPD registado",
+          description: client.consent_version
+            ? `Versão ${client.consent_version}`
+            : null,
+          occurred_at: client.consent_given_at,
+        }
+      : null,
+    client.consent_health_data_at
+      ? {
+          id: `consent-health-${client.id}`,
+          type: "consent" as const,
+          title: "Consentimento de dados de saúde registado",
+          description: client.consent_health_data_source
+            ? `Origem: ${client.consent_health_data_source}`
+            : null,
+          occurred_at: client.consent_health_data_at,
+        }
+      : null,
+    client.consent_updated_at
+      ? {
+          id: `consent-update-${client.id}`,
+          type: "consent" as const,
+          title: "Preferências de comunicação atualizadas",
+          description: null,
+          occurred_at: client.consent_updated_at,
+        }
+      : null,
+  ].filter(Boolean);
+
+  return res.json(
+    buildClientTimeline([
+      ...sessionEvents,
+      ...intakeEvents,
+      ...anamnesisEvents,
+      ...satisfactionEvents,
+      ...communicationEvents,
+      ...consentEvents,
+    ])
+  );
 }
 
 async function handleClientTags(

@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Jornada da App — Daniela Alves Healing &amp; Wellness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --plum-900: #26131f;
+      --plum-800: #442342;
+      --plum-700: #6b3b69;
+      --plum-500: #985f97;
+      --plum-300: #caa9c8;
+      --plum-100: #f5edf5;
+      --gold-600: #b8892e;
+      --gold-400: #d9aa4f;
+      --gold-100: #fbf5e6;
+      --cream: #faf7f5;
+      --cream-deep: #f2ebe6;
+      --surface: #ffffff;
+      --ink: #2d2d2d;
+      --ink-soft: #595959;
+      --line: #e9dfd9;
+      --success-bg: #edf8f3;
+      --success-text: #1e6b4d;
+      --warning-bg: #fff8ea;
+      --warning-text: #9a6a13;
+      --pending-bg: #f5f3f2;
+      --pending-text: #6a6460;
+      --shadow-sm: 0 4px 18px rgba(45, 45, 45, 0.06);
+      --shadow-md: 0 12px 44px rgba(45, 45, 45, 0.09);
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --radius-xl: 40px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(217, 170, 79, 0.12), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(152, 95, 151, 0.12), transparent 28%),
+        var(--cream);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Cormorant Garamond", serif;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 7vw, 5.4rem);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0 0 1rem;
+      color: var(--ink-soft);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .container {
+      width: min(1160px, calc(100% - 2.5rem));
+      margin: 0 auto;
+    }
+
+    .cover {
+      position: relative;
+      overflow: hidden;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(135deg, rgba(19, 9, 18, 0.94), rgba(68, 35, 66, 0.94)),
+        linear-gradient(120deg, #2d152b, #6b3b69);
+      color: #fff;
+    }
+
+    .cover::before,
+    .cover::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+    }
+
+    .cover::before {
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(217, 170, 79, 0.18), transparent 65%);
+      top: -110px;
+      right: -40px;
+    }
+
+    .cover::after {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(196, 156, 195, 0.15), transparent 65%);
+      bottom: -220px;
+      left: -80px;
+    }
+
+    .cover-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 3rem;
+      align-items: center;
+      padding: 5rem 0 4rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(217, 170, 79, 0.35);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 243, 219, 0.92);
+      background: rgba(217, 170, 79, 0.08);
+    }
+
+    .cover h1,
+    .cover h2,
+    .cover h3,
+    .cover p {
+      color: #fff;
+    }
+
+    .cover strong {
+      color: #fff;
+    }
+
+    .cover-subtitle {
+      margin-top: 1rem;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .cover-lead {
+      max-width: 60ch;
+      margin-top: 2rem;
+      font-size: 1.04rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .cover-note {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.95rem;
+    }
+
+    .cover-panel {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-xl);
+      padding: 1.6rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+    }
+
+    .cover-panel h3 {
+      margin-bottom: 1rem;
+      font-size: 1.55rem;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .mini-item {
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .mini-item strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      color: #fff;
+      font-size: 0.98rem;
+    }
+
+    .mini-item span {
+      display: block;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.alt {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 84px minmax(0, 1fr);
+      gap: 1.2rem;
+      align-items: start;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-index {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--plum-500), var(--plum-700));
+      box-shadow: 0 10px 30px rgba(152, 95, 151, 0.24);
+      color: #fff;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.7rem;
+    }
+
+    .section-kicker {
+      margin-bottom: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-600);
+    }
+
+    .grid-3,
+    .grid-2 {
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card h3 {
+      margin-bottom: 0.7rem;
+    }
+
+    .card h4 {
+      margin-bottom: 0.45rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .status.live {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .status.partial {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .status.pending {
+      background: var(--pending-bg);
+      color: var(--pending-text);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      background: var(--plum-100);
+      color: var(--plum-800);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .snapshot {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .snapshot-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 247, 245, 0.92));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem 1.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .snapshot-value {
+      margin-bottom: 0.4rem;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2.5rem;
+      font-weight: 500;
+      color: var(--plum-700);
+      line-height: 1;
+    }
+
+    .snapshot-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .snapshot-desc {
+      margin-top: 0.65rem;
+      font-size: 0.9rem;
+    }
+
+    .pathway {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+      padding: 1.1rem 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--plum-100), #fff);
+      border: 1px solid var(--plum-300);
+      color: var(--plum-700);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .step h3 {
+      margin-bottom: 0.4rem;
+    }
+
+    .step-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .step-tag {
+      padding: 0.38rem 0.65rem;
+      border-radius: 999px;
+      background: var(--gold-100);
+      color: var(--gold-600);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .journey-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.3rem;
+    }
+
+    .journey-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .journey-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--plum-500), var(--gold-400));
+    }
+
+    .journey-list {
+      margin: 1rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .journey-list li {
+      position: relative;
+      padding-left: 1.1rem;
+      color: var(--ink-soft);
+    }
+
+    .journey-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--plum-500);
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.8rem;
+    }
+
+    .comparison-card {
+      padding: 1.4rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .comparison-card.before {
+      background: linear-gradient(180deg, #fff8f5, #ffffff);
+    }
+
+    .comparison-card.after {
+      background: linear-gradient(180deg, #f8fbf8, #ffffff);
+    }
+
+    .comparison-card ul,
+    .plain-list {
+      margin: 1rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--ink-soft);
+    }
+
+    .plain-list li,
+    .comparison-card li {
+      margin-bottom: 0.5rem;
+    }
+
+    .automation-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .automation-item {
+      padding: 1.2rem;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,237,245,0.58));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .automation-item strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 1rem;
+    }
+
+    .truth-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.7rem;
+    }
+
+    .truth-card {
+      padding: 1.3rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quote-box {
+      margin-top: 1.8rem;
+      padding: 1.6rem 1.8rem;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(152, 95, 151, 0.08), rgba(217, 170, 79, 0.11));
+      border: 1px solid rgba(152, 95, 151, 0.15);
+    }
+
+    .quote-box strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+    }
+
+    .footer {
+      padding: 3rem 0 4.5rem;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .footer a {
+      color: var(--plum-700);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(152, 95, 151, 0.3);
+    }
+
+    @media (max-width: 980px) {
+      .cover-grid,
+      .snapshot,
+      .grid-3,
+      .truth-grid,
+      .journey-columns,
+      .grid-2,
+      .comparison,
+      .automation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        grid-template-columns: 1fr;
+      }
+
+      .section-index {
+        width: 64px;
+        height: 64px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(100% - 1.4rem, 100%);
+      }
+
+      .cover-grid {
+        padding: 4rem 0 3rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .step {
+        grid-template-columns: 1fr;
+      }
+
+      .step-number {
+        width: 52px;
+        height: 52px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .cover {
+        min-height: auto;
+      }
+
+      .section,
+      .card,
+      .step,
+      .journey-card,
+      .comparison-card,
+      .automation-item,
+      .truth-card,
+      .quote-box {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="cover">
+    <div class="container cover-grid">
+      <div>
+        <div class="eyebrow">Visão simples da nova app</div>
+        <h1>Nova jornada da app<br />para a <em>Daniela</em></h1>
+        <p class="cover-subtitle">O que já está implementado, como funciona no dia a dia e o que ainda falta ligar.</p>
+        <p class="cover-lead">
+          Este documento foi pensado para explicar a nova versão da app em linguagem humana, sem termos técnicos. A ideia é perceber rapidamente
+          <strong>o que a Daniela já consegue fazer</strong>, <strong>como o cliente vive a experiência</strong> e <strong>o que ainda depende de integrações externas</strong>.
+        </p>
+        <div class="cover-note">
+          <strong>Resumo honesto:</strong>
+          a app já suporta gestão de marcações, comunicação inteligente, consentimentos e timeline. Falta apenas fechar alguns canais externos para a experiência ficar completa.
+        </div>
+      </div>
+
+      <aside class="cover-panel">
+        <h3>Hoje a app já faz isto</h3>
+        <div class="mini-list">
+          <div class="mini-item">
+            <strong>O cliente pode gerir a própria marcação</strong>
+            <span>Confirmar, remarcar ou cancelar através de um link próprio, sem trocar mensagens manuais.</span>
+          </div>
+          <div class="mini-item">
+            <strong>A comunicação já é mais inteligente</strong>
+            <span>PT e EN, cliente novo vs repetente, preferências de canal e histórico centralizado.</span>
+          </div>
+          <div class="mini-item">
+            <strong>O back office já acompanha o ciclo todo</strong>
+            <span>Estados da sessão, motivos de remarcação/cancelamento, reminders e timeline do cliente.</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section class="section alt" id="instantaneo">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">01</div>
+          <div>
+            <div class="section-kicker">Instantâneo</div>
+            <h2>O que mudou na prática</h2>
+            <p>
+              A app deixou de ser apenas um sítio para guardar dados. Agora já funciona como uma pequena jornada de serviço:
+              a sessão nasce no back office, o cliente recebe o contexto certo, consegue mexer na marcação e a Daniela fica com tudo refletido no histórico.
+            </p>
+          </div>
+        </div>
+
+        <div class="snapshot">
+          <article class="snapshot-card">
+            <div class="snapshot-value">4</div>
+            <div class="snapshot-label">ações públicas</div>
+            <p class="snapshot-desc">O cliente já consegue ver, confirmar, remarcar e cancelar a sessão na própria app.</p>
+          </article>
+
+          <article class="snapshot-card">
+            <div class="snapshot-value">2</div>
+            <div class="snapshot-label">idiomas</div>
+            <p class="snapshot-desc">A comunicação já respeita PT e EN com base no perfil do cliente.</p>
+          </article>
+
+          <article class="snapshot-card">
+            <div class="snapshot-value">1</div>
+            <div class="snapshot-label">timeline unificada</div>
+            <p class="snapshot-desc">Sessões, consentimentos, formulários e comunicações já aparecem numa vista única.</p>
+          </article>
+
+          <article class="snapshot-card">
+            <div class="snapshot-value">2</div>
+            <div class="snapshot-label">pendências externas</div>
+            <p class="snapshot-desc">Falta ligar o provider de SMS/WhatsApp e o sync inverso do Google Calendar.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="implementado">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">02</div>
+          <div>
+            <div class="section-kicker">Capacidades reais</div>
+            <h2>O que já está implementado</h2>
+            <p>
+              Esta é a fotografia fiel da app neste momento. O objetivo aqui é separar muito bem o que já existe do que ainda está preparado, mas não ligado.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="status live">Já está ativo</div>
+            <h3>Gestão de marcações</h3>
+            <p>Existe uma página pública própria para cada sessão, onde o cliente pode <strong>confirmar</strong>, <strong>remarcar</strong> e <strong>cancelar</strong>.</p>
+            <div class="pill-row">
+              <span class="pill">Link individual</span>
+              <span class="pill">Motivo da alteração</span>
+              <span class="pill">Estados atualizados</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="status live">Já está ativo</div>
+            <h3>Comunicação mais inteligente</h3>
+            <p>A app já distingue <strong>cliente novo</strong> de <strong>cliente repetente</strong> e adapta a comunicação para <strong>PT ou EN</strong>.</p>
+            <div class="pill-row">
+              <span class="pill">PT / EN</span>
+              <span class="pill">Novo / Repetente</span>
+              <span class="pill">Canal preferido</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="status live">Já está ativo</div>
+            <h3>Perfil e consentimentos</h3>
+            <p>O perfil do cliente já guarda idioma, canal preferido, género, consentimento RGPD, consentimento de dados de saúde e preferências por canal.</p>
+            <div class="pill-row">
+              <span class="pill">RGPD</span>
+              <span class="pill">Dados de saúde</span>
+              <span class="pill">Email / SMS / WhatsApp</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="status live">Já está ativo</div>
+            <h3>Reminder pré-sessão</h3>
+            <p>Já existe reminder automático antes da sessão, atualmente em lógica <strong>email-first</strong>, com histórico de envio no sistema.</p>
+            <div class="pill-row">
+              <span class="pill">Pré-sessão</span>
+              <span class="pill">Agendamento automático</span>
+              <span class="pill">Histórico interno</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="status live">Já está ativo</div>
+            <h3>Timeline premium</h3>
+            <p>No detalhe do cliente já existe uma timeline unificada com eventos de sessão, consentimentos, formulários e comunicações.</p>
+            <div class="pill-row">
+              <span class="pill">Sessões</span>
+              <span class="pill">Consentimentos</span>
+              <span class="pill">Comunicações</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="status partial">Parcial</div>
+            <h3>Calendário</h3>
+            <p>A app já atualiza o Google Calendar quando a sessão muda na app. O que ainda falta é o caminho inverso: quando se muda no Google Calendar, a app também sabe.</p>
+            <div class="pill-row">
+              <span class="pill">App → Calendar</span>
+              <span class="pill">Calendar → App pendente</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="daniela">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">03</div>
+          <div>
+            <div class="section-kicker">Dia a dia da Daniela</div>
+            <h2>Como a Daniela trabalha agora</h2>
+            <p>
+              Em vez de depender de mensagens manuais para confirmar tudo, a Daniela passa a ter um fluxo mais guiado. A app prepara, acompanha e regista quase todo o ciclo.
+            </p>
+          </div>
+        </div>
+
+        <div class="pathway">
+          <article class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Daniela cria a sessão no back office</h3>
+              <p>Ao criar a sessão, a app já liga a marcação ao cliente, define a data, o serviço e o contexto base da experiência.</p>
+              <div class="step-meta">
+                <span class="step-tag">Back office</span>
+                <span class="step-tag">Sessão nova</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>A app prepara o resto sozinha</h3>
+              <p>São gerados os links de preparação e de gestão da marcação, a agenda é sincronizada e o sistema decide o próximo reminder.</p>
+              <div class="step-meta">
+                <span class="step-tag">Automático</span>
+                <span class="step-tag">Token de gestão</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>O cliente recebe a comunicação certa</h3>
+              <p>A copy muda conforme o idioma e conforme o cliente seja novo ou repetente. Isto evita repetir o mesmo tom e as mesmas perguntas a todos.</p>
+              <div class="step-meta">
+                <span class="step-tag">PT / EN</span>
+                <span class="step-tag">Novo / Repetente</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Se o cliente precisar, mexe na marcação sozinho</h3>
+              <p>O cliente já consegue confirmar, remarcar ou cancelar sem pedir à Daniela para intermediar tudo manualmente.</p>
+              <div class="step-meta">
+                <span class="step-tag">Autosserviço</span>
+                <span class="step-tag">Motivos guardados</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number">5</div>
+            <div>
+              <h3>Tudo fica refletido no histórico</h3>
+              <p>Se a sessão foi confirmada, remarcada ou cancelada, a Daniela vê isso no detalhe da sessão e também na timeline do cliente.</p>
+              <div class="step-meta">
+                <span class="step-tag">Timeline</span>
+                <span class="step-tag">Estados atualizados</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="step">
+            <div class="step-number">6</div>
+            <div>
+              <h3>A Daniela trabalha com mais contexto</h3>
+              <p>Idioma, consentimentos, canal preferido, lembretes e histórico já aparecem no sistema, o que reduz ruído e aumenta consistência.</p>
+              <div class="step-meta">
+                <span class="step-tag">Mais contexto</span>
+                <span class="step-tag">Menos improviso</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cliente">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">04</div>
+          <div>
+            <div class="section-kicker">Experiência do cliente</div>
+            <h2>Como o cliente vive a nova jornada</h2>
+            <p>
+              A experiência já não é igual para toda a gente. A app começa a diferenciar o percurso conforme o momento da relação com a Daniela.
+            </p>
+          </div>
+        </div>
+
+        <div class="journey-columns">
+          <article class="journey-card">
+            <div class="status live">Cliente novo</div>
+            <h3>Primeira experiência</h3>
+            <p>A comunicação é mais acolhedora e contextual. A ideia é orientar sem assumir conhecimento prévio.</p>
+            <ul class="journey-list">
+              <li>Recebe a marcação e os links necessários.</li>
+              <li>Dá consentimento para RGPD, dados de saúde e canais autorizados.</li>
+              <li>Preenche a preparação inicial.</li>
+              <li>Pode gerir a sessão através do link público.</li>
+              <li>Recebe reminder pré-sessão por email.</li>
+            </ul>
+          </article>
+
+          <article class="journey-card">
+            <div class="status live">Cliente repetente</div>
+            <h3>Relação continuada</h3>
+            <p>A comunicação é mais curta e mais madura. A app já tenta evitar repetir contexto que a Daniela já conhece.</p>
+            <ul class="journey-list">
+              <li>A mensagem muda para não parecer onboarding outra vez.</li>
+              <li>Quando a origem do cliente já é conhecida, essa pergunta deixa de aparecer.</li>
+              <li>O cliente continua a poder confirmar, remarcar ou cancelar da mesma forma.</li>
+              <li>O histórico acumulado permanece visível na timeline.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="comparison">
+          <article class="comparison-card before">
+            <h3>Antes</h3>
+            <ul>
+              <li>A Daniela precisava de gerir mais coisas manualmente.</li>
+              <li>A comunicação era mais igual para toda a gente.</li>
+              <li>Remarcação e cancelamento não estavam claros dentro da app.</li>
+              <li>O histórico ficava mais disperso.</li>
+            </ul>
+          </article>
+
+          <article class="comparison-card after">
+            <h3>Agora</h3>
+            <ul>
+              <li>O cliente já consegue mexer na marcação sem tanto atrito.</li>
+              <li>O sistema já respeita idioma, consentimentos e tipo de cliente.</li>
+              <li>Os motivos de alteração ficam registados.</li>
+              <li>A Daniela vê a história completa com muito mais contexto.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="automatico">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">05</div>
+          <div>
+            <div class="section-kicker">Bastidores automáticos</div>
+            <h2>O que acontece automaticamente sem a Daniela tocar</h2>
+            <p>
+              Esta é a parte mais importante para reduzir carga mental. A app já trata de várias peças sozinha assim que a sessão é criada ou alterada.
+            </p>
+          </div>
+        </div>
+
+        <div class="automation-grid">
+          <article class="automation-item">
+            <strong>Geração do link de gestão</strong>
+            <p>Cada sessão fica com um link próprio para o cliente poder confirmar, remarcar ou cancelar.</p>
+          </article>
+
+          <article class="automation-item">
+            <strong>Agendamento do reminder</strong>
+            <p>Quando a sessão é criada ou remarcada, o sistema recalcula o próximo reminder pré-sessão.</p>
+          </article>
+
+          <article class="automation-item">
+            <strong>Adaptação da comunicação</strong>
+            <p>O sistema usa o idioma preferido do cliente e diferencia o tom para cliente novo ou repetente.</p>
+          </article>
+
+          <article class="automation-item">
+            <strong>Sincronização da sessão no calendário</strong>
+            <p>Se a sessão muda dentro da app, o evento do Google Calendar acompanha essa mudança.</p>
+          </article>
+
+          <article class="automation-item">
+            <strong>Atualização de estado</strong>
+            <p>Se o cliente confirma, remarca ou cancela, a sessão muda de estado sem intervenção manual da Daniela.</p>
+          </article>
+
+          <article class="automation-item">
+            <strong>Registo em timeline</strong>
+            <p>As ações importantes ficam visíveis no detalhe do cliente e ajudam a contar a história completa da relação.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="verdades">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">06</div>
+          <div>
+            <div class="section-kicker">Verdades importantes</div>
+            <h2>O que já está pronto e o que ainda falta ligar</h2>
+            <p>
+              Esta secção existe para evitar falsas expectativas. A app está muito mais forte, mas há duas peças externas que ainda precisam de ser ligadas para fechar o círculo.
+            </p>
+          </div>
+        </div>
+
+        <div class="truth-grid">
+          <article class="truth-card">
+            <div class="status live">Pronto</div>
+            <h3>Email e lógica de reminder</h3>
+            <p>O reminder pré-sessão já está desenhado e funcional em lógica email-first, com base pronta para escalar para outros canais.</p>
+          </article>
+
+          <article class="truth-card">
+            <div class="status pending">Falta provider</div>
+            <h3>SMS / WhatsApp reais</h3>
+            <p>A estrutura já está preparada, mas o envio real depende de escolher e ligar o provider certo.</p>
+          </article>
+
+          <article class="truth-card">
+            <div class="status pending">Falta webhook</div>
+            <h3>Google Calendar em dois sentidos</h3>
+            <p>Hoje a app manda mudanças para o calendário. Ainda falta o contrário: alterações feitas no calendário entrarem de volta na app.</p>
+          </article>
+        </div>
+
+        <div class="quote-box">
+          <strong>Explicação simples para a Daniela:</strong>
+          <p>
+            “A app já organiza a sessão, fala com o cliente de forma mais certa, deixa o cliente gerir a marcação sozinho e guarda o histórico todo.
+            O que falta é só ligar os canais rápidos externos e o retorno automático do Google Calendar.”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="proximo">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-index">07</div>
+          <div>
+            <div class="section-kicker">Próximo passo</div>
+            <h2>O que faz sentido fazer a seguir</h2>
+            <p>
+              A base já está forte o suficiente para a Daniela testar a jornada real. A seguir, faz sentido fechar os canais externos e refinar o questionário de repetente.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Próximo passo recomendado</h3>
+            <ul class="plain-list">
+              <li>Testar este branch em contexto real com a Daniela.</li>
+              <li>Escolher o provider de SMS / WhatsApp.</li>
+              <li>Ligar os canais rápidos à lógica já preparada.</li>
+              <li>Fechar depois o sync reverso do Google Calendar.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Refinamento futuro desejável</h3>
+            <ul class="plain-list">
+              <li>Tornar o percurso do repetente ainda mais curto e contextual.</li>
+              <li>Reforçar templates por serviço, canal e momento da relação.</li>
+              <li>Criar versão exportável para PDF quando for útil apresentar a outras pessoas.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      Documento de visão da nova jornada da app.
+      <br />
+      Relacionado com o guia principal em <a href="guia-sistema.html">docs/guia-sistema.html</a>.
+    </div>
+  </footer>
+</body>
+</html>

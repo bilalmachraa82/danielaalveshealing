@@ -1,4 +1,4 @@
-import type { Client, Tag } from "@/lib/types/database.types";
+import type { Client, ClientTimelineEvent, Tag } from "@/lib/types/database.types";
 import type { CreateClientInput, UpdateClientInput } from "@/lib/schemas/client.schema";
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
@@ -29,6 +29,12 @@ export function fetchClients(filters?: {
 
 export function fetchClient(id: string): Promise<Client> {
   return apiFetch(`/api/clients/${id}`);
+}
+
+export function fetchClientTimeline(
+  clientId: string
+): Promise<ClientTimelineEvent[]> {
+  return apiFetch(`/api/clients/${clientId}/timeline`);
 }
 
 export function createClient(data: CreateClientInput): Promise<Client> {

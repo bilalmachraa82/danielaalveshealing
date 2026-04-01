@@ -33,6 +33,7 @@ const AnamnesisPage = lazy(() => import("./pages/public/AnamnesisPage"));
 const IntakePage = lazy(() => import("./pages/public/IntakePage"));
 const SatisfactionPage = lazy(() => import("./pages/public/SatisfactionPage"));
 const PreparePage = lazy(() => import("./pages/public/PreparePage"));
+const ManageSessionPage = lazy(() => import("./pages/public/ManageSessionPage"));
 const PrivacyPolicy = lazy(() => import("./pages/public/PrivacyPolicy"));
 const HomeHarmonyPage = lazy(() => import("./pages/public/HomeHarmonyPage"));
 
@@ -69,6 +70,9 @@ const App = () => (
 
               {/* Public - Unified preparation form (token-based, no auth) */}
               <Route path="/preparar/:token" element={<PreparePage />} />
+
+              {/* Public - Session management (token-based, no auth) */}
+              <Route path="/marcacao/:token" element={<ManageSessionPage />} />
 
               {/* Public - Privacy Policy */}
               <Route path="/politica-privacidade" element={<PrivacyPolicy />} />

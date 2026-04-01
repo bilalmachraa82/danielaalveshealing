@@ -4,12 +4,19 @@ import {
   fetchSession,
   createSession,
   updateSession,
+  fetchManagedSession,
   fetchSessionNotes,
   upsertSessionNote,
   fetchTodaySessions,
   fetchUpcomingSessions,
+  submitManagedSessionAction,
 } from "@/lib/api/sessions";
-import type { CreateSessionInput, UpdateSessionInput, SessionNoteInput } from "@/lib/schemas/session.schema";
+import type {
+  CreateSessionInput,
+  UpdateSessionInput,
+  SessionNoteInput,
+  ManageSessionActionInput,
+} from "@/lib/schemas/session.schema";
 
 export function useSessions(filters?: {
   client_id?: string;
@@ -28,6 +35,14 @@ export function useSession(id: string | undefined) {
     queryKey: ["sessions", id],
     queryFn: () => fetchSession(id!),
     enabled: !!id,
+  });
+}
+
+export function useManagedSession(token: string | undefined) {
+  return useQuery({
+    queryKey: ["managed-session", token],
+    queryFn: () => fetchManagedSession(token!),
+    enabled: !!token,
   });
 }
 
@@ -53,6 +68,21 @@ export function useUpdateSession() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
       queryClient.invalidateQueries({ queryKey: ["sessions", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["today-sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["upcoming-sessions"] });
+    },
+  });
+}
+
+export function useManagedSessionAction(token: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ManageSessionActionInput) =>
+      submitManagedSessionAction(token!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["managed-session", token] });
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
       queryClient.invalidateQueries({ queryKey: ["today-sessions"] });
       queryClient.invalidateQueries({ queryKey: ["upcoming-sessions"] });
     },

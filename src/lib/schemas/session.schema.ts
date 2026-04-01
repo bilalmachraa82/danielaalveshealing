@@ -8,6 +8,7 @@ export const createSessionSchema = z.object({
     "healing_wellness",
     "pura_radiancia",
     "pure_earth_love",
+    "home_harmony",
     "other",
   ]),
   price_cents: z.number().int().nonnegative().optional(),
@@ -21,7 +22,13 @@ export const updateSessionSchema = z.object({
   scheduled_at: z.string().optional(),
   duration_minutes: z.number().int().positive().optional(),
   service_type: z
-    .enum(["healing_wellness", "pura_radiancia", "pure_earth_love", "other"])
+    .enum([
+      "healing_wellness",
+      "pura_radiancia",
+      "pure_earth_love",
+      "home_harmony",
+      "other",
+    ])
     .optional(),
   status: z
     .enum([
@@ -38,9 +45,28 @@ export const updateSessionSchema = z.object({
   payment_method: z.string().optional(),
   notes: z.string().optional(),
   cancellation_reason: z.string().optional(),
+  reschedule_reason: z.string().optional(),
+  actor: z.enum(["admin", "client", "system"]).optional(),
 });
 
 export type UpdateSessionInput = z.infer<typeof updateSessionSchema>;
+
+export const manageSessionActionSchema = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal("confirm"),
+  }),
+  z.object({
+    action: z.literal("cancel"),
+    reason: z.string().optional(),
+  }),
+  z.object({
+    action: z.literal("reschedule"),
+    scheduled_at: z.string().min(1, "Nova data é obrigatória"),
+    reason: z.string().optional(),
+  }),
+]);
+
+export type ManageSessionActionInput = z.infer<typeof manageSessionActionSchema>;
 
 export const sessionNoteSchema = z.object({
   subjective: z.string().optional(),
