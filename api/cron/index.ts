@@ -2,6 +2,13 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import {
+  buildPreSessionReminderEmailContent,
+  formatSessionDateForLanguage,
+  getLocalizedServiceLabel,
+} from "../../src/lib/communications/templates.ts";
+import { shouldSendPreSessionReminder } from "../../src/lib/communications/reminders.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -28,6 +35,8 @@ export default async function handler(
 
   try {
     switch (route) {
+      case "pre-session-reminder":
+        return await handlePreSessionReminder(res);
       case "post-session":
         return await handlePostSession(res);
       case "rebooking":
@@ -50,6 +59,91 @@ export default async function handler(
       error instanceof Error ? error.message : "Internal server error";
     return res.status(500).json({ error: message });
   }
+}
+
+/**
+ * Cron: PRE-SESSION reminder
+ * Schedule: hourly or daily depending on Vercel cron configuration
+ */
+async function handlePreSessionReminder(res: VercelResponse) {
+  const sql = getDb();
+  const sessions = await sql(
+    `SELECT s.id AS session_id, s.client_id, s.scheduled_at, s.service_type, s.reminder_status,
+            c.first_name, c.email, c.preferred_language, c.preferred_channel
+     FROM sessions s
+     JOIN clients c ON c.id = s.client_id
+     WHERE s.status IN ('scheduled', 'confirmed')
+       AND s.scheduled_at BETWEEN now() + interval '21 hours' AND now() + interval '27 hours'
+       AND c.email IS NOT NULL`
+  );
+
+  const resend = getResend();
+  let sentCount = 0;
+
+  for (const session of sessions) {
+    const profile = buildClientCommunicationProfile({
+      preferred_language: session.preferred_language,
+      preferred_channel: session.preferred_channel,
+    });
+
+    const shouldSend = shouldSendPreSessionReminder({
+      now: new Date(),
+      scheduledAt: new Date(session.scheduled_at),
+      preferredChannel: profile.preferredChannel,
+      emailAvailable: Boolean(session.email),
+      smsAvailable: false,
+      whatsappAvailable: false,
+      reminderStatus: session.reminder_status ?? "pending",
+    });
+
+    if (!shouldSend) {
+      continue;
+    }
+
+    const content = buildPreSessionReminderEmailContent({
+      firstName: session.first_name,
+      preferredLanguage: profile.preferredLanguage,
+      serviceLabel: getLocalizedServiceLabel(
+        session.service_type,
+        profile.preferredLanguage
+      ),
+      formattedDate: formatSessionDateForLanguage(
+        session.scheduled_at,
+        profile.preferredLanguage
+      ),
+    });
+    const html = buildEmailHtml(content.title, content.paragraphs);
+
+    const result = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: session.email as string,
+      subject: content.subject,
+      html,
+    });
+
+    await sql(
+      `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
+       VALUES ($1, $2, 'pre_session_reminder', $3, 'sent')`,
+      [session.client_id, session.session_id, result.data?.id ?? null]
+    );
+
+    await sql(
+      `UPDATE sessions
+       SET reminder_status = 'sent',
+           last_reminder_sent_at = now(),
+           next_reminder_due_at = NULL
+       WHERE id = $1`,
+      [session.session_id]
+    );
+
+    sentCount++;
+  }
+
+  return res.json({
+    success: true,
+    processed: sessions.length,
+    sent: sentCount,
+  });
 }
 
 /**
@@ -288,7 +382,7 @@ async function handleCheckin24h(res: VercelResponse) {
        AND NOT EXISTS (
          SELECT 1 FROM email_log el
          WHERE el.session_id = s.id
-           AND el.email_type = 'reminder'
+           AND el.email_type = 'post_session_checkin'
            AND el.status = 'sent'
        )`
   );
@@ -316,7 +410,7 @@ async function handleCheckin24h(res: VercelResponse) {
 
     await sql(
       `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
-       VALUES ($1, $2, 'reminder', $3, 'sent')`,
+       VALUES ($1, $2, 'post_session_checkin', $3, 'sent')`,
       [session.client_id, session.session_id, result.data?.id ?? null]
     );
 

@@ -8,6 +8,7 @@ export const createSessionSchema = z.object({
     "healing_wellness",
     "pura_radiancia",
     "pure_earth_love",
+    "home_harmony",
     "other",
   ]),
   price_cents: z.number().int().nonnegative().optional(),
@@ -21,7 +22,13 @@ export const updateSessionSchema = z.object({
   scheduled_at: z.string().optional(),
   duration_minutes: z.number().int().positive().optional(),
   service_type: z
-    .enum(["healing_wellness", "pura_radiancia", "pure_earth_love", "other"])
+    .enum([
+      "healing_wellness",
+      "pura_radiancia",
+      "pure_earth_love",
+      "home_harmony",
+      "other",
+    ])
     .optional(),
   status: z
     .enum([

@@ -98,14 +98,17 @@ async function handleClientsList(
     const data = req.body;
 
     const rows = await sql(
-      `INSERT INTO clients (first_name, last_name, email, phone, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_marketing, consent_given_at, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+      `INSERT INTO clients (first_name, last_name, email, phone, gender, preferred_language, preferred_channel, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_marketing, consent_given_at, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
        RETURNING *`,
       [
         data.first_name,
         data.last_name ?? null,
         data.email || null,
         data.phone ?? null,
+        data.gender ?? null,
+        data.preferred_language ?? "pt",
+        data.preferred_channel ?? "email",
         data.date_of_birth ?? null,
         data.height_cm ?? null,
         data.weight_kg ?? null,
@@ -157,6 +160,15 @@ async function handleClientById(
 
     if (fields.length === 0) {
       return res.status(400).json({ error: "No fields to update" });
+    }
+
+    if (
+      data.consent_data_processing === true &&
+      data.consent_given_at === undefined
+    ) {
+      fields.push(`consent_given_at = COALESCE(consent_given_at, $${paramIndex})`);
+      values.push(new Date().toISOString());
+      paramIndex++;
     }
 
     values.push(id);

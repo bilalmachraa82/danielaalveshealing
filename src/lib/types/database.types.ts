@@ -1,3 +1,11 @@
+import type {
+  ClientGender,
+  ExtendedServiceType,
+  PreferredChannel,
+  PreferredLanguage,
+  ReminderStatus,
+} from "@/lib/communications/types";
+
 // ============================================================
 // Database Types - Daniela Alves CRM
 // ============================================================
@@ -16,6 +24,9 @@ export interface Client {
   city: string | null;
   postal_code: string | null;
   country: string;
+  gender: ClientGender | null;
+  preferred_language: PreferredLanguage;
+  preferred_channel: PreferredChannel;
   source: "manual" | "website" | "referral";
   status: "active" | "inactive" | "archived";
   consent_data_processing: boolean;
@@ -95,11 +106,7 @@ export interface AnamnesisForm {
   updated_at: string;
 }
 
-export type ServiceType =
-  | "healing_wellness"
-  | "pura_radiancia"
-  | "pure_earth_love"
-  | "other";
+export type ServiceType = ExtendedServiceType;
 
 export type SessionStatus =
   | "scheduled"
@@ -125,6 +132,13 @@ export interface Session {
   review_request_sent_at: string | null;
   notes: string | null;
   cancellation_reason: string | null;
+  prepare_token?: string | null;
+  prepare_token_expires_at?: string | null;
+  google_calendar_event_id?: string | null;
+  reminder_status?: ReminderStatus;
+  last_reminder_sent_at?: string | null;
+  next_reminder_due_at?: string | null;
+  reschedule_reason?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -222,6 +236,8 @@ export interface EmailLogEntry {
     | "satisfaction"
     | "review_request"
     | "reminder"
+    | "pre_session_reminder"
+    | "post_session_checkin"
     | "rebooking"
     | "reactivation";
   resend_id: string | null;

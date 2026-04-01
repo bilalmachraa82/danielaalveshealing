@@ -3,6 +3,17 @@ import { getDb } from "../_db.js";
 import { getAppUrl } from "../_email.js";
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent } from "../_calendar.js";
 import crypto from "node:crypto";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import { deriveClientJourney } from "../../src/lib/communications/journey.ts";
+import {
+  buildBookingWhatsAppCopy,
+  formatSessionDateForLanguage,
+  getLocalizedServiceLabel,
+} from "../../src/lib/communications/templates.ts";
+import type {
+  ClientGender,
+  PreferredLanguage,
+} from "../../src/lib/communications/types.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -272,6 +283,7 @@ interface QuickBookingRequest {
   client_name: string;
   client_phone: string;
   client_gender?: "female" | "male";
+  client_language?: PreferredLanguage;
   scheduled_at: string;
   service_type: string;
 }
@@ -282,6 +294,17 @@ interface QuickBookingResponse {
   client_is_new: boolean;
   prepare_url: string;
   whatsapp_url: string;
+  preferred_language: PreferredLanguage;
+}
+
+function normalizePhoneForLookup(phone: string) {
+  return phone.replace(/\D/g, "");
+}
+
+function normalizePhoneForStorage(phone: string) {
+  const digits = normalizePhoneForLookup(phone);
+  if (!digits) return "";
+  return phone.trim().startsWith("+") ? `+${digits}` : digits;
 }
 
 async function handleQuickBooking(
@@ -297,6 +320,7 @@ async function handleQuickBooking(
     client_name,
     client_phone,
     client_gender,
+    client_language,
     scheduled_at,
     service_type,
   } = req.body as QuickBookingRequest;
@@ -307,21 +331,49 @@ async function handleQuickBooking(
     });
   }
 
+  const normalizedPhone = normalizePhoneForLookup(client_phone);
+  const storedPhone = normalizePhoneForStorage(client_phone);
+  const scheduledDate = new Date(scheduled_at);
+
+  if (!normalizedPhone) {
+    return res.status(400).json({ error: "client_phone is invalid" });
+  }
+
+  if (Number.isNaN(scheduledDate.getTime())) {
+    return res.status(400).json({ error: "scheduled_at is invalid" });
+  }
+
   // --- 1. Search for existing client by phone (exact match) ---
   const existingClients = await sql(
-    "SELECT id, first_name, last_name, email, gender FROM clients WHERE phone = $1 LIMIT 1",
-    [client_phone]
+    `SELECT id, first_name, last_name, email, gender, preferred_language, source
+     FROM clients
+     WHERE regexp_replace(COALESCE(phone, ''), '\\D', '', 'g') = $1
+     LIMIT 1`,
+    [normalizedPhone]
   );
 
   let clientId: string;
   let clientIsNew = false;
   let clientEmail: string | null = null;
-  let clientGender: string | null = client_gender ?? null;
+  let clientGender: ClientGender | null = client_gender ?? null;
+  let clientPreferredLanguage: PreferredLanguage = client_language ?? "pt";
+  let clientFirstName = client_name.trim().split(/\s+/)[0];
+  let clientFullName = client_name.trim();
+  let referralSourceKnown = false;
 
   if (existingClients.length > 0) {
     clientId = existingClients[0].id;
     clientEmail = existingClients[0].email;
     clientGender = existingClients[0].gender ?? clientGender;
+    clientPreferredLanguage =
+      buildClientCommunicationProfile(existingClients[0]).preferredLanguage;
+    clientFirstName = existingClients[0].first_name ?? clientFirstName;
+    clientFullName = [
+      existingClients[0].first_name,
+      existingClients[0].last_name,
+    ].filter(Boolean).join(" ");
+    referralSourceKnown = existingClients[0].source != null &&
+      existingClients[0].source !== "manual";
   } else {
     // --- 2. Create new client with just name + phone ---
     const nameParts = client_name.trim().split(/\s+/);
@@ -329,16 +381,49 @@ async function handleQuickBooking(
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null;
 
     const newClientRows = await sql(
-      `INSERT INTO clients (first_name, last_name, phone, gender, source)
-       VALUES ($1, $2, $3, $4, 'manual')
-       RETURNING id, email, gender`,
-      [firstName, lastName, client_phone, client_gender ?? null]
+      `INSERT INTO clients (first_name, last_name, phone, gender, preferred_language, source)
+       VALUES ($1, $2, $3, $4, $5, 'manual')
+       RETURNING id, email, gender, preferred_language`,
+      [
+        firstName,
+        lastName,
+        storedPhone,
+        client_gender ?? null,
+        clientPreferredLanguage,
+      ]
     );
 
     clientId = newClientRows[0].id;
     clientEmail = newClientRows[0].email;
+    clientGender = newClientRows[0].gender ?? clientGender;
+    clientPreferredLanguage =
+      newClientRows[0].preferred_language ?? clientPreferredLanguage;
+    clientFirstName = firstName;
+    clientFullName = [firstName, lastName].filter(Boolean).join(" ");
     clientIsNew = true;
   }
+
+  const [completedSessionCountRows, completedAnamnesisCountRows] =
+    await Promise.all([
+      sql(
+        "SELECT COUNT(*)::int AS count FROM sessions WHERE client_id = $1 AND status = 'completed'",
+        [clientId]
+      ),
+      sql(
+        "SELECT COUNT(*)::int AS count FROM anamnesis_forms WHERE client_id = $1 AND status = 'completed'",
+        [clientId]
+      ),
+    ]);
+
+  const completedSessions = Math.max(
+    completedSessionCountRows[0]?.count ?? 0,
+    completedAnamnesisCountRows[0]?.count ?? 0
+  );
+  const journey = deriveClientJourney({
+    completedSessions,
+    serviceType: service_type,
+    referralSourceKnown,
+  });
 
   // --- 3. Determine price based on service type ---
   const priceCentsMap: Record<string, number> = {
@@ -348,25 +433,22 @@ async function handleQuickBooking(
     home_harmony: 0,
   };
   const priceCents = priceCentsMap[service_type] ?? null;
+  const nextReminderDueAt =
+    scheduledDate.getTime() - Date.now() > 24 * 60 * 60 * 1000
+      ? new Date(scheduledDate.getTime() - 24 * 60 * 60 * 1000).toISOString()
+      : null;
 
   // --- 4. Create session ---
   const sessionRows = await sql(
-    `INSERT INTO sessions (client_id, scheduled_at, service_type, price_cents)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO sessions (client_id, scheduled_at, service_type, price_cents, reminder_status, next_reminder_due_at)
+     VALUES ($1, $2, $3, $4, 'pending', $5)
      RETURNING id`,
-    [clientId, scheduled_at, service_type, priceCents]
+    [clientId, scheduled_at, service_type, priceCents, nextReminderDueAt]
   );
 
   const sessionId = sessionRows[0].id;
 
-  // --- 5. Check if client needs anamnesis ---
-  const anamnesisCount = await sql(
-    "SELECT COUNT(*)::int AS count FROM anamnesis_forms WHERE client_id = $1 AND status = 'completed'",
-    [clientId]
-  );
-  const needsAnamnesis = (anamnesisCount[0]?.count ?? 0) === 0;
-
-  // --- 6. Generate prepare token ---
+  // --- 5. Generate prepare token ---
   const prepareToken = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -375,52 +457,32 @@ async function handleQuickBooking(
     [prepareToken, expiresAt, sessionId]
   );
 
-  // --- 7. Build URLs ---
+  // --- 6. Build URLs ---
   const appUrl = getAppUrl();
   const prepareUrl = `${appUrl}/preparar/${prepareToken}`;
 
-  // Build WhatsApp message
-  const firstName = client_name.trim().split(/\s+/)[0];
-  const sessionDate = new Date(scheduled_at);
-  const formattedDate = sessionDate.toLocaleDateString("pt-PT", {
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
+  const serviceLabel = getLocalizedServiceLabel(
+    service_type,
+    clientPreferredLanguage
+  );
+  const formattedDate = formatSessionDateForLanguage(
+    scheduled_at,
+    clientPreferredLanguage
+  );
+  const whatsappText = buildBookingWhatsAppCopy({
+    clientName: clientFirstName,
+    preferredLanguage: clientPreferredLanguage,
+    clientKind: journey.clientKind,
+    serviceLabel,
+    formattedDate,
+    prepareUrl,
+    gender: clientGender,
   });
 
-  // --- Build personalized WhatsApp message ---
-  const isFemale = clientGender === "female";
-  const greeting = isFemale ? "Querida" : "Querido";
-  const welcome = isFemale ? "Bem-vinda" : "Bem-vindo";
-  const serviceNames: Record<string, string> = {
-    healing_wellness: "Sessao Healing Touch",
-    pura_radiancia: "Imersao Pura Radiancia",
-    pure_earth_love: "Pure Earth Love",
-    home_harmony: "Home Harmony",
-  };
-  const serviceName = serviceNames[service_type] ?? "sessao";
-
-  const whatsappText = [
-    `${greeting} ${firstName}! ✨🙏`,
-    ``,
-    `${welcome} ao espaco Daniela Alves Healing & Wellness!`,
-    ``,
-    `A sua *${serviceName}* esta agendada para *${formattedDate}*.`,
-    ``,
-    `Para que possamos preparar tudo com o maior cuidado e dedicacao, peco-lhe que preencha este breve formulario:`,
-    `👉 ${prepareUrl}`,
-    ``,
-    `📍 R. do Regueiro do Tanque 3, Fontanelas, Sao Joao das Lampas`,
-    ``,
-    `Com amor e gratidao,`,
-    `Daniela 💜`,
-  ].join("\n");
-
-  const cleanPhone = client_phone.replace(/[^0-9]/g, "");
+  const cleanPhone = normalizedPhone;
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappText)}`;
 
-  // --- 8. Create Google Calendar event ---
+  // --- 7. Create Google Calendar event ---
   const durationMap: Record<string, number> = {
     healing_wellness: 120,
     pura_radiancia: 180,
@@ -431,7 +493,7 @@ async function handleQuickBooking(
   let calendarEventId: string | null = null;
   try {
     calendarEventId = await createCalendarEvent({
-      clientName: client_name,
+      clientName: clientFullName,
       serviceType: service_type,
       scheduledAt: scheduled_at,
       durationMinutes: durationMap[service_type] ?? 120,
@@ -455,6 +517,7 @@ async function handleQuickBooking(
     client_is_new: clientIsNew,
     prepare_url: prepareUrl,
     whatsapp_url: whatsappUrl,
+    preferred_language: clientPreferredLanguage,
   };
 
   return res.status(201).json(response);
