@@ -23,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useClient, useClientTags, useClientTimeline } from "@/hooks/useClients";
 import { useSessions } from "@/hooks/useSessions";
 
