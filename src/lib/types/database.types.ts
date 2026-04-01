@@ -32,6 +32,17 @@ export interface Client {
   consent_data_processing: boolean;
   consent_marketing: boolean;
   consent_given_at: string | null;
+  consent_health_data: boolean;
+  consent_health_data_at?: string | null;
+  consent_health_data_source?: string | null;
+  service_consent_email?: boolean;
+  service_consent_sms?: boolean;
+  service_consent_whatsapp?: boolean;
+  marketing_consent_email?: boolean;
+  marketing_consent_sms?: boolean;
+  marketing_consent_whatsapp?: boolean;
+  consent_version?: string;
+  consent_updated_at?: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -134,7 +145,12 @@ export interface Session {
   cancellation_reason: string | null;
   prepare_token?: string | null;
   prepare_token_expires_at?: string | null;
+  manage_token?: string | null;
+  manage_token_expires_at?: string | null;
+  client_confirmed_at?: string | null;
   google_calendar_event_id?: string | null;
+  calendar_sync_status?: "pending" | "synced" | "failed" | "not_configured";
+  calendar_last_synced_at?: string | null;
   reminder_status?: ReminderStatus;
   last_reminder_sent_at?: string | null;
   next_reminder_due_at?: string | null;
@@ -244,4 +260,53 @@ export interface EmailLogEntry {
   status: "sent" | "delivered" | "opened" | "bounced" | "failed";
   sent_at: string;
   created_at: string;
+}
+
+export interface CommunicationLogEntry {
+  id: string;
+  client_id: string;
+  session_id: string | null;
+  channel: "email" | "sms" | "whatsapp";
+  template_key: string;
+  provider_message_id: string | null;
+  status: "queued" | "sent" | "delivered" | "opened" | "failed" | "cancelled";
+  metadata: Record<string, unknown>;
+  sent_at: string;
+  created_at: string;
+}
+
+export interface SessionChangeLogEntry {
+  id: string;
+  session_id: string;
+  client_id: string;
+  action:
+    | "created"
+    | "confirmed"
+    | "rescheduled"
+    | "cancelled"
+    | "completed"
+    | "no_show"
+    | "reminder_reset";
+  previous_status: string | null;
+  new_status: string | null;
+  previous_scheduled_at: string | null;
+  new_scheduled_at: string | null;
+  reason: string | null;
+  actor: "admin" | "client" | "system";
+  created_at: string;
+}
+
+export interface ClientTimelineEvent {
+  id: string;
+  type:
+    | "session"
+    | "form"
+    | "communication"
+    | "consent";
+  title: string;
+  description: string | null;
+  occurred_at: string;
+  channel?: "email" | "sms" | "whatsapp" | null;
+  status?: string | null;
+  session_id?: string | null;
 }
