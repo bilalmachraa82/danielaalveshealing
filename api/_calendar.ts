@@ -17,7 +17,7 @@ const SERVICE_LABELS: Record<string, string> = {
   other: "Sessão",
 };
 
-function getCalendarClient() {
+export function getCalendarClient() {
   const calendarId = process.env.GOOGLE_CALENDAR_ID?.trim();
   if (!calendarId) return null;
 
@@ -184,4 +184,45 @@ export async function deleteCalendarEvent(eventId: string): Promise<void> {
   } catch {
     // Event may already be deleted
   }
+}
+
+export async function listCalendarEvents(params: {
+  timeMin?: string;
+  timeMax?: string;
+  syncToken?: string;
+}): Promise<{ events: Array<Record<string, unknown>>; nextSyncToken: string | null }> {
+  const client = getCalendarClient();
+  if (!client) return { events: [], nextSyncToken: null };
+
+  const { calendar, calendarId } = client;
+  const allEvents: Array<Record<string, unknown>> = [];
+  let pageToken: string | undefined;
+  let nextSyncToken: string | null = null;
+
+  do {
+    const listParams: Record<string, unknown> = {
+      calendarId,
+      maxResults: 250,
+      singleEvents: true,
+      pageToken,
+    };
+
+    if (params.syncToken) {
+      listParams.syncToken = params.syncToken;
+    } else {
+      if (params.timeMin) listParams.timeMin = params.timeMin;
+      if (params.timeMax) listParams.timeMax = params.timeMax;
+      listParams.orderBy = "startTime";
+    }
+
+    const response = await calendar.events.list(listParams as Parameters<typeof calendar.events.list>[0]);
+    const items = response.data.items ?? [];
+    allEvents.push(...(items as Array<Record<string, unknown>>));
+    pageToken = response.data.nextPageToken ?? undefined;
+    if (response.data.nextSyncToken) {
+      nextSyncToken = response.data.nextSyncToken;
+    }
+  } while (pageToken);
+
+  return { events: allEvents, nextSyncToken };
 }

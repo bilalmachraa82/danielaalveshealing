@@ -16,3 +16,5 @@ export type ExtendedServiceType =
   | "pure_earth_love"
   | "home_harmony"
   | "other";
+
+export type ReturningFlowVariant = "simple" | "changed_context";

@@ -876,12 +876,37 @@ async function handlePrepareGet(
 
   // Last session date for returning clients
   let lastSessionDate: string | null = null;
+  let lastCheckinScales: {
+    physically: number;
+    psychologically: number;
+    emotionally: number;
+    energetically: number;
+  } | null = null;
   if (isReturning) {
     const lastRows = await sql(
       `SELECT scheduled_at FROM sessions WHERE client_id = $1 AND status = 'completed' ORDER BY scheduled_at DESC LIMIT 1`,
       [clientId]
     );
     lastSessionDate = lastRows[0]?.scheduled_at ?? null;
+
+    // Fetch last checkin scales for returning clients
+    const lastCheckinRows = await sql(
+      `SELECT feeling_physically, feeling_psychologically, feeling_emotionally, feeling_energetically
+       FROM returning_checkins
+       WHERE client_id = $1
+       ORDER BY completed_at DESC
+       LIMIT 1`,
+      [clientId]
+    );
+    if (lastCheckinRows.length > 0) {
+      const lastCheckin = lastCheckinRows[0];
+      lastCheckinScales = {
+        physically: lastCheckin.feeling_physically as number,
+        psychologically: lastCheckin.feeling_psychologically as number,
+        emotionally: lastCheckin.feeling_emotionally as number,
+        energetically: lastCheckin.feeling_energetically as number,
+      };
+    }
   }
 
   // Determine if personal data completion is needed
@@ -913,6 +938,7 @@ async function handlePrepareGet(
     form_type: formType,
     last_session_date: lastSessionDate,
     total_sessions: totalCompleted,
+    last_checkin_scales: lastCheckinScales,
   });
 }
 

@@ -311,3 +311,30 @@ export interface ClientTimelineEvent {
   status?: string | null;
   session_id?: string | null;
 }
+
+export type CalendarInboxStatus = 'pending' | 'matched' | 'created' | 'dismissed';
+
+export interface CalendarInboxItem {
+  id: string;
+  google_event_id: string;
+  summary: string;
+  description: string | null;
+  start_at: string;
+  end_at: string;
+  attendee_email: string | null;
+  status: CalendarInboxStatus;
+  matched_session_id: string | null;
+  resolved_by: 'auto' | 'admin' | null;
+  resolved_at: string | null;
+  raw_event: Record<string, unknown>;
+  synced_at: string;
+  created_at: string;
+}
+
+export interface CalendarSyncState {
+  id: string;
+  sync_token: string | null;
+  last_full_sync_at: string | null;
+  last_incremental_sync_at: string | null;
+  updated_at: string;
+}

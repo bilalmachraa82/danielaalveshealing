@@ -2,6 +2,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
+import { listCalendarEvents } from "../_calendar.js";
+import { reconcileEvents, isAppCreatedEvent } from "../../src/lib/calendar/reverse-sync.ts";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
 import { createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
 import {
@@ -52,6 +54,8 @@ export default async function handler(
         return await handleBirthday(res);
       case "feedback-request":
         return await handleFeedbackRequest(res);
+      case "calendar-reverse-sync":
+        return await handleCalendarReverseSync(res);
       default:
         return res.status(404).json({ error: "Not found" });
     }
@@ -662,5 +666,128 @@ async function handleFeedbackRequest(res: VercelResponse) {
     success: true,
     processed: rows.length,
     sent: sentCount,
+  });
+}
+
+/**
+ * Cron: CALENDAR REVERSE SYNC
+ * Schedule: every 15 minutes (*/15 * * * *)
+ */
+async function handleCalendarReverseSync(res: VercelResponse) {
+  const sql = getDb();
+
+  // 1. Load sync state
+  const [syncState] = await sql(
+    `SELECT sync_token, last_full_sync_at FROM calendar_sync_state WHERE id = 'default'`
+  );
+
+  // 2. Determine fetch strategy
+  const useSyncToken = Boolean(syncState?.sync_token);
+  const timeMin = useSyncToken
+    ? undefined
+    : new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const timeMax = useSyncToken
+    ? undefined
+    : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  // 3. Fetch events from Google Calendar
+  let events: Array<Record<string, unknown>>;
+  let nextSyncToken: string | null;
+  try {
+    const fetchResult = await listCalendarEvents({
+      syncToken: syncState?.sync_token ?? undefined,
+      timeMin,
+      timeMax,
+    });
+    events = fetchResult.events;
+    nextSyncToken = fetchResult.nextSyncToken;
+  } catch (error: unknown) {
+    // If sync token is invalid, do a full sync
+    if (useSyncToken) {
+      const fetchResult = await listCalendarEvents({
+        timeMin: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        timeMax: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      });
+      events = fetchResult.events;
+      nextSyncToken = fetchResult.nextSyncToken;
+      // Clear the invalid token
+      await sql(`UPDATE calendar_sync_state SET sync_token = NULL WHERE id = 'default'`);
+    } else {
+      throw error;
+    }
+  }
+
+  if (events.length === 0) {
+    // Save sync token even if no events
+    if (nextSyncToken) {
+      await sql(
+        `UPDATE calendar_sync_state
+         SET sync_token = $1, last_incremental_sync_at = now(), updated_at = now()
+         WHERE id = 'default'`,
+        [nextSyncToken]
+      );
+    }
+    return res.json({ success: true, matched: 0, pending: 0, skipped: 0 });
+  }
+
+  // 4. Load known session event IDs
+  const sessionRows = await sql(
+    `SELECT google_calendar_event_id FROM sessions WHERE google_calendar_event_id IS NOT NULL`
+  );
+  const knownEventIds = new Set(
+    sessionRows.map((r: Record<string, unknown>) => String(r.google_calendar_event_id))
+  );
+
+  // 5. Load existing inbox event IDs
+  const inboxRows = await sql(`SELECT google_event_id FROM calendar_inbox`);
+  const existingInboxIds = new Set(
+    inboxRows.map((r: Record<string, unknown>) => String(r.google_event_id))
+  );
+
+  // 6. Reconcile
+  const reconcileResult = reconcileEvents(
+    events as Array<{ id?: string | null; summary?: string | null; description?: string | null; start?: { dateTime?: string; date?: string }; end?: { dateTime?: string; date?: string }; attendees?: Array<{ email?: string }> }>,
+    knownEventIds,
+    existingInboxIds
+  );
+
+  // 7. Insert matched items
+  for (const item of reconcileResult.matched) {
+    await sql(
+      `INSERT INTO calendar_inbox (google_event_id, summary, description, start_at, end_at, attendee_email, status, resolved_by, resolved_at, raw_event)
+       VALUES ($1, $2, $3, $4, $5, $6, 'matched', 'auto', now(), $7::jsonb)
+       ON CONFLICT (google_event_id) DO NOTHING`,
+      [item.google_event_id, item.summary, item.description, item.start_at, item.end_at, item.attendee_email, JSON.stringify(item.raw_event)]
+    );
+  }
+
+  // 8. Insert pending items
+  for (const item of reconcileResult.pending) {
+    await sql(
+      `INSERT INTO calendar_inbox (google_event_id, summary, description, start_at, end_at, attendee_email, status, raw_event)
+       VALUES ($1, $2, $3, $4, $5, $6, 'pending', $7::jsonb)
+       ON CONFLICT (google_event_id) DO NOTHING`,
+      [item.google_event_id, item.summary, item.description, item.start_at, item.end_at, item.attendee_email, JSON.stringify(item.raw_event)]
+    );
+  }
+
+  // 9. Save sync token
+  if (nextSyncToken) {
+    const syncField = useSyncToken
+      ? "last_incremental_sync_at"
+      : "last_full_sync_at";
+    await sql(
+      `UPDATE calendar_sync_state
+       SET sync_token = $1, ${syncField} = now(), updated_at = now()
+       WHERE id = 'default'`,
+      [nextSyncToken]
+    );
+  }
+
+  return res.json({
+    success: true,
+    matched: reconcileResult.matched.length,
+    pending: reconcileResult.pending.length,
+    skipped: reconcileResult.skipped.length,
   });
 }

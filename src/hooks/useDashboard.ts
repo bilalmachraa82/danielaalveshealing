@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface DashboardStats {
   clients: { total: number; active: number };
@@ -73,6 +73,47 @@ export function useEmailLog() {
       const res = await fetch("/api/dashboard/email-log");
       if (!res.ok) throw new Error("Failed to fetch email log");
       return res.json();
+    },
+  });
+}
+
+export interface CalendarInboxEntry {
+  id: string;
+  google_event_id: string;
+  summary: string;
+  start_at: string;
+  end_at: string;
+  attendee_email: string | null;
+  status: string;
+  synced_at: string;
+}
+
+export function useCalendarInbox() {
+  return useQuery({
+    queryKey: ["calendar-inbox"],
+    queryFn: async (): Promise<CalendarInboxEntry[]> => {
+      const res = await fetch("/api/dashboard/calendar-inbox");
+      if (!res.ok) throw new Error("Failed to fetch calendar inbox");
+      return res.json();
+    },
+    refetchInterval: 60_000,
+  });
+}
+
+export function useResolveInboxItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { inbox_id: string; action: "dismiss" | "get_for_create" }) => {
+      const res = await fetch("/api/dashboard/calendar-inbox-resolve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      });
+      if (!res.ok) throw new Error("Failed to resolve inbox item");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["calendar-inbox"] });
     },
   });
 }
