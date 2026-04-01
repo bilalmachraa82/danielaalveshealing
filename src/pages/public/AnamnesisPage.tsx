@@ -455,7 +455,7 @@ export default function AnamnesisPage() {
         case 5:
           return ["previous_massage_experience", "session_objectives"];
         case 6:
-          return ["declaration_accepted"];
+          return ["consent_health_data", "declaration_accepted"];
         default:
           return [];
       }
@@ -975,6 +975,173 @@ export default function AnamnesisPage() {
                 </div>
 
                 <div className="space-y-4">
+                  <Controller
+                    control={control}
+                    name="consent_health_data"
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <div
+                          className={`flex items-start gap-3 p-4 rounded-lg border-2 transition-colors cursor-pointer ${
+                            field.value
+                              ? "border-primary bg-primary/5"
+                              : "border-border bg-white"
+                          } ${fieldState.error ? "border-destructive" : ""}`}
+                          onClick={() => field.onChange(!field.value)}
+                          role="checkbox"
+                          aria-checked={field.value}
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === " " || e.key === "Enter") {
+                              e.preventDefault();
+                              field.onChange(!field.value);
+                            }
+                          }}
+                        >
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            id="consent_health_data"
+                            aria-required="true"
+                            className="mt-0.5 shrink-0"
+                          />
+                          <label
+                            htmlFor="consent_health_data"
+                            className="text-sm leading-relaxed cursor-pointer"
+                          >
+                            {t(
+                              "Autorizo o tratamento dos meus dados pessoais e de saúde para preparação e acompanhamento da minha sessão terapêutica.",
+                              "I authorise the processing of my personal and health data for the preparation and follow-up of my therapeutic session."
+                            )}
+                          </label>
+                        </div>
+                        {fieldState.error && (
+                          <p className="text-xs text-destructive pl-1">
+                            {t(
+                              "O consentimento de dados de saúde deve ser aceite para continuar.",
+                              "Health-data consent must be accepted to continue."
+                            )}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  <div className="rounded-lg border border-border bg-white p-4 space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        {t(
+                          "Canais autorizados para comunicações de serviço",
+                          "Channels authorised for service communication"
+                        )}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t(
+                          "Confirmações, reminders, alterações e gestão da sessão.",
+                          "Confirmations, reminders, changes and session management."
+                        )}
+                      </p>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-3">
+                      <Controller
+                        control={control}
+                        name="service_consent_email"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            Email
+                          </label>
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="service_consent_sms"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            SMS
+                          </label>
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="service_consent_whatsapp"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            WhatsApp
+                          </label>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-white p-4 space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">
+                        {t(
+                          "Canais autorizados para marketing",
+                          "Channels authorised for marketing"
+                        )}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {t(
+                          "Novidades, ofertas e convites. Opcional.",
+                          "News, offers and invitations. Optional."
+                        )}
+                      </p>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-3">
+                      <Controller
+                        control={control}
+                        name="marketing_consent_email"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            Email
+                          </label>
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="marketing_consent_sms"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            SMS
+                          </label>
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="marketing_consent_whatsapp"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-sm">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                            WhatsApp
+                          </label>
+                        )}
+                      />
+                    </div>
+                  </div>
+
                   <Controller
                     control={control}
                     name="declaration_accepted"

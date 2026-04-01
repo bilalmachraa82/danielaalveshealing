@@ -20,6 +20,7 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
 import { deriveClientJourney } from "../../src/lib/communications/journey.ts";
 import {
   buildAnamnesisEmailContent,
@@ -104,6 +105,59 @@ const SERVICE_FORM_TYPE_MAP: Record<ExtendedServiceType, string> = {
   home_harmony: "healing_touch",
   other: "healing_touch",
 };
+
+async function applyClientConsentUpdate(
+  sql: ReturnType<typeof getDb>,
+  clientId: string,
+  payload: Record<string, unknown>,
+  source: string
+) {
+  const flags = deriveConsentFlags(payload);
+  const now = new Date().toISOString();
+
+  await sql(
+    `UPDATE clients
+     SET consent_data_processing = $1,
+         consent_health_data = $2,
+         consent_health_data_at = CASE
+           WHEN $2 THEN COALESCE(consent_health_data_at, $3)
+           ELSE consent_health_data_at
+         END,
+         consent_health_data_source = CASE
+           WHEN $2 THEN $4
+           ELSE consent_health_data_source
+         END,
+         service_consent_email = $5,
+         service_consent_sms = $6,
+         service_consent_whatsapp = $7,
+         consent_marketing = $8,
+         marketing_consent_email = $9,
+         marketing_consent_sms = $10,
+         marketing_consent_whatsapp = $11,
+         consent_given_at = CASE
+           WHEN $1 THEN COALESCE(consent_given_at, $3)
+           ELSE consent_given_at
+         END,
+         consent_version = '2026-04',
+         consent_updated_at = $3,
+         updated_at = now()
+     WHERE id = $12`,
+    [
+      flags.consentDataProcessing,
+      flags.consentHealthData,
+      now,
+      source,
+      flags.service.email,
+      flags.service.sms,
+      flags.service.whatsapp,
+      flags.consentMarketing,
+      flags.marketing.email,
+      flags.marketing.sms,
+      flags.marketing.whatsapp,
+      clientId,
+    ]
+  );
+}
 
 async function getClientCommunicationContext(
   sql: ReturnType<typeof getDb>,
@@ -501,7 +555,7 @@ async function handleAnamnesisPost(
 ) {
   // Validate token
   const rows = await sql(
-    "SELECT id, status, token_expires_at FROM anamnesis_forms WHERE token = $1",
+    "SELECT id, client_id, status, token_expires_at FROM anamnesis_forms WHERE token = $1",
     [token]
   );
 
@@ -520,6 +574,13 @@ async function handleAnamnesisPost(
   }
 
   const data = req.body ?? {};
+
+  await applyClientConsentUpdate(
+    sql,
+    form.client_id,
+    data,
+    "anamnesis_public"
+  );
 
   const updated = await sql(
     `UPDATE anamnesis_forms
@@ -887,6 +948,7 @@ async function handlePreparePost(
     client_updates,
     intake,
     returning_checkin,
+    consents,
   } = body;
 
   // ---- 1. Update client with non-null fields ----
@@ -917,6 +979,15 @@ async function handlePreparePost(
         values
       );
     }
+  }
+
+  if (consents && typeof consents === "object") {
+    await applyClientConsentUpdate(
+      sql,
+      clientId,
+      consents as Record<string, unknown>,
+      "prepare_public"
+    );
   }
 
   // ---- 2. Create session_intake_forms record (new clients) ----

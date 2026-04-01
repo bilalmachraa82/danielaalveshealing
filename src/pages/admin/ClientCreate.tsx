@@ -24,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Form,
   FormControl,
@@ -54,7 +55,14 @@ export default function ClientCreate() {
       country: "PT",
       source: "manual",
       consent_data_processing: false,
+      consent_health_data: false,
+      service_consent_email: false,
+      service_consent_sms: false,
+      service_consent_whatsapp: false,
       consent_marketing: false,
+      marketing_consent_email: false,
+      marketing_consent_sms: false,
+      marketing_consent_whatsapp: false,
     },
   });
 
@@ -292,6 +300,85 @@ export default function ClientCreate() {
               />
               <FormField
                 control={form.control}
+                name="consent_health_data"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Consentimento explícito para dados de saúde
+                      </FormLabel>
+                      <FormDescription>
+                        Necessário para recolha e tratamento de informação
+                        clínica em formulários e sessões terapêuticas.
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <Separator />
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium">
+                    Canais autorizados para comunicações de serviço
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Confirmações, reminders, alterações e gestão da sessão.
+                  </p>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="service_consent_email"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>Email</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="service_consent_sms"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>SMS</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="service_consent_whatsapp"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>WhatsApp</FormLabel>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
                 name="consent_marketing"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
@@ -313,6 +400,61 @@ export default function ClientCreate() {
                   </FormItem>
                 )}
               />
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium">
+                    Canais autorizados para marketing
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Newsletters, novidades, ofertas e convites.
+                  </p>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="marketing_consent_email"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>Email</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketing_consent_sms"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>SMS</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="marketing_consent_whatsapp"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormLabel>WhatsApp</FormLabel>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
 

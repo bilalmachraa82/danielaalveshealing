@@ -26,6 +26,7 @@ import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   ChevronLeft,
@@ -144,8 +145,19 @@ interface ReturningCheckinData {
   additional_observations: string;
 }
 
+interface ConsentDraft {
+  consent_health_data: boolean;
+  service_consent_email: boolean;
+  service_consent_sms: boolean;
+  service_consent_whatsapp: boolean;
+  marketing_consent_email: boolean;
+  marketing_consent_sms: boolean;
+  marketing_consent_whatsapp: boolean;
+}
+
 interface PrepareFormDraft {
   client_updates: ClientUpdatesDraft;
+  consents: ConsentDraft;
   healing_touch: HealingTouchData;
   pura_radiancia: PuraRadianciaData;
   returning_checkin: ReturningCheckinData;
@@ -192,6 +204,15 @@ function defaultDraft(): PrepareFormDraft {
     client_updates: {
       email: "",
       date_of_birth: "",
+    },
+    consents: {
+      consent_health_data: false,
+      service_consent_email: false,
+      service_consent_sms: false,
+      service_consent_whatsapp: false,
+      marketing_consent_email: false,
+      marketing_consent_sms: false,
+      marketing_consent_whatsapp: false,
     },
     healing_touch: {
       referral_source: "",
@@ -259,6 +280,117 @@ function formatSessionDate(isoString: string, lang: "pt" | "en"): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+function ConsentSection({
+  consents,
+  onToggle,
+  t,
+}: {
+  consents: ConsentDraft;
+  onToggle: (field: keyof ConsentDraft, value: boolean) => void;
+  t: (pt: string, en: string) => string;
+}) {
+  return (
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-4">
+      <div className="space-y-1">
+        <h3 className="font-serif text-lg text-foreground">
+          {t("Consentimentos e comunicação", "Consent and communication")}
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {t(
+            "O consentimento para dados de saúde é obrigatório para submeter este questionário. As preferências de contacto abaixo ajudam a Daniela a confirmar, lembrar ou ajustar a sua sessão pelos canais autorizados.",
+            "Health-data consent is required to submit this questionnaire. The contact preferences below help Daniela confirm, remind, or adjust your session through the channels you authorize."
+          )}
+        </p>
+      </div>
+
+      <label className="flex items-start gap-3">
+        <Checkbox
+          checked={consents.consent_health_data}
+          onCheckedChange={(checked) =>
+            onToggle("consent_health_data", checked === true)
+          }
+        />
+        <span className="text-sm leading-relaxed text-foreground">
+          {t(
+            "Autorizo o tratamento dos meus dados pessoais e de saúde para preparação e acompanhamento da minha sessão terapêutica.",
+            "I authorize the processing of my personal and health data for the preparation and follow-up of my therapeutic session."
+          )}
+        </span>
+      </label>
+
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-foreground">
+          {t("Canais autorizados para serviço", "Channels authorized for service")}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.service_consent_email}
+              onCheckedChange={(checked) =>
+                onToggle("service_consent_email", checked === true)
+              }
+            />
+            Email
+          </label>
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.service_consent_sms}
+              onCheckedChange={(checked) =>
+                onToggle("service_consent_sms", checked === true)
+              }
+            />
+            SMS
+          </label>
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.service_consent_whatsapp}
+              onCheckedChange={(checked) =>
+                onToggle("service_consent_whatsapp", checked === true)
+              }
+            />
+            WhatsApp
+          </label>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-sm font-medium text-foreground">
+          {t("Canais autorizados para marketing", "Channels authorized for marketing")}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.marketing_consent_email}
+              onCheckedChange={(checked) =>
+                onToggle("marketing_consent_email", checked === true)
+              }
+            />
+            Email
+          </label>
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.marketing_consent_sms}
+              onCheckedChange={(checked) =>
+                onToggle("marketing_consent_sms", checked === true)
+              }
+            />
+            SMS
+          </label>
+          <label className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2 text-sm">
+            <Checkbox
+              checked={consents.marketing_consent_whatsapp}
+              onCheckedChange={(checked) =>
+                onToggle("marketing_consent_whatsapp", checked === true)
+              }
+            />
+            WhatsApp
+          </label>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -964,6 +1096,19 @@ export default function PreparePage() {
         };
       }
 
+      if (!apiData.is_returning) {
+        if (!draft.consents.consent_health_data) {
+          throw new Error(
+            t(
+              "É necessário autorizar o tratamento de dados de saúde antes de enviar.",
+              "Health-data consent is required before submitting."
+            )
+          );
+        }
+
+        payload.consents = draft.consents;
+      }
+
       if (apiData.is_returning) {
         payload.returning_checkin = draft.returning_checkin;
       } else if (apiData.form_type === "healing_touch") {
@@ -1022,6 +1167,16 @@ export default function PreparePage() {
       setDraft((prev) => ({
         ...prev,
         client_updates: { ...prev.client_updates, [field]: value },
+      }));
+    },
+    []
+  );
+
+  const updateConsent = useCallback(
+    (field: keyof ConsentDraft, value: boolean) => {
+      setDraft((prev) => ({
+        ...prev,
+        consents: { ...prev.consents, [field]: value },
       }));
     },
     []
@@ -1490,6 +1645,12 @@ export default function PreparePage() {
                     </div>
                   )}
 
+                  <ConsentSection
+                    consents={draft.consents}
+                    onToggle={updateConsent}
+                    t={t}
+                  />
+
                   {/* Referral source */}
                   <ReferralSourceField
                     value={draft.healing_touch.referral_source}
@@ -1801,6 +1962,12 @@ export default function PreparePage() {
                           />
                         </div>
                       )}
+
+                      <ConsentSection
+                        consents={draft.consents}
+                        onToggle={updateConsent}
+                        t={t}
+                      />
 
                       {/* Referral source (PR version without cheque-oferta) */}
                       <ReferralSourceField

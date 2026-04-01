@@ -4,6 +4,7 @@ import {
   extractAnamnesisFromImages,
   extractSessionNotesFromImages,
 } from "../_ocr.js";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -96,10 +97,17 @@ async function handleClientsList(
 
   if (req.method === "POST") {
     const data = req.body;
+    const consentFlags = deriveConsentFlags(data ?? {});
+    const consentTimestamp =
+      consentFlags.consentDataProcessing ||
+        consentFlags.consentMarketing ||
+        consentFlags.consentHealthData
+        ? new Date().toISOString()
+        : null;
 
     const rows = await sql(
-      `INSERT INTO clients (first_name, last_name, email, phone, gender, preferred_language, preferred_channel, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_marketing, consent_given_at, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+      `INSERT INTO clients (first_name, last_name, email, phone, gender, preferred_language, preferred_channel, date_of_birth, height_cm, weight_kg, profession, address, city, postal_code, country, source, consent_data_processing, consent_health_data, service_consent_email, service_consent_sms, service_consent_whatsapp, consent_marketing, marketing_consent_email, marketing_consent_sms, marketing_consent_whatsapp, consent_given_at, consent_health_data_at, consent_version, consent_updated_at, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30)
        RETURNING *`,
       [
         data.first_name,
@@ -118,9 +126,19 @@ async function handleClientsList(
         data.postal_code ?? null,
         data.country ?? "PT",
         data.source ?? "manual",
-        data.consent_data_processing ?? false,
-        data.consent_marketing ?? false,
-        data.consent_data_processing ? new Date().toISOString() : null,
+        consentFlags.consentDataProcessing,
+        consentFlags.consentHealthData,
+        consentFlags.service.email,
+        consentFlags.service.sms,
+        consentFlags.service.whatsapp,
+        consentFlags.consentMarketing,
+        consentFlags.marketing.email,
+        consentFlags.marketing.sms,
+        consentFlags.marketing.whatsapp,
+        consentTimestamp,
+        consentFlags.consentHealthData ? consentTimestamp : null,
+        data.consent_version ?? "2026-04",
+        consentTimestamp,
         data.notes ?? null,
       ]
     );
@@ -149,6 +167,18 @@ async function handleClientById(
     const fields: string[] = [];
     const values: unknown[] = [];
     let paramIndex = 1;
+    const consentFlags = deriveConsentFlags(data ?? {});
+    const containsConsentKeys = [
+      "consent_data_processing",
+      "consent_health_data",
+      "service_consent_email",
+      "service_consent_sms",
+      "service_consent_whatsapp",
+      "consent_marketing",
+      "marketing_consent_email",
+      "marketing_consent_sms",
+      "marketing_consent_whatsapp",
+    ].some((key) => data?.[key] !== undefined);
 
     for (const [key, value] of Object.entries(data)) {
       if (value !== undefined) {
@@ -162,8 +192,34 @@ async function handleClientById(
       return res.status(400).json({ error: "No fields to update" });
     }
 
+    if (containsConsentKeys) {
+      fields.push(`consent_data_processing = $${paramIndex}`);
+      values.push(consentFlags.consentDataProcessing);
+      paramIndex++;
+
+      fields.push(`consent_health_data = $${paramIndex}`);
+      values.push(consentFlags.consentHealthData);
+      paramIndex++;
+
+      fields.push(`consent_marketing = $${paramIndex}`);
+      values.push(consentFlags.consentMarketing);
+      paramIndex++;
+
+      fields.push(`consent_updated_at = $${paramIndex}`);
+      values.push(new Date().toISOString());
+      paramIndex++;
+
+      if (consentFlags.consentHealthData) {
+        fields.push(
+          `consent_health_data_at = COALESCE(consent_health_data_at, $${paramIndex})`
+        );
+        values.push(new Date().toISOString());
+        paramIndex++;
+      }
+    }
+
     if (
-      data.consent_data_processing === true &&
+      (data.consent_data_processing === true || consentFlags.consentDataProcessing) &&
       data.consent_given_at === undefined
     ) {
       fields.push(`consent_given_at = COALESCE(consent_given_at, $${paramIndex})`);

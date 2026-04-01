@@ -18,7 +18,14 @@ export const createClientSchema = z.object({
   country: z.string().default("PT"),
   source: z.enum(["manual", "website", "referral"]).default("manual"),
   consent_data_processing: z.boolean().default(false),
+  consent_health_data: z.boolean().default(false),
+  service_consent_email: z.boolean().default(false),
+  service_consent_sms: z.boolean().default(false),
+  service_consent_whatsapp: z.boolean().default(false),
   consent_marketing: z.boolean().default(false),
+  marketing_consent_email: z.boolean().default(false),
+  marketing_consent_sms: z.boolean().default(false),
+  marketing_consent_whatsapp: z.boolean().default(false),
   notes: z.string().optional(),
 });
 
