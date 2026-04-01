@@ -1,20 +1,53 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
+import { verifyAdmin } from "../_auth.js";
 import {
   extractAnamnesisFromImages,
   extractSessionNotesFromImages,
 } from "../_ocr.js";
 import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
 import {
+  createClientSchema,
+  updateClientSchema,
+} from "../../src/lib/schemas/client.schema.js";
+import {
   buildClientTimeline,
   getEmailTimelineTitle,
   getSessionActionTimelineTitle,
 } from "../../src/lib/communications/timeline.ts";
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function isValidUUID(str: string): boolean {
+  return UUID_REGEX.test(str);
+}
+
+const ALLOWED_CLIENT_UPDATE_FIELDS = new Set([
+  'first_name', 'last_name', 'email', 'phone', 'date_of_birth',
+  'height_cm', 'weight_kg', 'profession', 'address', 'city',
+  'postal_code', 'country', 'gender', 'preferred_language',
+  'preferred_channel', 'source', 'status', 'notes',
+  'consent_data_processing', 'consent_marketing', 'consent_given_at',
+  'consent_health_data', 'consent_health_data_at', 'consent_health_data_source',
+  'service_consent_email', 'service_consent_sms', 'service_consent_whatsapp',
+  'marketing_consent_email', 'marketing_consent_sms', 'marketing_consent_whatsapp',
+  'consent_version', 'consent_updated_at',
+]);
+
+const CONSENT_KEYS = new Set([
+  'consent_data_processing', 'consent_health_data',
+  'service_consent_email', 'service_consent_sms', 'service_consent_whatsapp',
+  'consent_marketing',
+  'marketing_consent_email', 'marketing_consent_sms', 'marketing_consent_whatsapp',
+]);
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  if (!verifyAdmin(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const sql = getDb();
   const rawPath = req.query.__path;
   const pathSegments = typeof rawPath === "string" && rawPath !== ""
@@ -79,7 +112,7 @@ async function handleClientsList(
 ) {
   if (req.method === "GET") {
     const { status, search } = req.query;
-    let query = "SELECT * FROM clients";
+    let whereClause = "";
     const conditions: string[] = [];
     const params: unknown[] = [];
 
@@ -97,16 +130,34 @@ async function handleClientsList(
     }
 
     if (conditions.length > 0) {
-      query += " WHERE " + conditions.join(" AND ");
+      whereClause = " WHERE " + conditions.join(" AND ");
     }
 
-    query += " ORDER BY created_at DESC";
-    const rows = await sql(query, params);
-    return res.json(rows);
+    const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(String(req.query.limit ?? "50"), 10) || 50));
+    const offset = (page - 1) * limit;
+
+    const countRows = await sql(
+      `SELECT COUNT(*)::int AS total FROM clients${whereClause}`,
+      params
+    );
+    const total = countRows[0]?.total ?? 0;
+
+    const limitIdx = params.length + 1;
+    const offsetIdx = params.length + 2;
+    const rows = await sql(
+      `SELECT * FROM clients${whereClause} ORDER BY created_at DESC LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      [...params, limit, offset]
+    );
+    return res.json({ data: rows, meta: { total, page, limit } });
   }
 
   if (req.method === "POST") {
-    const data = req.body;
+    const parsed = createClientSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Validation failed", details: parsed.error.flatten().fieldErrors });
+    }
+    const data = parsed.data;
     const consentFlags = deriveConsentFlags(data ?? {});
     const consentTimestamp =
       consentFlags.consentDataProcessing ||
@@ -164,6 +215,10 @@ async function handleClientById(
   sql: ReturnType<typeof getDb>,
   id: string
 ) {
+  if (!isValidUUID(id)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
   if (req.method === "GET") {
     const rows = await sql("SELECT * FROM clients WHERE id = $1", [id]);
     if (rows.length === 0) {
@@ -173,7 +228,11 @@ async function handleClientById(
   }
 
   if (req.method === "PUT" || req.method === "PATCH") {
-    const data = req.body;
+    const parsed = updateClientSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Validation failed", details: parsed.error.flatten().fieldErrors });
+    }
+    const data = parsed.data;
     const fields: string[] = [];
     const values: unknown[] = [];
     let paramIndex = 1;
@@ -191,15 +250,12 @@ async function handleClientById(
     ].some((key) => data?.[key] !== undefined);
 
     for (const [key, value] of Object.entries(data)) {
-      if (value !== undefined) {
+      if (value !== undefined && ALLOWED_CLIENT_UPDATE_FIELDS.has(key)) {
+        if (containsConsentKeys && CONSENT_KEYS.has(key)) continue;
         fields.push(`${key} = $${paramIndex}`);
         values.push(value === "" ? null : value);
         paramIndex++;
       }
-    }
-
-    if (fields.length === 0) {
-      return res.status(400).json({ error: "No fields to update" });
     }
 
     if (containsConsentKeys) {
@@ -237,6 +293,10 @@ async function handleClientById(
       paramIndex++;
     }
 
+    if (fields.length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
     values.push(id);
     const rows = await sql(
       `UPDATE clients SET ${fields.join(", ")} WHERE id = $${paramIndex} RETURNING *`,
@@ -251,7 +311,7 @@ async function handleClientById(
   }
 
   if (req.method === "DELETE") {
-    await sql("DELETE FROM clients WHERE id = $1", [id]);
+    await sql("UPDATE clients SET status = 'archived', updated_at = now() WHERE id = $1", [id]);
     return res.status(204).end();
   }
 

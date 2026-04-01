@@ -35,13 +35,13 @@ export interface Client {
   consent_health_data: boolean;
   consent_health_data_at?: string | null;
   consent_health_data_source?: string | null;
-  service_consent_email?: boolean;
-  service_consent_sms?: boolean;
-  service_consent_whatsapp?: boolean;
-  marketing_consent_email?: boolean;
-  marketing_consent_sms?: boolean;
-  marketing_consent_whatsapp?: boolean;
-  consent_version?: string;
+  service_consent_email: boolean;
+  service_consent_sms: boolean;
+  service_consent_whatsapp: boolean;
+  marketing_consent_email: boolean;
+  marketing_consent_sms: boolean;
+  marketing_consent_whatsapp: boolean;
+  consent_version: string;
   consent_updated_at?: string | null;
   notes: string | null;
   created_at: string;
@@ -255,7 +255,8 @@ export interface EmailLogEntry {
     | "pre_session_reminder"
     | "post_session_checkin"
     | "rebooking"
-    | "reactivation";
+    | "reactivation"
+    | "birthday";
   resend_id: string | null;
   status: "sent" | "delivered" | "opened" | "bounced" | "failed";
   sent_at: string;

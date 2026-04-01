@@ -3,7 +3,6 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 // Simple auth for single-user admin (Daniela)
 // Will be replaced by Neon Auth when enabled on the dashboard
 const ADMIN_EMAIL = "daniela@danielaalveshealing.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "daniela2026";
 
 export default async function handler(
   req: VercelRequest,
@@ -11,6 +10,11 @@ export default async function handler(
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  if (!ADMIN_PASSWORD) {
+    throw new Error("ADMIN_PASSWORD environment variable is not configured");
   }
 
   const { email, password } = req.body ?? {};

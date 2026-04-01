@@ -43,7 +43,7 @@ export default async function handler(
       case "rebooking":
         return await handleRebooking(res);
       case "review-request":
-        return await handleReviewRequest(req, res);
+        return await handleReviewRequest(res);
       case "checkin-24h":
         return await handleCheckin24h(res);
       case "nudge-7d":
@@ -345,7 +345,6 @@ async function handleRebooking(res: VercelResponse) {
  * Schedule: daily at 10:00 (0 10 * * *)
  */
 async function handleReviewRequest(
-  req: VercelRequest,
   res: VercelResponse
 ) {
   const googleReviewUrl = process.env.GOOGLE_REVIEW_URL;
@@ -561,7 +560,7 @@ async function handleBirthday(res: VercelResponse) {
        AND NOT EXISTS (
          SELECT 1 FROM email_log el
          WHERE el.client_id = c.id
-           AND el.email_type = 'reminder'
+           AND el.email_type = 'birthday'
            AND el.sent_at::date = CURRENT_DATE
        )`
   );
@@ -590,7 +589,7 @@ async function handleBirthday(res: VercelResponse) {
 
     await sql(
       `INSERT INTO email_log (client_id, email_type, resend_id, status)
-       VALUES ($1, 'reminder', $2, 'sent')`,
+       VALUES ($1, 'birthday', $2, 'sent')`,
       [row.client_id, result.data?.id ?? null]
     );
 

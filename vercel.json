@@ -20,6 +20,7 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "crons": [
+    { "path": "/api/cron/pre-session-reminder", "schedule": "0 */2 * * *" },
     { "path": "/api/cron/post-session", "schedule": "0 20 * * *" },
     { "path": "/api/cron/review-request", "schedule": "0 10 * * *" },
     { "path": "/api/cron/rebooking", "schedule": "0 10 * * 1" },

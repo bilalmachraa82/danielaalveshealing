@@ -19,7 +19,17 @@ import {
   updateCalendarEvent,
 } from "../_calendar.js";
 import { getDb } from "../_db.js";
+import { verifyAdmin } from "../_auth.js";
 import { getAppUrl } from "../_email.js";
+import {
+  createSessionSchema,
+  updateSessionSchema,
+} from "../../src/lib/schemas/session.schema.js";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function isValidUUID(str: string): boolean {
+  return UUID_REGEX.test(str);
+}
 
 type SqlClient = ReturnType<typeof getDb>;
 
@@ -352,10 +362,8 @@ async function syncCalendarForSession(sql: SqlClient, session: SessionContextRow
       [session.id]
     );
   } catch (error: unknown) {
-    console.error(
-      "Calendar sync failed:",
-      error instanceof Error ? error.message : error
-    );
+    // Calendar sync failure is non-blocking — log for Vercel runtime logs
+    console.error("Calendar sync failed:", error instanceof Error ? error.message : error);
 
     await sql(
       `UPDATE sessions
@@ -707,6 +715,21 @@ export default async function handler(
       ? rawPath
       : [];
 
+  // manage/ routes are public (token-based)
+  if (pathSegments[0] === "manage" && pathSegments.length === 2) {
+    try {
+      return await handleManageSession(req, res, sql, pathSegments[1]);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Internal server error";
+      return res.status(500).json({ error: message });
+    }
+  }
+
+  if (!verifyAdmin(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
     if (pathSegments.length === 0) {
       return await handleSessionsList(req, res, sql);
@@ -714,10 +737,6 @@ export default async function handler(
 
     if (pathSegments[0] === "quick") {
       return await handleQuickBooking(req, res, sql);
-    }
-
-    if (pathSegments[0] === "manage" && pathSegments.length === 2) {
-      return await handleManageSession(req, res, sql, pathSegments[1]);
     }
 
     if (pathSegments.length === 2 && pathSegments[1] === "notes") {
@@ -743,7 +762,6 @@ async function handleSessionsList(
 ) {
   if (req.method === "GET") {
     const { client_id, status, from, to } = req.query;
-    let query = SESSION_WITH_CLIENT_SELECT;
     const conditions: string[] = [];
     const params: unknown[] = [];
 
@@ -767,23 +785,35 @@ async function handleSessionsList(
       params.push(to);
     }
 
-    if (conditions.length > 0) {
-      query += " WHERE " + conditions.join(" AND ");
-    }
+    const whereClause = conditions.length > 0
+      ? " WHERE " + conditions.join(" AND ")
+      : "";
 
-    query += " ORDER BY s.scheduled_at DESC";
-    const rows = await sql(query, params);
-    return res.json(rows);
+    const page = Math.max(1, parseInt(String(req.query.page ?? "1"), 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(String(req.query.limit ?? "50"), 10) || 50));
+    const offset = (page - 1) * limit;
+
+    const countRows = await sql(
+      `SELECT COUNT(*)::int AS total FROM sessions s${whereClause}`,
+      params
+    );
+    const total = countRows[0]?.total ?? 0;
+
+    const limitIdx = params.length + 1;
+    const offsetIdx = params.length + 2;
+    const rows = await sql(
+      `${SESSION_WITH_CLIENT_SELECT}${whereClause} ORDER BY s.scheduled_at DESC LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      [...params, limit, offset]
+    );
+    return res.json({ data: rows, meta: { total, page, limit } });
   }
 
   if (req.method === "POST") {
-    const data = (req.body ?? {}) as SessionUpdateData & { client_id?: string };
-
-    if (!data.client_id || !data.scheduled_at || !data.service_type) {
-      return res.status(400).json({
-        error: "client_id, scheduled_at and service_type are required",
-      });
+    const parsed = createSessionSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Validation failed", details: parsed.error.flatten().fieldErrors });
     }
+    const data = parsed.data as typeof parsed.data & SessionUpdateData;
 
     const created = await createManagedSession(sql, {
       clientId: data.client_id,
@@ -808,6 +838,10 @@ async function handleSessionById(
   sql: SqlClient,
   id: string
 ) {
+  if (!isValidUUID(id)) {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
   if (req.method === "GET") {
     const current = await fetchSessionContextById(sql, id);
 
@@ -820,6 +854,11 @@ async function handleSessionById(
   }
 
   if (req.method === "PUT" || req.method === "PATCH") {
+    const parsed = updateSessionSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Validation failed", details: parsed.error.flatten().fieldErrors });
+    }
+
     const current = await fetchSessionContextById(sql, id);
 
     if (!current) {
@@ -831,7 +870,7 @@ async function handleSessionById(
       return res.status(404).json({ error: "Session not found" });
     }
 
-    const data = (req.body ?? {}) as SessionUpdateData;
+    const data = parsed.data as SessionUpdateData;
     const actor =
       data.actor === "client" || data.actor === "system"
         ? data.actor

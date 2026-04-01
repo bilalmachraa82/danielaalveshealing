@@ -18,6 +18,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
+import { verifyAdmin } from "../_auth.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
 import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
@@ -43,17 +44,23 @@ export default async function handler(
         : [];
 
   try {
-    // /api/forms/send — create tokens only
+    // /api/forms/send — create tokens only (admin)
     if (pathSegments.length === 1 && pathSegments[0] === "send") {
+      if (!verifyAdmin(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
       return await handleFormsSend(req, res, sql);
     }
 
-    // /api/forms/emails/send — create tokens + send emails
+    // /api/forms/emails/send — create tokens + send emails (admin)
     if (
       pathSegments.length === 2 &&
       pathSegments[0] === "emails" &&
       pathSegments[1] === "send"
     ) {
+      if (!verifyAdmin(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
       return await handleEmailsSendForms(req, res, sql);
     }
 
@@ -72,12 +79,15 @@ export default async function handler(
       return await handlePrepare(req, res, sql, pathSegments[1]);
     }
 
-    // /api/forms/satisfaction/send — must be checked BEFORE satisfaction/:token
+    // /api/forms/satisfaction/send — must be checked BEFORE satisfaction/:token (admin)
     if (
       pathSegments.length === 2 &&
       pathSegments[0] === "satisfaction" &&
       pathSegments[1] === "send"
     ) {
+      if (!verifyAdmin(req)) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
       return await handleSatisfactionSend(req, res, sql);
     }
 
@@ -300,22 +310,12 @@ async function handleFormsSend(
 // /api/forms/emails/send — Create tokens + send emails (was emails/send-forms)
 // ============================================================
 
-type ServiceType = ExtendedServiceType;
-
 interface SendFormsBody {
   client_id: string;
   session_id: string;
-  service_type: ServiceType;
+  service_type: ExtendedServiceType;
   send_anamnesis: boolean;
 }
-
-const EMAIL_SERVICE_FORM_TYPE_MAP: Record<ServiceType, string> = {
-  healing_wellness: "healing_touch",
-  pura_radiancia: "pura_radiancia",
-  pure_earth_love: "healing_touch",
-  home_harmony: "healing_touch",
-  other: "healing_touch",
-};
 
 async function handleEmailsSendForms(
   req: VercelRequest,
@@ -339,10 +339,10 @@ async function handleEmailsSendForms(
     });
   }
 
-  const formType = EMAIL_SERVICE_FORM_TYPE_MAP[service_type];
+  const formType = SERVICE_FORM_TYPE_MAP[service_type];
   if (!formType) {
     return res.status(400).json({
-      error: `Invalid service_type. Expected: ${Object.keys(EMAIL_SERVICE_FORM_TYPE_MAP).join(", ")}`,
+      error: `Invalid service_type. Expected: ${Object.keys(SERVICE_FORM_TYPE_MAP).join(", ")}`,
     });
   }
 

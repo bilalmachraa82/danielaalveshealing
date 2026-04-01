@@ -1,3 +1,5 @@
+BEGIN;
+
 -- ============================================================
 -- Daniela Alves CRM - Foundations Phase 1
 -- Runtime/schema alignment + communication profile + reminders
@@ -78,3 +80,5 @@ ALTER TABLE email_log
       'reactivation'
     )
   );
+
+COMMIT;

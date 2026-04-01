@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { pt, enGB } from "date-fns/locale";
 import type {
   ClientKind,
   ClientGender,
@@ -56,13 +58,11 @@ export function formatSessionDateForLanguage(
   isoString: string,
   language: PreferredLanguage
 ) {
-  const locale = language === "en" ? "en-GB" : "pt-PT";
-  return new Date(isoString).toLocaleString(locale, {
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const date = new Date(isoString);
+  if (language === "en") {
+    return format(date, "d MMMM, HH:mm", { locale: enGB });
+  }
+  return format(date, "d 'de' MMMM, HH:mm", { locale: pt });
 }
 
 export function buildBookingWhatsAppCopy(input: {
