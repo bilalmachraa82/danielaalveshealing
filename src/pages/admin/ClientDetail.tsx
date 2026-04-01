@@ -1,6 +1,19 @@
-import { useParams, Link } from "react-router-dom";
-import { useClient, useClientTags } from "@/hooks/useClients";
-import { useSessions } from "@/hooks/useSessions";
+import { Link, useParams } from "react-router-dom";
+import { format } from "date-fns";
+import { pt } from "date-fns/locale";
+import {
+  ArrowLeft,
+  Calendar,
+  Edit,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  Plus,
+  Sparkles,
+} from "lucide-react";
+
+import WellnessProgress from "@/components/admin/clients/WellnessProgress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,19 +23,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  ArrowLeft,
-  Calendar,
-  Mail,
-  Phone,
-  MapPin,
-  Edit,
-  Plus,
-} from "lucide-react";
-import { format } from "date-fns";
-import { pt } from "date-fns/locale";
-import WellnessProgress from "@/components/admin/clients/WellnessProgress";
+import { useClient, useClientTags, useClientTimeline } from "@/hooks/useClients";
+import { useSessions } from "@/hooks/useSessions";
 
 const SERVICE_LABELS: Record<string, string> = {
   healing_wellness: "Healing Touch",
@@ -32,23 +34,43 @@ const SERVICE_LABELS: Record<string, string> = {
   other: "Outro",
 };
 
+const TIMELINE_BADGE_LABELS: Record<string, string> = {
+  session: "Sessão",
+  form: "Formulário",
+  communication: "Comunicação",
+  consent: "Consentimento",
+};
+
+function formatDateTime(value?: string | null) {
+  if (!value) return "—";
+
+  return format(new Date(value), "d MMM yyyy, HH:mm", {
+    locale: pt,
+  });
+}
+
+function formatChannelSummary(label: string, value: boolean | undefined) {
+  return `${label}: ${value ? "sim" : "não"}`;
+}
+
 export default function ClientDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: client, isLoading } = useClient(id);
   const { data: tags } = useClientTags(id);
+  const { data: timeline } = useClientTimeline(id);
   const { data: sessions } = useSessions({ client_id: id });
 
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (!client) {
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <p className="text-muted-foreground">Cliente não encontrado</p>
         <Button asChild className="mt-4">
           <Link to="/admin/clientes">Voltar</Link>
@@ -56,6 +78,18 @@ export default function ClientDetail() {
       </div>
     );
   }
+
+  const communicationPreferences = [
+    formatChannelSummary("Email de serviço", client.service_consent_email),
+    formatChannelSummary("SMS de serviço", client.service_consent_sms),
+    formatChannelSummary("WhatsApp de serviço", client.service_consent_whatsapp),
+  ];
+
+  const marketingPreferences = [
+    formatChannelSummary("Email marketing", client.marketing_consent_email),
+    formatChannelSummary("SMS marketing", client.marketing_consent_sms),
+    formatChannelSummary("WhatsApp marketing", client.marketing_consent_whatsapp),
+  ];
 
   return (
     <div className="space-y-6">
@@ -80,14 +114,14 @@ export default function ClientDetail() {
         </div>
         <Button variant="outline" asChild>
           <Link to={`/admin/clientes/${id}/editar`}>
-            <Edit className="h-4 w-4 mr-2" />
+            <Edit className="mr-2 h-4 w-4" />
             Editar
           </Link>
         </Button>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-1 space-y-6">
+        <div className="space-y-6 md:col-span-1">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Contacto</CardTitle>
@@ -96,10 +130,7 @@ export default function ClientDetail() {
               {client.email && (
                 <div className="flex items-center gap-2 text-sm">
                   <Mail className="h-4 w-4 text-muted-foreground" />
-                  <a
-                    href={`mailto:${client.email}`}
-                    className="hover:underline"
-                  >
+                  <a href={`mailto:${client.email}`} className="hover:underline">
                     {client.email}
                   </a>
                 </div>
@@ -107,10 +138,7 @@ export default function ClientDetail() {
               {client.phone && (
                 <div className="flex items-center gap-2 text-sm">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <a
-                    href={`tel:${client.phone}`}
-                    className="hover:underline"
-                  >
+                  <a href={`tel:${client.phone}`} className="hover:underline">
                     {client.phone}
                   </a>
                 </div>
@@ -128,14 +156,96 @@ export default function ClientDetail() {
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {format(
-                      new Date(client.date_of_birth),
-                      "d MMMM yyyy",
-                      { locale: pt }
-                    )}
+                    {format(new Date(client.date_of_birth), "d MMMM yyyy", {
+                      locale: pt,
+                    })}
                   </span>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Perfil de Comunicação</CardTitle>
+              <CardDescription>
+                Preferências para idioma, canal e mensagens de serviço.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <span>
+                  Idioma preferido:{" "}
+                  <strong>{client.preferred_language === "en" ? "EN" : "PT"}</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-muted-foreground" />
+                <span>
+                  Canal preferido:{" "}
+                  <strong>{client.preferred_channel ?? "email"}</strong>
+                </span>
+              </div>
+              <div>
+                <p className="font-medium">Canais de serviço</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {communicationPreferences.map((item) => (
+                    <Badge key={item} variant="outline">
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <Separator />
+              <div>
+                <p className="font-medium">Canais de marketing</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {marketingPreferences.map((item) => (
+                    <Badge key={item} variant="outline">
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Consentimentos</CardTitle>
+              <CardDescription>
+                Estado atual e registos principais de consentimento.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">RGPD</span>
+                <Badge variant={client.consent_data_processing ? "default" : "outline"}>
+                  {client.consent_data_processing ? "Aceite" : "Em falta"}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">Dados de saúde</span>
+                <Badge variant={client.consent_health_data ? "default" : "outline"}>
+                  {client.consent_health_data ? "Aceite" : "Em falta"}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">Marketing</span>
+                <Badge variant={client.consent_marketing ? "default" : "outline"}>
+                  {client.consent_marketing ? "Aceite" : "Não"}
+                </Badge>
+              </div>
+              <Separator />
+              <div className="space-y-2 text-xs text-muted-foreground">
+                <p>Versão: {client.consent_version ?? "2026-04"}</p>
+                <p>Consentimento RGPD: {formatDateTime(client.consent_given_at)}</p>
+                <p>
+                  Consentimento saúde: {formatDateTime(client.consent_health_data_at)}
+                </p>
+                <p>Última atualização: {formatDateTime(client.consent_updated_at)}</p>
+              </div>
             </CardContent>
           </Card>
 
@@ -161,9 +271,7 @@ export default function ClientDetail() {
                     key={tag.id}
                     variant="secondary"
                     style={{
-                      backgroundColor: tag.color
-                        ? `${tag.color}20`
-                        : undefined,
+                      backgroundColor: tag.color ? `${tag.color}20` : undefined,
                       color: tag.color ?? undefined,
                       borderColor: tag.color ?? undefined,
                     }}
@@ -181,16 +289,62 @@ export default function ClientDetail() {
                 <CardTitle className="text-base">Notas</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm whitespace-pre-wrap">
-                  {client.notes}
-                </p>
+                <p className="whitespace-pre-wrap text-sm">{client.notes}</p>
               </CardContent>
             </Card>
           )}
         </div>
 
-        <div className="md:col-span-2 space-y-6">
+        <div className="space-y-6 md:col-span-2">
           <WellnessProgress clientId={id} />
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Timeline do Cliente</CardTitle>
+              <CardDescription>
+                Sessões, formulários, comunicações e consentimentos numa vista única.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {!timeline || timeline.length === 0 ? (
+                <p className="py-4 text-center text-sm text-muted-foreground">
+                  Ainda não existe histórico detalhado para este cliente.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {timeline.map((event) => (
+                    <div
+                      key={event.id}
+                      className="rounded-2xl border border-border/60 bg-background/80 p-4 shadow-sm"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">
+                              {TIMELINE_BADGE_LABELS[event.type] ?? event.type}
+                            </Badge>
+                            {event.channel && (
+                              <Badge variant="secondary">{event.channel}</Badge>
+                            )}
+                          </div>
+                          <p className="font-medium">{event.title}</p>
+                          {event.description && (
+                            <p className="text-sm text-muted-foreground">
+                              {event.description}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right text-xs text-muted-foreground">
+                          <p>{formatDateTime(event.occurred_at)}</p>
+                          {event.status && <p className="mt-1 uppercase">{event.status}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -201,17 +355,15 @@ export default function ClientDetail() {
                 </CardDescription>
               </div>
               <Button size="sm" asChild>
-                <Link
-                  to={`/admin/sessoes/nova?client_id=${client.id}`}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
+                <Link to={`/admin/sessoes/nova?client_id=${client.id}`}>
+                  <Plus className="mr-2 h-4 w-4" />
                   Nova Sessão
                 </Link>
               </Button>
             </CardHeader>
             <CardContent>
               {!sessions || sessions.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
+                <p className="py-4 text-center text-sm text-muted-foreground">
                   Nenhuma sessão registada
                 </p>
               ) : (
@@ -220,19 +372,16 @@ export default function ClientDetail() {
                     <Link
                       key={session.id}
                       to={`/admin/sessoes/${session.id}`}
-                      className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50 transition-colors"
+                      className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50"
                     >
                       <div className="space-y-1">
                         <p className="text-sm font-medium">
-                          {SERVICE_LABELS[session.service_type] ??
-                            session.service_type}
+                          {SERVICE_LABELS[session.service_type] ?? session.service_type}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {format(
-                            new Date(session.scheduled_at),
-                            "d MMMM yyyy, HH:mm",
-                            { locale: pt }
-                          )}
+                          {format(new Date(session.scheduled_at), "d MMMM yyyy, HH:mm", {
+                            locale: pt,
+                          })}
                         </p>
                       </div>
                       <Badge variant="outline">{session.status}</Badge>

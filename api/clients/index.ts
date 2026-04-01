@@ -5,6 +5,11 @@ import {
   extractSessionNotesFromImages,
 } from "../_ocr.js";
 import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
+import {
+  buildClientTimeline,
+  getEmailTimelineTitle,
+  getSessionActionTimelineTitle,
+} from "../../src/lib/communications/timeline.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -42,6 +47,11 @@ export default async function handler(
     // /api/clients/[id]/wellness
     if (pathSegments.length === 2 && pathSegments[1] === "wellness") {
       return await handleClientWellness(req, res, sql, pathSegments[0]);
+    }
+
+    // /api/clients/[id]/timeline
+    if (pathSegments.length === 2 && pathSegments[1] === "timeline") {
+      return await handleClientTimeline(req, res, sql, pathSegments[0]);
     }
 
     // /api/clients/[id]/tags
@@ -288,6 +298,210 @@ async function handleClientWellness(
   );
 
   return res.json(rows);
+}
+
+function formatTimelineMoment(value?: string | null) {
+  if (!value) return null;
+
+  return new Date(value).toLocaleString("pt-PT", {
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+async function handleClientTimeline(
+  req: VercelRequest,
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>,
+  clientId: string
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const clientRows = await sql("SELECT * FROM clients WHERE id = $1", [clientId]);
+  if (clientRows.length === 0) {
+    return res.status(404).json({ error: "Client not found" });
+  }
+
+  const client = clientRows[0];
+
+  const [sessionChanges, intakeForms, anamnesisForms, satisfactionForms, emails] =
+    await Promise.all([
+      sql(
+        `SELECT id, session_id, action, reason, previous_scheduled_at, new_scheduled_at, created_at
+         FROM session_change_log
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, form_type, status, created_at, completed_at
+         FROM session_intake_forms
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, status, created_at, completed_at
+         FROM anamnesis_forms
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, created_at, completed_at
+         FROM satisfaction_responses
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+      sql(
+        `SELECT id, session_id, email_type, status, sent_at
+         FROM email_log
+         WHERE client_id = $1`,
+        [clientId]
+      ),
+    ]);
+
+  const sessionEvents = sessionChanges.map((change) => ({
+    id: `session-${change.id}`,
+    type: "session" as const,
+    title: getSessionActionTimelineTitle(change.action),
+    description:
+      change.reason ??
+      (change.action === "rescheduled" && change.new_scheduled_at
+        ? `Nova data: ${formatTimelineMoment(change.new_scheduled_at)}`
+        : null),
+    occurred_at: change.created_at,
+    session_id: change.session_id,
+    status: change.action,
+  }));
+
+  const intakeEvents = intakeForms.flatMap((form) => {
+    const label =
+      form.form_type === "pura_radiancia"
+        ? "Questionário Pura Radiância"
+        : "Questionário Healing Touch";
+
+    return [
+      {
+        id: `form-intake-sent-${form.id}`,
+        type: "form" as const,
+        title: `${label} enviado`,
+        description: "Link enviado ao cliente.",
+        occurred_at: form.created_at,
+        session_id: form.session_id,
+        status: form.status,
+      },
+      ...(form.completed_at
+        ? [
+            {
+              id: `form-intake-completed-${form.id}`,
+              type: "form" as const,
+              title: `${label} concluído`,
+              description: "Questionário preenchido pelo cliente.",
+              occurred_at: form.completed_at,
+              session_id: form.session_id,
+              status: "completed",
+            },
+          ]
+        : []),
+    ];
+  });
+
+  const anamnesisEvents = anamnesisForms.flatMap((form) => [
+    {
+      id: `form-anamnesis-sent-${form.id}`,
+      type: "form" as const,
+      title: "Anamnese enviada",
+      description: "Ficha de saúde enviada ao cliente.",
+      occurred_at: form.created_at,
+      status: form.status,
+    },
+    ...(form.completed_at
+      ? [
+          {
+            id: `form-anamnesis-completed-${form.id}`,
+            type: "form" as const,
+            title: "Anamnese concluída",
+            description: "Ficha de saúde concluída pelo cliente.",
+            occurred_at: form.completed_at,
+            status: "completed",
+          },
+        ]
+      : []),
+  ]);
+
+  const satisfactionEvents = satisfactionForms.flatMap((form) =>
+    form.completed_at
+      ? [
+          {
+            id: `form-satisfaction-${form.id}`,
+            type: "form" as const,
+            title: "Satisfação concluída",
+            description: "Questionário de satisfação preenchido.",
+            occurred_at: form.completed_at,
+            session_id: form.session_id,
+            status: "completed",
+          },
+        ]
+      : []
+  );
+
+  const communicationEvents = emails.map((email) => ({
+    id: `communication-${email.id}`,
+    type: "communication" as const,
+    title: getEmailTimelineTitle(email.email_type),
+    description: `Estado: ${email.status}`,
+    occurred_at: email.sent_at,
+    session_id: email.session_id,
+    status: email.status,
+    channel: "email" as const,
+  }));
+
+  const consentEvents = [
+    client.consent_given_at
+      ? {
+          id: `consent-processing-${client.id}`,
+          type: "consent" as const,
+          title: "Consentimento RGPD registado",
+          description: client.consent_version
+            ? `Versão ${client.consent_version}`
+            : null,
+          occurred_at: client.consent_given_at,
+        }
+      : null,
+    client.consent_health_data_at
+      ? {
+          id: `consent-health-${client.id}`,
+          type: "consent" as const,
+          title: "Consentimento de dados de saúde registado",
+          description: client.consent_health_data_source
+            ? `Origem: ${client.consent_health_data_source}`
+            : null,
+          occurred_at: client.consent_health_data_at,
+        }
+      : null,
+    client.consent_updated_at
+      ? {
+          id: `consent-update-${client.id}`,
+          type: "consent" as const,
+          title: "Preferências de comunicação atualizadas",
+          description: null,
+          occurred_at: client.consent_updated_at,
+        }
+      : null,
+  ].filter(Boolean);
+
+  return res.json(
+    buildClientTimeline([
+      ...sessionEvents,
+      ...intakeEvents,
+      ...anamnesisEvents,
+      ...satisfactionEvents,
+      ...communicationEvents,
+      ...consentEvents,
+    ])
+  );
 }
 
 async function handleClientTags(

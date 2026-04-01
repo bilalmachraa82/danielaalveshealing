@@ -845,7 +845,8 @@ async function handlePrepareGet(
        c.email,
        c.phone,
        c.date_of_birth,
-       c.gender
+       c.gender,
+       c.source
      FROM sessions s
      JOIN clients c ON c.id = s.client_id
      WHERE s.prepare_token = $1`,
@@ -886,6 +887,8 @@ async function handlePrepareGet(
   // Determine if personal data completion is needed
   const needsPersonalData =
     row.email === null || row.date_of_birth === null;
+  const referralSourceKnown =
+    row.source != null && row.source !== "manual";
 
   const formType = mapServiceTypeToFormType(row.service_type as PrepareServiceType);
 
@@ -906,6 +909,7 @@ async function handlePrepareGet(
     },
     is_returning: isReturning,
     needs_personal_data: needsPersonalData,
+    referral_source_known: referralSourceKnown,
     form_type: formType,
     last_session_date: lastSessionDate,
     total_sessions: totalCompleted,

@@ -68,6 +68,7 @@ interface PrepareApiResponse {
   session: PrepareApiSession;
   is_returning: boolean;
   needs_personal_data: boolean;
+  referral_source_known?: boolean;
   form_type: "healing_touch" | "pura_radiancia";
   last_session_date: string | null;
   total_sessions: number;
@@ -1652,12 +1653,14 @@ export default function PreparePage() {
                   />
 
                   {/* Referral source */}
-                  <ReferralSourceField
-                    value={draft.healing_touch.referral_source}
-                    onChange={(v) => updateHT("referral_source", v)}
-                    options={REFERRAL_OPTIONS}
-                    t={t}
-                  />
+                  {!apiData.referral_source_known && (
+                    <ReferralSourceField
+                      value={draft.healing_touch.referral_source}
+                      onChange={(v) => updateHT("referral_source", v)}
+                      options={REFERRAL_OPTIONS}
+                      t={t}
+                    />
+                  )}
 
                   {/* Q1: Motivation */}
                   <div className="space-y-1.5">
@@ -1970,12 +1973,14 @@ export default function PreparePage() {
                       />
 
                       {/* Referral source (PR version without cheque-oferta) */}
-                      <ReferralSourceField
-                        value={draft.pura_radiancia.referral_source}
-                        onChange={(v) => updatePR("referral_source", v)}
-                        options={REFERRAL_OPTIONS_PR}
-                        t={t}
-                      />
+                      {!apiData.referral_source_known && (
+                        <ReferralSourceField
+                          value={draft.pura_radiancia.referral_source}
+                          onChange={(v) => updatePR("referral_source", v)}
+                          options={REFERRAL_OPTIONS_PR}
+                          t={t}
+                        />
+                      )}
 
                       <NavButtons
                         step={step}

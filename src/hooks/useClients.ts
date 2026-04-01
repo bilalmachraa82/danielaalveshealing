@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchClients,
   fetchClient,
+  fetchClientTimeline,
   createClient,
   updateClient,
   deleteClient,
@@ -24,6 +25,14 @@ export function useClient(id: string | undefined) {
     queryKey: ["clients", id],
     queryFn: () => fetchClient(id!),
     enabled: !!id,
+  });
+}
+
+export function useClientTimeline(clientId: string | undefined) {
+  return useQuery({
+    queryKey: ["client-timeline", clientId],
+    queryFn: () => fetchClientTimeline(clientId!),
+    enabled: !!clientId,
   });
 }
 

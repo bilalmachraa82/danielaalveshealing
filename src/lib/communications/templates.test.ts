@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildAnamnesisEmailContent,
   buildBookingWhatsAppCopy,
+  buildPreSessionReminderEmailContent,
   getLocalizedServiceLabel,
 } from "./templates";
 
@@ -56,5 +57,20 @@ describe("buildAnamnesisEmailContent", () => {
     expect(content.subject).toContain("Health Form");
     expect(content.paragraphs[0]).toContain("Hello Emma");
     expect(content.ctaText).toContain("Complete Health Form");
+  });
+});
+
+describe("buildPreSessionReminderEmailContent", () => {
+  it("adds a manage-session CTA when a manage URL is available", () => {
+    const content = buildPreSessionReminderEmailContent({
+      firstName: "Maria",
+      preferredLanguage: "pt",
+      serviceLabel: "Sessão Healing Touch",
+      formattedDate: "3 de abril às 10:00",
+      manageUrl: "https://example.com/marcacao/token",
+    });
+
+    expect(content.ctaText).toBe("Gerir Marcação");
+    expect(content.ctaUrl).toBe("https://example.com/marcacao/token");
   });
 });

@@ -56,11 +56,13 @@ function getCalendarClient() {
 
 export async function createCalendarEvent(params: {
   clientName: string;
+  clientEmail?: string | null;
   serviceType: string;
   scheduledAt: string;
   durationMinutes: number;
   sessionId: string;
   notes?: string;
+  manageUrl?: string;
 }): Promise<string | null> {
   const client = getCalendarClient();
   if (!client) return null;
@@ -73,6 +75,7 @@ export async function createCalendarEvent(params: {
 
   const event = await calendar.events.insert({
     calendarId,
+    sendUpdates: params.clientEmail ? "all" : "none",
     requestBody: {
       summary: `${label} — ${params.clientName}`,
       description: [
@@ -81,6 +84,7 @@ export async function createCalendarEvent(params: {
         params.notes ? `Notas: ${params.notes}` : "",
         "",
         `Ver no CRM: ${appUrl}/admin/sessoes/${params.sessionId}`,
+        params.manageUrl ? `Gerir sessão: ${params.manageUrl}` : "",
       ]
         .filter(Boolean)
         .join("\n"),
@@ -95,6 +99,7 @@ export async function createCalendarEvent(params: {
       location:
         "R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra",
       colorId: SERVICE_COLORS[params.serviceType] ?? "8",
+      attendees: params.clientEmail ? [{ email: params.clientEmail }] : undefined,
       reminders: {
         useDefault: false,
         overrides: [
@@ -111,10 +116,13 @@ export async function createCalendarEvent(params: {
 export async function updateCalendarEvent(params: {
   eventId: string;
   clientName?: string;
+  clientEmail?: string | null;
   serviceType?: string;
   scheduledAt?: string;
   durationMinutes?: number;
   notes?: string;
+  sessionId?: string;
+  manageUrl?: string;
 }): Promise<void> {
   const client = getCalendarClient();
   if (!client) return;
@@ -133,10 +141,26 @@ export async function updateCalendarEvent(params: {
   if (params.clientName && params.serviceType) {
     const label = SERVICE_LABELS[params.serviceType] ?? "Sessão";
     updates.summary = `${label} — ${params.clientName}`;
+    updates.description = [
+      `Cliente: ${params.clientName}`,
+      `Serviço: ${label}`,
+      params.notes ? `Notas: ${params.notes}` : "",
+      "",
+      params.sessionId
+        ? `Ver no CRM: ${(process.env.PUBLIC_URL ?? "https://danielaalveshealing.com")}/admin/sessoes/${params.sessionId}`
+        : "",
+      params.manageUrl ? `Gerir sessão: ${params.manageUrl}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
   }
 
   if (params.serviceType) {
     updates.colorId = SERVICE_COLORS[params.serviceType] ?? "8";
+  }
+
+  if (params.clientEmail) {
+    updates.attendees = [{ email: params.clientEmail }];
   }
 
   if (Object.keys(updates).length === 0) return;
@@ -144,6 +168,7 @@ export async function updateCalendarEvent(params: {
   await calendar.events.patch({
     calendarId,
     eventId: params.eventId,
+    sendUpdates: params.clientEmail ? "all" : "none",
     requestBody: updates,
   });
 }

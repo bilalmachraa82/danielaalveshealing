@@ -224,6 +224,7 @@ export function buildPreSessionReminderEmailContent(input: {
   preferredLanguage: PreferredLanguage;
   serviceLabel: string;
   formattedDate: string;
+  manageUrl?: string;
 }) {
   if (input.preferredLanguage === "en") {
     return {
@@ -234,6 +235,8 @@ export function buildPreSessionReminderEmailContent(input: {
         `This is a gentle reminder of your ${input.serviceLabel} on ${input.formattedDate}.`,
         "If you need to make any adjustment, Daniela can support you from the app workflow.",
       ],
+      ctaText: input.manageUrl ? "Manage Session" : undefined,
+      ctaUrl: input.manageUrl,
     };
   }
 
@@ -245,5 +248,7 @@ export function buildPreSessionReminderEmailContent(input: {
       `Este é um lembrete suave da sua ${input.serviceLabel} em ${input.formattedDate}.`,
       "Se precisar de algum ajuste, a Daniela poderá apoiar a gestão da marcação a partir do fluxo da app.",
     ],
+    ctaText: input.manageUrl ? "Gerir Marcação" : undefined,
+    ctaUrl: input.manageUrl,
   };
 }

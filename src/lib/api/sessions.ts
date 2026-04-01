@@ -1,4 +1,5 @@
 import type {
+  Client,
   Session,
   SessionWithClient,
   SessionNote,
@@ -7,7 +8,45 @@ import type {
   CreateSessionInput,
   UpdateSessionInput,
   SessionNoteInput,
+  ManageSessionActionInput,
 } from "@/lib/schemas/session.schema";
+
+export interface ManageSessionState {
+  canConfirm: boolean;
+  canReschedule: boolean;
+  canCancel: boolean;
+  isClosed: boolean;
+  blockingReason: "status_closed" | "session_started" | "notice_period" | null;
+}
+
+export interface ManagedSessionResponse {
+  session: Pick<
+    Session,
+    | "id"
+    | "scheduled_at"
+    | "duration_minutes"
+    | "service_type"
+    | "status"
+    | "notes"
+    | "cancellation_reason"
+    | "reschedule_reason"
+    | "client_confirmed_at"
+    | "manage_token_expires_at"
+  >;
+  client: Pick<
+    Client,
+    | "id"
+    | "first_name"
+    | "last_name"
+    | "email"
+    | "phone"
+    | "preferred_language"
+    | "preferred_channel"
+    | "gender"
+  >;
+  manage_state: ManageSessionState;
+  manage_url: string | null;
+}
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -56,6 +95,22 @@ export function updateSession(
 ): Promise<Session> {
   return apiFetch(`/api/sessions/${id}`, {
     method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export function fetchManagedSession(
+  token: string
+): Promise<ManagedSessionResponse> {
+  return apiFetch(`/api/sessions/manage/${token}`);
+}
+
+export function submitManagedSessionAction(
+  token: string,
+  data: ManageSessionActionInput
+): Promise<ManagedSessionResponse> {
+  return apiFetch(`/api/sessions/manage/${token}`, {
+    method: "POST",
     body: JSON.stringify(data),
   });
 }

@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import { createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
 import {
   buildPreSessionReminderEmailContent,
   formatSessionDateForLanguage,
@@ -67,8 +68,10 @@ export default async function handler(
  */
 async function handlePreSessionReminder(res: VercelResponse) {
   const sql = getDb();
+  const appUrl = getAppUrl();
   const sessions = await sql(
     `SELECT s.id AS session_id, s.client_id, s.scheduled_at, s.service_type, s.reminder_status,
+            s.manage_token, s.manage_token_expires_at,
             c.first_name, c.email, c.preferred_language, c.preferred_channel
      FROM sessions s
      JOIN clients c ON c.id = s.client_id
@@ -81,6 +84,27 @@ async function handlePreSessionReminder(res: VercelResponse) {
   let sentCount = 0;
 
   for (const session of sessions) {
+    let manageToken = session.manage_token as string | null;
+    const tokenExpired =
+      session.manage_token_expires_at &&
+      new Date(session.manage_token_expires_at).getTime() < Date.now();
+
+    if (!manageToken || tokenExpired) {
+      manageToken = randomUUID();
+      await sql(
+        `UPDATE sessions
+         SET manage_token = $2,
+             manage_token_expires_at = $3
+         WHERE id = $1`,
+        [
+          session.session_id,
+          manageToken,
+          createManageTokenExpiry(new Date(session.scheduled_at)),
+        ]
+      );
+    }
+
+    const manageUrl = manageToken ? `${appUrl}/marcacao/${manageToken}` : undefined;
     const profile = buildClientCommunicationProfile({
       preferred_language: session.preferred_language,
       preferred_channel: session.preferred_channel,
@@ -111,8 +135,14 @@ async function handlePreSessionReminder(res: VercelResponse) {
         session.scheduled_at,
         profile.preferredLanguage
       ),
+      manageUrl,
     });
-    const html = buildEmailHtml(content.title, content.paragraphs);
+    const html = buildEmailHtml(
+      content.title,
+      content.paragraphs,
+      content.ctaText,
+      content.ctaUrl
+    );
 
     const result = await resend.emails.send({
       from: FROM_EMAIL,
@@ -125,6 +155,26 @@ async function handlePreSessionReminder(res: VercelResponse) {
       `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
        VALUES ($1, $2, 'pre_session_reminder', $3, 'sent')`,
       [session.client_id, session.session_id, result.data?.id ?? null]
+    );
+
+    await sql(
+      `INSERT INTO communication_log (
+        client_id,
+        session_id,
+        channel,
+        template_key,
+        provider_message_id,
+        status,
+        metadata,
+        sent_at
+      )
+      VALUES ($1, $2, 'email', 'pre_session_reminder', $3, 'sent', $4::jsonb, now())`,
+      [
+        session.client_id,
+        session.session_id,
+        result.data?.id ?? null,
+        JSON.stringify({ manage_url: manageUrl ?? null }),
+      ]
     );
 
     await sql(

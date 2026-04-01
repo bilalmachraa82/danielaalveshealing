@@ -21,16 +21,44 @@ export function buildSessionManageState(input: {
 }) {
   const base = canClientManageSession(input);
   const isActive = input.status === "scheduled" || input.status === "confirmed";
+  const isPast = input.scheduledAt.getTime() <= input.now.getTime();
+  const blockingReason =
+    !isActive
+      ? "status_closed"
+      : isPast
+        ? "session_started"
+        : !base.canCancel || !base.canReschedule
+          ? "notice_period"
+          : null;
 
   return {
     ...base,
     canConfirm: isActive && base.canConfirm,
     canReschedule: isActive && base.canReschedule,
     canCancel: isActive && base.canCancel,
-    isClosed: !isActive || input.scheduledAt.getTime() <= input.now.getTime(),
+    isClosed: !isActive || isPast,
+    blockingReason,
   };
 }
 
-export function createManageTokenExpiry(days = 14) {
-  return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+export function createManageTokenExpiry(
+  scheduledAt?: Date,
+  now = new Date(),
+  minimumDays = 14
+) {
+  const minimumExpiry = new Date(
+    now.getTime() + minimumDays * 24 * 60 * 60 * 1000
+  );
+
+  if (!scheduledAt || Number.isNaN(scheduledAt.getTime())) {
+    return minimumExpiry.toISOString();
+  }
+
+  const sessionWindowExpiry = new Date(
+    scheduledAt.getTime() + 2 * 24 * 60 * 60 * 1000
+  );
+
+  return new Date(
+    Math.max(minimumExpiry.getTime(), sessionWindowExpiry.getTime())
+  ).toISOString();
 }
