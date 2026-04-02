@@ -3,6 +3,7 @@ import {
   parseEventToInboxItem,
   isAppCreatedEvent,
   reconcileEvents,
+  deriveSessionSyncAction,
 } from "./reverse-sync";
 
 describe("isAppCreatedEvent", () => {
@@ -137,5 +138,107 @@ describe("reconcileEvents", () => {
     const result = reconcileEvents(events, new Set(), new Set());
     expect(result.matched).toHaveLength(1);
     expect(result.pending).toHaveLength(0);
+  });
+});
+
+describe("deriveSessionSyncAction", () => {
+  it("reschedules scheduled sessions when the Google start date changes", () => {
+    const action = deriveSessionSyncAction(
+      {
+        id: "gcal_1",
+        status: "confirmed",
+        start: { dateTime: "2026-04-11T15:00:00+01:00" },
+        end: { dateTime: "2026-04-11T17:00:00+01:00" },
+      },
+      {
+        id: "session-1",
+        google_calendar_event_id: "gcal_1",
+        scheduled_at: "2026-04-11T14:00:00+01:00",
+        status: "scheduled",
+      }
+    );
+
+    expect(action).toEqual({
+      type: "reschedule",
+      scheduledAt: "2026-04-11T15:00:00+01:00",
+    });
+  });
+
+  it("cancels confirmed sessions when Google marks the event as cancelled", () => {
+    const action = deriveSessionSyncAction(
+      { id: "gcal_2", status: "cancelled" },
+      {
+        id: "session-2",
+        google_calendar_event_id: "gcal_2",
+        scheduled_at: "2026-04-11T14:00:00+01:00",
+        status: "confirmed",
+      }
+    );
+
+    expect(action).toEqual({ type: "cancel" });
+  });
+
+  it("does not auto-cancel completed sessions", () => {
+    expect(
+      deriveSessionSyncAction(
+        { id: "gcal_3", status: "cancelled" },
+        {
+          id: "session-3",
+          google_calendar_event_id: "gcal_3",
+          scheduled_at: "2026-04-11T14:00:00+01:00",
+          status: "completed",
+        }
+      )
+    ).toBeNull();
+  });
+
+  it("does not auto-cancel in-progress sessions", () => {
+    expect(
+      deriveSessionSyncAction(
+        { id: "gcal_4", status: "cancelled" },
+        {
+          id: "session-4",
+          google_calendar_event_id: "gcal_4",
+          scheduled_at: "2026-04-11T14:00:00+01:00",
+          status: "in_progress",
+        }
+      )
+    ).toBeNull();
+  });
+
+  it("returns null when the event datetime matches the session exactly", () => {
+    expect(
+      deriveSessionSyncAction(
+        {
+          id: "gcal_5",
+          status: "confirmed",
+          start: { dateTime: "2026-04-11T14:00:00+01:00" },
+        },
+        {
+          id: "session-5",
+          google_calendar_event_id: "gcal_5",
+          scheduled_at: "2026-04-11T14:00:00+01:00",
+          status: "scheduled",
+        }
+      )
+    ).toBeNull();
+  });
+
+  it("handles all-day events using the date field", () => {
+    const action = deriveSessionSyncAction(
+      {
+        id: "gcal_6",
+        status: "confirmed",
+        start: { date: "2026-04-12" },
+      },
+      {
+        id: "session-6",
+        google_calendar_event_id: "gcal_6",
+        scheduled_at: "2026-04-11T14:00:00+01:00",
+        status: "confirmed",
+      }
+    );
+    expect(action?.type).toBe("reschedule");
+    expect((action as { scheduledAt: string } | null)?.scheduledAt).toBe("2026-04-12");
   });
 });
