@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TherapistProvider } from "@/lib/config/therapist-context";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -47,6 +48,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <TherapistProvider>
     <TooltipProvider>
       <LanguageProvider>
         <AuthProvider>
@@ -108,6 +110,7 @@ const App = () => (
         </AuthProvider>
       </LanguageProvider>
     </TooltipProvider>
+    </TherapistProvider>
   </QueryClientProvider>
 );
 
