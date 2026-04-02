@@ -12,10 +12,11 @@
  * It is done face-to-face by Daniela during the session.
  */
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { downloadICS } from "@/lib/ics";
+import { deriveReturningVariant } from "@/lib/communications/journey";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -72,6 +73,12 @@ interface PrepareApiResponse {
   form_type: "healing_touch" | "pura_radiancia";
   last_session_date: string | null;
   total_sessions: number;
+  last_checkin_scales: {
+    physically: number;
+    psychologically: number;
+    emotionally: number;
+    energetically: number;
+  } | null;
 }
 
 // ============================================================
@@ -935,23 +942,49 @@ export default function PreparePage() {
   const draftRef = useRef(draft);
   draftRef.current = draft;
 
+  const returningVariant = useMemo(() => {
+    if (!apiData?.is_returning) return null;
+    return deriveReturningVariant({
+      healthChanges: draft.returning_checkin.health_changes,
+      sessionFocus: draft.returning_checkin.session_focus,
+      feelingSinceLast: draft.returning_checkin.feeling_since_last,
+    });
+  }, [
+    apiData?.is_returning,
+    draft.returning_checkin.health_changes,
+    draft.returning_checkin.session_focus,
+    draft.returning_checkin.feeling_since_last,
+  ]);
+
   // ============================================================
   // Compute total steps
   // ============================================================
 
   const computeTotalSteps = useCallback(
     (data: PrepareApiResponse): number => {
-      if (data.is_returning) return 2; // check-in + practical
+      if (data.is_returning) {
+        // Triage step always shown. If changed_context → deep check-in + practical = 3
+        // If simple → practical only = 2
+        return returningVariant === "changed_context" ? 3 : 2;
+      }
       if (data.form_type === "healing_touch") return 1; // single page
       // pura_radiancia: 5 pages
       return 5;
     },
-    []
+    [returningVariant]
   );
 
   const getStepLabel = useCallback(
     (stepNum: number, data: PrepareApiResponse): string => {
       if (data.is_returning) {
+        if (returningVariant === "changed_context") {
+          const labels = [
+            t("Check-in R\u00e1pido", "Quick Check-in"),
+            t("Avalia\u00e7\u00e3o Detalhada", "Detailed Assessment"),
+            t("Informa\u00e7\u00f5es Pr\u00e1ticas", "Practical Info"),
+          ];
+          return labels[stepNum - 1] ?? String(stepNum);
+        }
         const labels = [
           t("Check-in R\u00e1pido", "Quick Check-in"),
           t("Informa\u00e7\u00f5es Pr\u00e1ticas", "Practical Info"),
@@ -971,7 +1004,7 @@ export default function PreparePage() {
       ];
       return labels[stepNum - 1] ?? String(stepNum);
     },
-    [t]
+    [t, returningVariant]
   );
 
   // ============================================================
@@ -1111,7 +1144,19 @@ export default function PreparePage() {
       }
 
       if (apiData.is_returning) {
-        payload.returning_checkin = draft.returning_checkin;
+        const checkin = { ...draft.returning_checkin };
+        if (returningVariant === "simple") {
+          // For simple flow, use last-known scales or defaults
+          const scales = apiData.last_checkin_scales;
+          checkin.feeling_physically = scales?.physically ?? 5;
+          checkin.feeling_psychologically = scales?.psychologically ?? 5;
+          checkin.feeling_emotionally = scales?.emotionally ?? 5;
+          checkin.feeling_energetically = scales?.energetically ?? 5;
+          checkin.health_changes_details = "";
+          checkin.new_topic_details = "";
+          checkin.additional_observations = "";
+        }
+        payload.returning_checkin = checkin;
       } else if (apiData.form_type === "healing_touch") {
         payload.intake = {
           form_type: "healing_touch",
@@ -1149,7 +1194,7 @@ export default function PreparePage() {
     } finally {
       setSubmitting(false);
     }
-  }, [token, apiData, draft, t]);
+  }, [token, apiData, draft, t, returningVariant]);
 
   const handleNextOrSubmit = useCallback(() => {
     if (step === totalSteps) {
@@ -1287,7 +1332,7 @@ export default function PreparePage() {
 
             {apiData.is_returning && (
               <>
-                {/* --- Step 1: Quick Check-in --- */}
+                {/* --- Step 1: Triage (Quick Check-in) --- */}
                 {step === 1 && (
                   <div className="space-y-6">
                     <SectionTitle
@@ -1336,6 +1381,103 @@ export default function PreparePage() {
                         ))}
                       </div>
                     </div>
+
+                    {/* Health changes */}
+                    <div className="space-y-3 py-4 border-t border-border">
+                      <div className="flex items-start gap-4">
+                        <Switch
+                          checked={draft.returning_checkin.health_changes}
+                          onCheckedChange={(v) =>
+                            updateCheckin("health_changes", v)
+                          }
+                          aria-label={t(
+                            "Alguma altera\u00e7\u00e3o de sa\u00fade?",
+                            "Any health changes?"
+                          )}
+                          className="mt-0.5 shrink-0"
+                        />
+                        <span className="text-sm leading-snug text-foreground flex-1">
+                          {t(
+                            "Alguma altera\u00e7\u00e3o de sa\u00fade desde a \u00faltima sess\u00e3o?",
+                            "Any health changes since the last session?"
+                          )}
+                        </span>
+                        <span
+                          className={`text-xs font-medium shrink-0 ${draft.returning_checkin.health_changes ? "text-primary" : "text-muted-foreground"}`}
+                        >
+                          {draft.returning_checkin.health_changes
+                            ? t("Sim", "Yes")
+                            : t("N\u00e3o", "No")}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Session focus */}
+                    <div className="space-y-3 border-t border-border pt-4">
+                      <Label className="font-sans text-sm font-medium">
+                        {t(
+                          "Continua\u00e7\u00e3o do trabalho anterior ou tema novo?",
+                          "Continue previous work or explore a new theme?"
+                        )}
+                      </Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {(
+                          [
+                            {
+                              value: "continuation",
+                              pt: "Continua\u00e7\u00e3o",
+                              en: "Continuation",
+                            },
+                            {
+                              value: "new_topic",
+                              pt: "Tema Novo",
+                              en: "New Theme",
+                            },
+                          ] as const
+                        ).map(({ value, pt, en }) => (
+                          <button
+                            key={value}
+                            type="button"
+                            onClick={() =>
+                              updateCheckin("session_focus", value)
+                            }
+                            className={`rounded-xl border-2 p-3 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${
+                              draft.returning_checkin.session_focus === value
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border bg-white/60 text-foreground hover:border-primary/50"
+                            }`}
+                            aria-pressed={
+                              draft.returning_checkin.session_focus === value
+                            }
+                          >
+                            {t(pt, en)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <NavButtons
+                      step={step}
+                      totalSteps={totalSteps}
+                      onBack={goBack}
+                      onNext={handleNextOrSubmit}
+                      isSubmitting={submitting}
+                      backLabel={t("Anterior", "Previous")}
+                      nextLabel={t("Seguinte", "Next")}
+                    />
+                  </div>
+                )}
+
+                {/* --- Step 2 (changed_context only): Detailed Assessment --- */}
+                {step === 2 && returningVariant === "changed_context" && (
+                  <div className="space-y-6">
+                    <SectionTitle
+                      title={t("Avalia\u00e7\u00e3o Detalhada", "Detailed Assessment")}
+                      subtitle={t(
+                        "Ajude-nos a compreender melhor como se sente.",
+                        "Help us better understand how you are feeling."
+                      )}
+                    />
 
                     {/* Wellness scales */}
                     <div className="space-y-4">
@@ -1387,101 +1529,44 @@ export default function PreparePage() {
                       />
                     </div>
 
-                    {/* Health changes */}
-                    <div className="space-y-3 py-4 border-t border-border">
-                      <div className="flex items-start gap-4">
-                        <Switch
-                          checked={draft.returning_checkin.health_changes}
-                          onCheckedChange={(v) =>
-                            updateCheckin("health_changes", v)
-                          }
-                          aria-label={t(
-                            "Alguma altera\u00e7\u00e3o de sa\u00fade?",
-                            "Any health changes?"
-                          )}
-                          className="mt-0.5 shrink-0"
-                        />
-                        <span className="text-sm leading-snug text-foreground flex-1">
+                    {/* Health changes details (if health_changes toggled on) */}
+                    {draft.returning_checkin.health_changes && (
+                      <div className="space-y-2 border-t border-border pt-4">
+                        <Label className="font-sans text-sm font-medium">
                           {t(
-                            "Alguma altera\u00e7\u00e3o de sa\u00fade desde a \u00faltima sess\u00e3o?",
-                            "Any health changes since the last session?"
+                            "Descreva as altera\u00e7\u00f5es de sa\u00fade",
+                            "Describe the health changes"
                           )}
-                        </span>
-                        <span
-                          className={`text-xs font-medium shrink-0 ${draft.returning_checkin.health_changes ? "text-primary" : "text-muted-foreground"}`}
-                        >
-                          {draft.returning_checkin.health_changes
-                            ? t("Sim", "Yes")
-                            : t("N\u00e3o", "No")}
-                        </span>
+                        </Label>
+                        <Textarea
+                          value={
+                            draft.returning_checkin.health_changes_details
+                          }
+                          onChange={(e) =>
+                            updateCheckin(
+                              "health_changes_details",
+                              e.target.value
+                            )
+                          }
+                          placeholder={t(
+                            "Descreva as altera\u00e7\u00f5es de sa\u00fade...",
+                            "Describe the health changes..."
+                          )}
+                          rows={2}
+                          className="text-sm resize-none"
+                        />
                       </div>
-                      {draft.returning_checkin.health_changes && (
-                        <div className="pl-14">
-                          <Textarea
-                            value={
-                              draft.returning_checkin.health_changes_details
-                            }
-                            onChange={(e) =>
-                              updateCheckin(
-                                "health_changes_details",
-                                e.target.value
-                              )
-                            }
-                            placeholder={t(
-                              "Descreva as altera\u00e7\u00f5es de sa\u00fade...",
-                              "Describe the health changes..."
-                            )}
-                            rows={2}
-                            className="text-sm resize-none"
-                          />
-                        </div>
-                      )}
-                    </div>
+                    )}
 
-                    {/* Session focus */}
-                    <div className="space-y-3 border-t border-border pt-4">
-                      <Label className="font-sans text-sm font-medium">
-                        {t(
-                          "Continua\u00e7\u00e3o do trabalho anterior ou tema novo?",
-                          "Continue previous work or explore a new theme?"
-                        )}
-                      </Label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {(
-                          [
-                            {
-                              value: "continuation",
-                              pt: "Continua\u00e7\u00e3o",
-                              en: "Continuation",
-                            },
-                            {
-                              value: "new_topic",
-                              pt: "Tema Novo",
-                              en: "New Theme",
-                            },
-                          ] as const
-                        ).map(({ value, pt, en }) => (
-                          <button
-                            key={value}
-                            type="button"
-                            onClick={() =>
-                              updateCheckin("session_focus", value)
-                            }
-                            className={`rounded-xl border-2 p-3 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${
-                              draft.returning_checkin.session_focus === value
-                                ? "border-primary bg-primary/10 text-primary"
-                                : "border-border bg-white/60 text-foreground hover:border-primary/50"
-                            }`}
-                            aria-pressed={
-                              draft.returning_checkin.session_focus === value
-                            }
-                          >
-                            {t(pt, en)}
-                          </button>
-                        ))}
-                      </div>
-                      {draft.returning_checkin.session_focus ===
-                        "new_topic" && (
+                    {/* New topic details (if session_focus is new_topic) */}
+                    {draft.returning_checkin.session_focus === "new_topic" && (
+                      <div className="space-y-2 border-t border-border pt-4">
+                        <Label className="font-sans text-sm font-medium">
+                          {t(
+                            "O que gostaria de trabalhar nesta sess\u00e3o?",
+                            "What would you like to explore in this session?"
+                          )}
+                        </Label>
                         <Textarea
                           value={draft.returning_checkin.new_topic_details}
                           onChange={(e) =>
@@ -1494,8 +1579,8 @@ export default function PreparePage() {
                           rows={3}
                           className="text-sm resize-none"
                         />
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Additional observations */}
                     <div className="space-y-2 border-t border-border pt-4">
@@ -1536,8 +1621,9 @@ export default function PreparePage() {
                   </div>
                 )}
 
-                {/* --- Step 2: Practical Info --- */}
-                {step === 2 && (
+                {/* --- Final step: Practical Info (step 2 for simple, step 3 for changed_context) --- */}
+                {((returningVariant === "simple" && step === 2) ||
+                  (returningVariant === "changed_context" && step === 3)) && (
                   <div>
                     <ReturningPracticalInfoStep
                       session={apiData.session}

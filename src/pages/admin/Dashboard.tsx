@@ -1,4 +1,4 @@
-import { useDashboardStats, usePendingForms, useRecentSatisfaction } from "@/hooks/useDashboard";
+import { useDashboardStats, usePendingForms, useRecentSatisfaction, useCalendarInbox, useResolveInboxItem } from "@/hooks/useDashboard";
 import { useTodaySessions, useUpcomingSessions } from "@/hooks/useSessions";
 import { useQuickBooking } from "@/contexts/QuickBookingContext";
 import {
@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, Calendar, Star, TrendingUp, ClipboardList, CheckCircle, CalendarPlus } from "lucide-react";
+import { Users, Calendar, Star, TrendingUp, ClipboardList, CheckCircle, CalendarPlus, Inbox } from "lucide-react";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Link } from "react-router-dom";
@@ -96,6 +96,8 @@ export default function Dashboard() {
   const { data: pendingForms, isLoading: formsLoading } = usePendingForms();
   const { data: recentSatisfaction, isLoading: satLoading } = useRecentSatisfaction();
   const { openQuickBooking } = useQuickBooking();
+  const { data: calendarInbox } = useCalendarInbox();
+  const resolveInboxItem = useResolveInboxItem();
 
   const totalClients = stats?.clients.total ?? 0;
   const activeClients = stats?.clients.active ?? 0;
@@ -421,6 +423,59 @@ export default function Dashboard() {
             )}
           </CardContent>
         </Card>
+
+        {/* Calendário — Por Rever */}
+        {calendarInbox && calendarInbox.length > 0 && (
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Inbox className="h-4 w-4 text-[#985F97]" />
+                Calendário — Por Rever
+                <Badge variant="secondary" className="bg-amber-100 text-amber-800 ml-1">
+                  {calendarInbox.length}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Eventos do Google Calendar que não foram criados pelo CRM
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {calendarInbox.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <div className="space-y-0.5 min-w-0">
+                      <p className="text-sm font-medium truncate">{item.summary}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {format(new Date(item.start_at), "d MMM, HH:mm", { locale: pt })}
+                        {item.attendee_email ? ` · ${item.attendee_email}` : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={resolveInboxItem.isPending}
+                        onClick={() => resolveInboxItem.mutate({ inbox_id: item.id, action: "dismiss" })}
+                      >
+                        Dispensar
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-[#985F97] hover:bg-[#7d4e7c] text-white"
+                        onClick={() => openQuickBooking()}
+                      >
+                        Criar Sessão
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

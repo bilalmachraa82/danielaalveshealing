@@ -2,6 +2,7 @@ import type {
   ClientKind,
   ExtendedServiceType,
   FormVariant,
+  ReturningFlowVariant,
 } from "./types";
 
 export function deriveClientJourney(input: {
@@ -22,4 +23,15 @@ export function deriveClientJourney(input: {
     shouldAskReferralSource: clientKind === "new" && !input.referralSourceKnown,
     shouldSendAnamnesis: clientKind === "new",
   };
+}
+
+export function deriveReturningVariant(input: {
+  healthChanges: boolean;
+  sessionFocus: "continuation" | "new_topic" | "";
+  feelingSinceLast: "better" | "same" | "worse" | "";
+}): ReturningFlowVariant {
+  if (input.healthChanges) return "changed_context";
+  if (input.sessionFocus === "new_topic") return "changed_context";
+  if (input.feelingSinceLast === "worse") return "changed_context";
+  return "simple";
 }

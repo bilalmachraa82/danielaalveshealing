@@ -27,6 +27,7 @@
     { "path": "/api/cron/checkin-24h", "schedule": "0 10 * * *" },
     { "path": "/api/cron/nudge-7d", "schedule": "0 10 * * 3" },
     { "path": "/api/cron/birthday", "schedule": "0 8 * * *" },
-    { "path": "/api/cron/feedback-request", "schedule": "0 10 * * *" }
+    { "path": "/api/cron/feedback-request", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/calendar-reverse-sync", "schedule": "*/15 * * * *" }
   ]
 }

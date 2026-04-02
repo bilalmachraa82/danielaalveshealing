@@ -5,10 +5,6 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   const sql = getDb();
   const rawPath = req.query.__path;
   const pathSegments = typeof rawPath === "string" && rawPath !== ""
@@ -18,6 +14,23 @@ export default async function handler(
       : [];
 
   const route = pathSegments[0] ?? "stats";
+
+  // POST-only routes
+  if (route === "calendar-inbox-resolve") {
+    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+    try {
+      return await handleCalendarInboxResolve(req, res, sql);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Internal server error";
+      return res.status(500).json({ error: message });
+    }
+  }
+
+  // All other routes are GET-only
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
     switch (route) {
@@ -29,6 +42,8 @@ export default async function handler(
         return await handleRecentSatisfaction(res, sql);
       case "email-log":
         return await handleEmailLog(res, sql);
+      case "calendar-inbox":
+        return await handleCalendarInbox(res, sql);
       default:
         return res.status(404).json({ error: "Not found" });
     }
@@ -159,4 +174,52 @@ async function handleEmailLog(
   `);
 
   return res.json(rows);
+}
+
+async function handleCalendarInbox(
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>
+) {
+  const rows = await sql(
+    `SELECT id, google_event_id, summary, start_at, end_at, attendee_email, status, synced_at
+     FROM calendar_inbox
+     WHERE status = 'pending'
+     ORDER BY start_at ASC
+     LIMIT 20`
+  );
+  return res.json(rows);
+}
+
+async function handleCalendarInboxResolve(
+  req: VercelRequest,
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>
+) {
+  const { inbox_id, action } = req.body ?? {};
+
+  if (!inbox_id || !action) {
+    return res.status(400).json({ error: "inbox_id and action are required" });
+  }
+
+  if (action === "dismiss") {
+    await sql(
+      `UPDATE calendar_inbox
+       SET status = 'dismissed', resolved_by = 'admin', resolved_at = now()
+       WHERE id = $1 AND status = 'pending'`,
+      [inbox_id]
+    );
+    return res.json({ success: true });
+  }
+
+  if (action === "get_for_create") {
+    const [item] = await sql(
+      `SELECT id, summary, start_at, end_at, attendee_email
+       FROM calendar_inbox WHERE id = $1`,
+      [inbox_id]
+    );
+    if (!item) return res.status(404).json({ error: "Not found" });
+    return res.json(item);
+  }
+
+  return res.status(400).json({ error: "Invalid action" });
 }
