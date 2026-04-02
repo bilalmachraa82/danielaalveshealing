@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { listCalendarEvents } from "../_calendar.js";
-import { reconcileEvents, isAppCreatedEvent } from "../../src/lib/calendar/reverse-sync.ts";
+import { reconcileEvents, isAppCreatedEvent, deriveSessionSyncAction } from "../../src/lib/calendar/reverse-sync.ts";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
 import { createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
 import {
@@ -12,6 +12,7 @@ import {
   getLocalizedServiceLabel,
 } from "../../src/lib/communications/templates.ts";
 import {
+  getNextReminderDueAt,
   getReminderRecoveryStatus,
   shouldSendPreSessionReminder,
 } from "../../src/lib/communications/reminders.ts";
@@ -769,7 +770,16 @@ async function handleCalendarReverseSync(res: VercelResponse) {
     : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
   // 3. Fetch events from Google Calendar
-  let events: Array<Record<string, unknown>>;
+  type CalendarEventItem = {
+    id?: string | null;
+    status?: string | null;
+    summary?: string | null;
+    description?: string | null;
+    start?: { dateTime?: string; date?: string } | null;
+    end?: { dateTime?: string; date?: string } | null;
+    attendees?: Array<{ email?: string }> | null;
+  };
+  let events: Array<CalendarEventItem>;
   let nextSyncToken: string | null;
   try {
     const fetchResult = await listCalendarEvents({
@@ -810,10 +820,18 @@ async function handleCalendarReverseSync(res: VercelResponse) {
 
   // 4. Load known session event IDs
   const sessionRows = await sql(
-    `SELECT google_calendar_event_id FROM sessions WHERE google_calendar_event_id IS NOT NULL`
+    `SELECT id, client_id, google_calendar_event_id, scheduled_at, status
+     FROM sessions
+     WHERE google_calendar_event_id IS NOT NULL`
   );
   const knownEventIds = new Set(
     sessionRows.map((r: Record<string, unknown>) => String(r.google_calendar_event_id))
+  );
+  const sessionsByEventId = new Map(
+    sessionRows.map((r: Record<string, unknown>) => [
+      String(r.google_calendar_event_id),
+      r,
+    ])
   );
 
   // 5. Load existing inbox event IDs
@@ -824,25 +842,119 @@ async function handleCalendarReverseSync(res: VercelResponse) {
 
   // 6. Reconcile
   const reconcileResult = reconcileEvents(
-    events as Array<{ id?: string | null; summary?: string | null; description?: string | null; start?: { dateTime?: string; date?: string }; end?: { dateTime?: string; date?: string }; attendees?: Array<{ email?: string }> }>,
+    events,
     knownEventIds,
     existingInboxIds
   );
 
-  // 7. Insert matched items and update session sync timestamps
+  // 7. Apply real mutations for app-owned sessions, then record in inbox
   for (const item of reconcileResult.matched) {
+    const session = sessionsByEventId.get(item.google_event_id);
+
+    if (session) {
+      const action = deriveSessionSyncAction(
+        item.raw_event as {
+          id?: string | null;
+          status?: string | null;
+          start?: { dateTime?: string; date?: string } | null;
+          end?: { dateTime?: string; date?: string } | null;
+        },
+        {
+          id: String(session.id),
+          google_calendar_event_id: String(session.google_calendar_event_id),
+          scheduled_at: String(session.scheduled_at),
+          status: session.status as
+            | "scheduled"
+            | "confirmed"
+            | "in_progress"
+            | "completed"
+            | "cancelled"
+            | "no_show",
+        }
+      );
+
+      if (action?.type === "reschedule") {
+        await sql(
+          `UPDATE sessions
+           SET scheduled_at = $2,
+               status = 'scheduled',
+               reschedule_reason = 'Updated from Google Calendar',
+               next_reminder_due_at = $3,
+               calendar_sync_status = 'synced',
+               calendar_last_synced_at = now()
+           WHERE id = $1`,
+          [session.id, action.scheduledAt, getNextReminderDueAt(action.scheduledAt)]
+        );
+
+        await sql(
+          `INSERT INTO session_change_log (
+             session_id, client_id, action, previous_status, new_status,
+             previous_scheduled_at, new_scheduled_at, reason, actor
+           )
+           VALUES ($1, $2, 'rescheduled', $3, 'scheduled', $4, $5, $6, 'system')`,
+          [
+            session.id,
+            session.client_id,
+            session.status,
+            session.scheduled_at,
+            action.scheduledAt,
+            "Google Calendar reverse sync",
+          ]
+        );
+      } else if (action?.type === "cancel") {
+        await sql(
+          `UPDATE sessions
+           SET status = 'cancelled',
+               cancellation_reason = 'Cancelled in Google Calendar',
+               next_reminder_due_at = NULL,
+               calendar_sync_status = 'synced',
+               calendar_last_synced_at = now()
+           WHERE id = $1`,
+          [session.id]
+        );
+
+        await sql(
+          `INSERT INTO session_change_log (
+             session_id, client_id, action, previous_status, new_status,
+             previous_scheduled_at, new_scheduled_at, reason, actor
+           )
+           VALUES ($1, $2, 'cancelled', $3, 'cancelled', $4, $4, $5, 'system')`,
+          [
+            session.id,
+            session.client_id,
+            session.status,
+            session.scheduled_at,
+            "Google Calendar reverse sync",
+          ]
+        );
+      } else {
+        // No action needed — just timestamp the sync
+        await sql(
+          `UPDATE sessions
+           SET calendar_last_synced_at = now(), calendar_sync_status = 'synced'
+           WHERE id = $1`,
+          [session.id]
+        );
+      }
+    }
+
+    // Record in inbox for audit trail
     await sql(
-      `INSERT INTO calendar_inbox (google_event_id, summary, description, start_at, end_at, attendee_email, status, resolved_by, resolved_at, raw_event)
+      `INSERT INTO calendar_inbox (
+         google_event_id, summary, description, start_at, end_at,
+         attendee_email, status, resolved_by, resolved_at, raw_event
+       )
        VALUES ($1, $2, $3, $4, $5, $6, 'matched', 'auto', now(), $7::jsonb)
        ON CONFLICT (google_event_id) DO NOTHING`,
-      [item.google_event_id, item.summary, item.description, item.start_at, item.end_at, item.attendee_email, JSON.stringify(item.raw_event)]
-    );
-
-    // Update session sync timestamp if this event matches a known session
-    await sql(
-      `UPDATE sessions SET calendar_last_synced_at = now(), calendar_sync_status = 'synced'
-       WHERE google_calendar_event_id = $1`,
-      [item.google_event_id]
+      [
+        item.google_event_id,
+        item.summary,
+        item.description,
+        item.start_at,
+        item.end_at,
+        item.attendee_email,
+        JSON.stringify(item.raw_event),
+      ]
     );
   }
 
