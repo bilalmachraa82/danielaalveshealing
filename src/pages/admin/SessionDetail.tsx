@@ -54,6 +54,7 @@ const STATUS_COLORS: Record<string, string> = {
 const REMINDER_LABELS: Record<string, string> = {
   pending: "Pendente",
   scheduled: "Agendado",
+  processing: "A processar",
   sent: "Enviado",
   skipped: "Ignorado",
 };
