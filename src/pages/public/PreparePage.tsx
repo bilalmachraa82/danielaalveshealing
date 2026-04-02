@@ -6,7 +6,8 @@
  * Flow:
  *   - New client (healing_touch):  Single-page form matching Google Forms 3/4
  *   - New client (pura_radiancia): 5-page form matching Google Forms 1/2
- *   - Returning client:            Quick check-in (2 steps)
+ *   - Returning client (simple):       Quick triage (2 steps)
+ *   - Returning client (changed):      Full check-in (3 steps)
  *
  * Anamnesis (health history, lifestyle, body map) is NO LONGER part of this form.
  * It is done face-to-face by Daniela during the session.

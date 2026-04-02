@@ -1,10 +1,11 @@
-import type { Client, ClientTimelineEvent, Tag } from "@/lib/types/database.types";
+import type { Client, ClientTimelineEvent, PaginatedResponse, Tag } from "@/lib/types/database.types";
 import type { CreateClientInput, UpdateClientInput } from "@/lib/schemas/client.schema";
+import { getAuthHeaders } from "./auth-headers";
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: { ...getAuthHeaders(), ...(options?.headers ?? {}) },
   });
 
   if (!response.ok) {
@@ -16,7 +17,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   return response.json();
 }
 
-export function fetchClients(filters?: {
+export async function fetchClients(filters?: {
   status?: string;
   search?: string;
 }): Promise<Client[]> {
@@ -24,7 +25,8 @@ export function fetchClients(filters?: {
   if (filters?.status) params.set("status", filters.status);
   if (filters?.search) params.set("search", filters.search);
   const qs = params.toString();
-  return apiFetch(`/api/clients${qs ? `?${qs}` : ""}`);
+  const result = await apiFetch<PaginatedResponse<Client>>(`/api/clients${qs ? `?${qs}` : ""}`);
+  return result.data;
 }
 
 export function fetchClient(id: string): Promise<Client> {

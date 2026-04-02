@@ -10,6 +10,11 @@ import type {
 // Database Types - Daniela Alves CRM
 // ============================================================
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: { total: number; page: number; limit: number };
+}
+
 export interface Client {
   id: string;
   first_name: string;

@@ -1,10 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
+import { verifyAdmin } from "../_auth.js";
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  if (!verifyAdmin(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const sql = getDb();
   const rawPath = req.query.__path;
   const pathSegments = typeof rawPath === "string" && rawPath !== ""
@@ -21,9 +26,8 @@ export default async function handler(
     try {
       return await handleCalendarInboxResolve(req, res, sql);
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Internal server error";
-      return res.status(500).json({ error: message });
+      console.error("Dashboard error:", error instanceof Error ? error.message : error);
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 
@@ -48,9 +52,8 @@ export default async function handler(
         return res.status(404).json({ error: "Not found" });
     }
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return res.status(500).json({ error: message });
+    console.error("Dashboard error:", error instanceof Error ? error.message : error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 

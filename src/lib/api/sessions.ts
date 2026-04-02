@@ -1,5 +1,6 @@
 import type {
   Client,
+  PaginatedResponse,
   Session,
   SessionWithClient,
   SessionNote,
@@ -10,6 +11,7 @@ import type {
   SessionNoteInput,
   ManageSessionActionInput,
 } from "@/lib/schemas/session.schema";
+import { getAuthHeaders } from "./auth-headers";
 
 export interface ManageSessionState {
   canConfirm: boolean;
@@ -50,8 +52,8 @@ export interface ManagedSessionResponse {
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: { ...getAuthHeaders(), ...(options?.headers ?? {}) },
   });
 
   if (!response.ok) {
@@ -63,7 +65,7 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   return response.json();
 }
 
-export function fetchSessions(filters?: {
+export async function fetchSessions(filters?: {
   client_id?: string;
   status?: string;
   from?: string;
@@ -75,7 +77,8 @@ export function fetchSessions(filters?: {
   if (filters?.from) params.set("from", filters.from);
   if (filters?.to) params.set("to", filters.to);
   const qs = params.toString();
-  return apiFetch(`/api/sessions${qs ? `?${qs}` : ""}`);
+  const result = await apiFetch<PaginatedResponse<SessionWithClient>>(`/api/sessions${qs ? `?${qs}` : ""}`);
+  return result.data;
 }
 
 export function fetchSession(id: string): Promise<SessionWithClient> {
@@ -151,12 +154,14 @@ export function fetchTodaySessions(): Promise<SessionWithClient[]> {
   return fetchSessions({ from, to });
 }
 
-export function fetchUpcomingSessions(
+export async function fetchUpcomingSessions(
   limit = 5
 ): Promise<SessionWithClient[]> {
   const params = new URLSearchParams({
     from: new Date().toISOString(),
     status: "scheduled",
+    limit: String(limit),
   });
-  return apiFetch(`/api/sessions?${params.toString()}`);
+  const result = await apiFetch<PaginatedResponse<SessionWithClient>>(`/api/sessions?${params.toString()}`);
+  return result.data;
 }

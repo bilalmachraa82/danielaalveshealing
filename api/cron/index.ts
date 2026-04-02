@@ -21,9 +21,9 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // Verify cron secret to prevent unauthorized access
+  // Verify cron secret to prevent unauthorized access (fail-closed: missing secret = deny)
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && req.headers.authorization !== `Bearer ${cronSecret}`) {
+  if (!cronSecret || req.headers.authorization !== `Bearer ${cronSecret}`) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
@@ -88,6 +88,15 @@ async function handlePreSessionReminder(res: VercelResponse) {
   let sentCount = 0;
 
   for (const session of sessions) {
+    // Atomically claim this session — skip if already claimed by another run
+    const claimed = await sql(
+      `UPDATE sessions SET reminder_status = 'processing'
+       WHERE id = $1 AND reminder_status IN ('pending', 'scheduled')
+       RETURNING id`,
+      [session.session_id]
+    );
+    if (claimed.length === 0) continue;
+
     let manageToken = session.manage_token as string | null;
     const tokenExpired =
       session.manage_token_expires_at &&
@@ -222,6 +231,15 @@ async function handlePostSession(res: VercelResponse) {
   let sentCount = 0;
 
   for (const session of sessions) {
+    // Atomically claim — skip if already claimed by another run
+    const claimed = await sql(
+      `UPDATE sessions SET satisfaction_sent = true
+       WHERE id = $1 AND satisfaction_sent = false
+       RETURNING id`,
+      [session.session_id]
+    );
+    if (claimed.length === 0) continue;
+
     const token = randomUUID();
 
     await sql(
@@ -244,12 +262,22 @@ async function handlePostSession(res: VercelResponse) {
       satisfactionUrl
     );
 
-    const result = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: session.email as string,
-      subject: "Como foi a sua experiencia? \u2014 Daniela Alves",
-      html,
-    });
+    let result;
+    try {
+      result = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: session.email as string,
+        subject: "Como foi a sua experiencia? \u2014 Daniela Alves",
+        html,
+      });
+    } catch {
+      // Email failed — rollback the claim so it can be retried
+      await sql(
+        `UPDATE sessions SET satisfaction_sent = false WHERE id = $1`,
+        [session.session_id]
+      );
+      continue;
+    }
 
     await sql(
       `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
@@ -259,7 +287,7 @@ async function handlePostSession(res: VercelResponse) {
 
     await sql(
       `UPDATE sessions
-       SET satisfaction_sent = true, satisfaction_sent_at = now()
+       SET satisfaction_sent_at = now()
        WHERE id = $1`,
       [session.session_id]
     );
@@ -374,6 +402,15 @@ async function handleReviewRequest(
   let sentCount = 0;
 
   for (const row of rows) {
+    // Atomically claim — skip if already claimed by another run
+    const claimed = await sql(
+      `UPDATE sessions SET review_request_sent = true
+       WHERE id = $1 AND review_request_sent = false
+       RETURNING id`,
+      [row.session_id]
+    );
+    if (claimed.length === 0) continue;
+
     const html = buildEmailHtml(
       "Partilhe a sua experiencia",
       [
@@ -387,12 +424,22 @@ async function handleReviewRequest(
       googleReviewUrl
     );
 
-    const result = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: row.email as string,
-      subject: "Partilhe a sua experiencia \u2014 Daniela Alves",
-      html,
-    });
+    let result;
+    try {
+      result = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: row.email as string,
+        subject: "Partilhe a sua experiencia \u2014 Daniela Alves",
+        html,
+      });
+    } catch {
+      // Email failed — rollback the claim so it can be retried
+      await sql(
+        `UPDATE sessions SET review_request_sent = false WHERE id = $1`,
+        [row.session_id]
+      );
+      continue;
+    }
 
     await sql(
       `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
@@ -402,7 +449,7 @@ async function handleReviewRequest(
 
     await sql(
       `UPDATE sessions
-       SET review_request_sent = true, review_request_sent_at = now()
+       SET review_request_sent_at = now()
        WHERE id = $1`,
       [row.session_id]
     );
@@ -669,10 +716,8 @@ async function handleFeedbackRequest(res: VercelResponse) {
   });
 }
 
-/**
- * Cron: CALENDAR REVERSE SYNC
- * Schedule: every 15 minutes (*/15 * * * *)
- */
+// Cron: CALENDAR REVERSE SYNC
+// Schedule: every 15 minutes
 async function handleCalendarReverseSync(res: VercelResponse) {
   const sql = getDb();
 
@@ -751,13 +796,20 @@ async function handleCalendarReverseSync(res: VercelResponse) {
     existingInboxIds
   );
 
-  // 7. Insert matched items
+  // 7. Insert matched items and update session sync timestamps
   for (const item of reconcileResult.matched) {
     await sql(
       `INSERT INTO calendar_inbox (google_event_id, summary, description, start_at, end_at, attendee_email, status, resolved_by, resolved_at, raw_event)
        VALUES ($1, $2, $3, $4, $5, $6, 'matched', 'auto', now(), $7::jsonb)
        ON CONFLICT (google_event_id) DO NOTHING`,
       [item.google_event_id, item.summary, item.description, item.start_at, item.end_at, item.attendee_email, JSON.stringify(item.raw_event)]
+    );
+
+    // Update session sync timestamp if this event matches a known session
+    await sql(
+      `UPDATE sessions SET calendar_last_synced_at = now(), calendar_sync_status = 'synced'
+       WHERE google_calendar_event_id = $1`,
+      [item.google_event_id]
     );
   }
 
@@ -783,6 +835,13 @@ async function handleCalendarReverseSync(res: VercelResponse) {
       [nextSyncToken]
     );
   }
+
+  // 10. Cleanup old resolved inbox items (older than 30 days)
+  await sql(
+    `DELETE FROM calendar_inbox
+     WHERE status IN ('matched', 'dismissed')
+       AND resolved_at < now() - interval '30 days'`
+  );
 
   return res.json({
     success: true,

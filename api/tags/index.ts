@@ -1,10 +1,15 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
+import { verifyAdmin } from "../_auth.js";
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  if (!verifyAdmin(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const sql = getDb();
 
   try {
@@ -28,8 +33,7 @@ export default async function handler(
 
     return res.status(405).json({ error: "Method not allowed" });
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return res.status(500).json({ error: message });
+    console.error("Tags error:", error instanceof Error ? error.message : error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }

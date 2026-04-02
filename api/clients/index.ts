@@ -100,9 +100,8 @@ export default async function handler(
 
     return res.status(404).json({ error: "Not found" });
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return res.status(500).json({ error: message });
+    console.error("Clients error:", error instanceof Error ? error.message : error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -767,8 +766,8 @@ async function handleClientImport(
 
       imported++;
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Erro desconhecido";
-      errors.push({ row: rowNum, error: message });
+      console.error(`Import row ${rowNum} error:`, error instanceof Error ? error.message : error);
+      errors.push({ row: rowNum, error: "Erro ao importar este registo" });
     }
   }
 

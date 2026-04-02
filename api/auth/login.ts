@@ -24,6 +24,7 @@ export default async function handler(
       id: "admin-1",
       email: ADMIN_EMAIL,
       name: "Daniela Alves",
+      token: process.env.ADMIN_API_TOKEN ?? null,
     });
   }
 

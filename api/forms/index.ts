@@ -98,9 +98,8 @@ export default async function handler(
 
     return res.status(404).json({ error: "Not found" });
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return res.status(500).json({ error: message });
+    console.error("Forms error:", error instanceof Error ? error.message : error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -1312,7 +1311,7 @@ async function handleSatisfactionSend(
   );
 
   const baseUrl = process.env.PUBLIC_URL ?? `https://${req.headers.host}`;
-  const url = `${baseUrl}/forms/satisfaction/${token}`;
+  const url = `${baseUrl}/satisfacao/${token}`;
 
   return res.status(201).json({ token, url });
 }
