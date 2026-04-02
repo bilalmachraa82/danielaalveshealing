@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAuthHeaders } from "@/lib/api/auth-headers";
+import { adminFetch } from "@/lib/api/admin-fetch";
 
 interface DashboardStats {
   clients: { total: number; active: number };
@@ -7,16 +7,10 @@ interface DashboardStats {
   nps: { average: number | null; total_responses: number };
 }
 
-async function fetchDashboardStats(): Promise<DashboardStats> {
-  const response = await fetch("/api/dashboard/stats", { headers: getAuthHeaders() });
-  if (!response.ok) throw new Error("Failed to fetch stats");
-  return response.json();
-}
-
 export function useDashboardStats() {
   return useQuery({
     queryKey: ["dashboard-stats"],
-    queryFn: fetchDashboardStats,
+    queryFn: () => adminFetch<DashboardStats>("/api/dashboard/stats"),
   });
 }
 
@@ -31,11 +25,7 @@ export interface PendingForm {
 export function usePendingForms() {
   return useQuery({
     queryKey: ["pending-forms"],
-    queryFn: async (): Promise<PendingForm[]> => {
-      const res = await fetch("/api/dashboard/pending-forms", { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error("Failed to fetch pending forms");
-      return res.json();
-    },
+    queryFn: () => adminFetch<PendingForm[]>("/api/dashboard/pending-forms"),
   });
 }
 
@@ -51,11 +41,7 @@ export interface RecentSatisfaction {
 export function useRecentSatisfaction() {
   return useQuery({
     queryKey: ["recent-satisfaction"],
-    queryFn: async (): Promise<RecentSatisfaction[]> => {
-      const res = await fetch("/api/dashboard/recent-satisfaction", { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error("Failed to fetch satisfaction data");
-      return res.json();
-    },
+    queryFn: () => adminFetch<RecentSatisfaction[]>("/api/dashboard/recent-satisfaction"),
   });
 }
 
@@ -70,11 +56,7 @@ export interface EmailLogEntry {
 export function useEmailLog() {
   return useQuery({
     queryKey: ["email-log"],
-    queryFn: async (): Promise<EmailLogEntry[]> => {
-      const res = await fetch("/api/dashboard/email-log", { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error("Failed to fetch email log");
-      return res.json();
-    },
+    queryFn: () => adminFetch<EmailLogEntry[]>("/api/dashboard/email-log"),
   });
 }
 
@@ -92,11 +74,7 @@ export interface CalendarInboxEntry {
 export function useCalendarInbox() {
   return useQuery({
     queryKey: ["calendar-inbox"],
-    queryFn: async (): Promise<CalendarInboxEntry[]> => {
-      const res = await fetch("/api/dashboard/calendar-inbox", { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error("Failed to fetch calendar inbox");
-      return res.json();
-    },
+    queryFn: () => adminFetch<CalendarInboxEntry[]>("/api/dashboard/calendar-inbox"),
     refetchInterval: 60_000,
   });
 }
@@ -104,17 +82,18 @@ export function useCalendarInbox() {
 export function useResolveInboxItem() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (params: { inbox_id: string; action: "dismiss" | "get_for_create" }) => {
-      const res = await fetch("/api/dashboard/calendar-inbox-resolve", {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(params),
-      });
-      if (!res.ok) throw new Error("Failed to resolve inbox item");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["calendar-inbox"] });
+    mutationFn: (params: { inbox_id: string; action: "dismiss" | "get_for_create" }) =>
+      adminFetch<CalendarInboxEntry | { success: true }>(
+        "/api/dashboard/calendar-inbox-resolve",
+        {
+          method: "POST",
+          body: JSON.stringify(params),
+        }
+      ),
+    onSuccess: (_, variables) => {
+      if (variables.action === "dismiss") {
+        queryClient.invalidateQueries({ queryKey: ["calendar-inbox"] });
+      }
     },
   });
 }

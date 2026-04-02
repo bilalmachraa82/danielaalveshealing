@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import { useTags } from "@/hooks/useClients";
 import { useEmailLog } from "@/hooks/useDashboard";
 import { useTherapist } from "@/lib/config/therapist-context";
@@ -298,18 +299,11 @@ export default function Settings() {
   const { toast } = useToast();
 
   const createTagMutation = useMutation({
-    mutationFn: async (data: { name: string; category: string; color: string }) => {
-      const res = await fetch("/api/tags", {
+    mutationFn: (data: { name: string; category: string; color: string }) =>
+      adminFetch<{ id: string; name: string }>("/api/tags", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Erro ao criar etiqueta");
-      }
-      return res.json();
-    },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       setAddTagOpen(false);

@@ -5,14 +5,15 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { DEFAULT_CONFIG } from "@/lib/config/therapist";
+import {
+  ADMIN_AUTH_KEY,
+  ADMIN_UNAUTHORIZED_EVENT,
+  clearStoredAdminAuth,
+  readStoredAdminAuth,
+  type StoredAdminAuth,
+} from "@/lib/api/admin-fetch";
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  token?: string | null;
-}
+type User = StoredAdminAuth;
 
 interface AuthContextType {
   user: User | null;
@@ -23,22 +24,35 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const AUTH_KEY = `${DEFAULT_CONFIG.localStoragePrefix}-auth`;
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_KEY);
-    if (stored) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem(AUTH_KEY);
+    const syncFromStorage = () => {
+      setUser(readStoredAdminAuth());
+      setIsLoading(false);
+    };
+
+    const handleUnauthorized = () => {
+      clearStoredAdminAuth();
+      setUser(null);
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === ADMIN_AUTH_KEY) {
+        syncFromStorage();
       }
-    }
-    setIsLoading(false);
+    };
+
+    syncFromStorage();
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener(ADMIN_UNAUTHORIZED_EVENT, handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener(ADMIN_UNAUTHORIZED_EVENT, handleUnauthorized);
+    };
   }, []);
 
   async function login(email: string, password: string) {
@@ -50,17 +64,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
-      throw new Error(body.error ?? "Credenciais inválidas");
+      throw new Error((body as { error?: string }).error ?? "Credenciais inválidas");
     }
 
-    const userData = await response.json();
+    const userData = (await response.json()) as User;
     setUser(userData);
-    localStorage.setItem(AUTH_KEY, JSON.stringify(userData));
+    localStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(userData));
   }
 
   function logout() {
     setUser(null);
-    localStorage.removeItem(AUTH_KEY);
+    clearStoredAdminAuth();
   }
 
   return (

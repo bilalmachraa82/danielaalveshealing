@@ -1,7 +1,8 @@
 import { createContext, useContext } from "react";
+import type { QuickBookingInitialData } from "@/lib/dashboard/calendar-inbox";
 
 interface QuickBookingContextType {
-  openQuickBooking: () => void;
+  openQuickBooking: (initialData?: QuickBookingInitialData) => void;
 }
 
 export const QuickBookingContext = createContext<QuickBookingContextType | undefined>(

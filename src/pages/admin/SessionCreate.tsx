@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useClients } from "@/hooks/useClients";
@@ -43,9 +44,8 @@ async function sendForms(
   sessionId: string,
   serviceType: string
 ): Promise<void> {
-  const response = await fetch("/api/forms/emails/send", {
+  await adminFetch("/api/forms/emails/send", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       client_id: clientId,
       session_id: sessionId,
@@ -53,11 +53,6 @@ async function sendForms(
       send_anamnesis: true,
     }),
   });
-
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    throw new Error(body.error ?? `Erro ao enviar emails: ${response.status}`);
-  }
 }
 
 const SERVICE_OPTIONS = [
