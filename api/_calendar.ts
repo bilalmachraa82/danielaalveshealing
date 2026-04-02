@@ -1,21 +1,6 @@
 import { google } from "googleapis";
 import { GoogleAuth } from "google-auth-library";
-
-const SERVICE_COLORS: Record<string, string> = {
-  healing_wellness: "3",   // Purple (Grape)
-  pura_radiancia: "5",     // Banana (Gold)
-  pure_earth_love: "10",   // Basil (Green)
-  home_harmony: "7",       // Peacock (Teal)
-  other: "8",              // Graphite
-};
-
-const SERVICE_LABELS: Record<string, string> = {
-  healing_wellness: "Healing Touch",
-  pura_radiancia: "Imersão Pura Radiância",
-  pure_earth_love: "Pure Earth Love",
-  home_harmony: "Home Harmony",
-  other: "Sessão",
-};
+import { getServerConfig, getServiceLabel, getServiceCalendarColor } from "./_config.js";
 
 export function getCalendarClient() {
   const calendarId = process.env.GOOGLE_CALENDAR_ID?.trim();
@@ -70,8 +55,9 @@ export async function createCalendarEvent(params: {
   const { calendar, calendarId } = client;
   const start = new Date(params.scheduledAt);
   const end = new Date(start.getTime() + params.durationMinutes * 60 * 1000);
-  const label = SERVICE_LABELS[params.serviceType] ?? "Sessão";
-  const appUrl = process.env.PUBLIC_URL ?? "https://danielaalveshealing.com";
+  const config = getServerConfig();
+  const label = getServiceLabel(params.serviceType);
+  const appUrl = config.appUrl;
 
   const event = await calendar.events.insert({
     calendarId,
@@ -96,9 +82,8 @@ export async function createCalendarEvent(params: {
         dateTime: end.toISOString(),
         timeZone: "Europe/Lisbon",
       },
-      location:
-        "R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra",
-      colorId: SERVICE_COLORS[params.serviceType] ?? "8",
+      location: config.address.full,
+      colorId: getServiceCalendarColor(params.serviceType),
       attendees: params.clientEmail ? [{ email: params.clientEmail }] : undefined,
       reminders: {
         useDefault: false,
@@ -139,7 +124,8 @@ export async function updateCalendarEvent(params: {
   }
 
   if (params.clientName && params.serviceType) {
-    const label = SERVICE_LABELS[params.serviceType] ?? "Sessão";
+    const label = getServiceLabel(params.serviceType);
+    const appUrl = getServerConfig().appUrl;
     updates.summary = `${label} — ${params.clientName}`;
     updates.description = [
       `Cliente: ${params.clientName}`,
@@ -147,7 +133,7 @@ export async function updateCalendarEvent(params: {
       params.notes ? `Notas: ${params.notes}` : "",
       "",
       params.sessionId
-        ? `Ver no CRM: ${(process.env.PUBLIC_URL ?? "https://danielaalveshealing.com")}/admin/sessoes/${params.sessionId}`
+        ? `Ver no CRM: ${appUrl}/admin/sessoes/${params.sessionId}`
         : "",
       params.manageUrl ? `Gerir sessão: ${params.manageUrl}` : "",
     ]
@@ -156,7 +142,7 @@ export async function updateCalendarEvent(params: {
   }
 
   if (params.serviceType) {
-    updates.colorId = SERVICE_COLORS[params.serviceType] ?? "8";
+    updates.colorId = getServiceCalendarColor(params.serviceType);
   }
 
   if (params.clientEmail) {

@@ -30,15 +30,8 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession, useUpdateSession } from "@/hooks/useSessions";
+import { getServiceLabel } from "@/lib/config/services";
 import type { SessionStatus } from "@/lib/types/database.types";
-
-const SERVICE_LABELS: Record<string, string> = {
-  healing_wellness: "Sessão Healing Touch",
-  pura_radiancia: "Imersão Pura Radiância",
-  pure_earth_love: "Pure Earth Love",
-  home_harmony: "Home Harmony",
-  other: "Outro",
-};
 
 const STATUS_LABELS: Record<string, string> = {
   scheduled: "Agendada",
@@ -232,7 +225,7 @@ export default function SessionDetail() {
           </Button>
           <div>
             <h1 className="text-2xl font-serif font-semibold">
-              {SERVICE_LABELS[session.service_type] ?? session.service_type}
+              {getServiceLabel(session.service_type)}
             </h1>
             <p className="text-muted-foreground">
               {format(

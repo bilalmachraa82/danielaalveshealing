@@ -1,6 +1,8 @@
 import { useDashboardStats, usePendingForms, useRecentSatisfaction, useCalendarInbox, useResolveInboxItem } from "@/hooks/useDashboard";
 import { useTodaySessions, useUpcomingSessions } from "@/hooks/useSessions";
 import { useQuickBooking } from "@/contexts/QuickBookingContext";
+import { useTherapist } from "@/lib/config/therapist-context";
+import { getServiceLabel } from "@/lib/config/services";
 import {
   Card,
   CardContent,
@@ -15,15 +17,6 @@ import { Users, Calendar, Star, TrendingUp, ClipboardList, CheckCircle, Calendar
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import { Link } from "react-router-dom";
-
-const SERVICE_LABELS: Record<string, string> = {
-  healing_wellness: "Healing Touch",
-  pura_radiancia: "Pura Radiância",
-  pure_earth_love: "Pure Earth Love",
-  home_harmony: "Home Harmony",
-  healing_touch: "Healing Touch",
-  other: "Outro",
-};
 
 const SESSION_STATUS_COLORS: Record<string, string> = {
   scheduled: "bg-blue-100 text-blue-800",
@@ -90,6 +83,7 @@ function StatCardSkeleton() {
 }
 
 export default function Dashboard() {
+  const config = useTherapist();
   const { data: stats, isLoading: statsLoading } = useDashboardStats();
   const { data: todaySessions, isLoading: todayLoading } = useTodaySessions();
   const { data: upcomingSessions } = useUpcomingSessions(5);
@@ -114,7 +108,10 @@ export default function Dashboard() {
         </div>
         <Button
           onClick={openQuickBooking}
-          className="bg-[#985F97] hover:bg-[#7d4e7c] text-white shrink-0"
+          className="text-white shrink-0"
+          style={{ backgroundColor: config.colors.primary }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = config.colors.primaryHover; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = config.colors.primary; }}
         >
           <CalendarPlus className="h-4 w-4" />
           <span className="hidden sm:inline">Nova Marcacao</span>
@@ -202,7 +199,7 @@ export default function Dashboard() {
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-[#985F97]" />
+              <Calendar className="h-4 w-4" style={{ color: config.colors.primary }} />
               Sessões de Hoje
             </CardTitle>
             <CardDescription>
@@ -241,7 +238,7 @@ export default function Dashboard() {
                         {session.client.first_name} {session.client.last_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {SERVICE_LABELS[session.service_type] ?? session.service_type}
+                        {getServiceLabel(session.service_type)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-2 flex-shrink-0">
@@ -266,7 +263,7 @@ export default function Dashboard() {
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="h-4 w-4 text-[#985F97]" />
+              <ClipboardList className="h-4 w-4" style={{ color: config.colors.primary }} />
               Formulários Pendentes
             </CardTitle>
             <CardDescription>
@@ -325,7 +322,7 @@ export default function Dashboard() {
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Star className="h-4 w-4 text-[#985F97]" />
+              <Star className="h-4 w-4" style={{ color: config.colors.primary }} />
               Satisfação Recente
             </CardTitle>
             <CardDescription>Últimas 5 respostas com NPS</CardDescription>
@@ -354,7 +351,7 @@ export default function Dashboard() {
                     <div className="space-y-0.5 min-w-0">
                       <p className="text-sm font-medium truncate">{entry.client_name.trim()}</p>
                       <p className="text-xs text-muted-foreground">
-                        {SERVICE_LABELS[entry.service_type] ?? entry.service_type}
+                        {getServiceLabel(entry.service_type)}
                         {" · "}
                         {format(new Date(entry.completed_at), "d MMM", { locale: pt })}
                       </p>
@@ -403,7 +400,7 @@ export default function Dashboard() {
                         {session.client.first_name} {session.client.last_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {SERVICE_LABELS[session.service_type] ?? session.service_type}
+                        {getServiceLabel(session.service_type)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-2 flex-shrink-0">
@@ -429,7 +426,7 @@ export default function Dashboard() {
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Inbox className="h-4 w-4 text-[#985F97]" />
+                <Inbox className="h-4 w-4" style={{ color: config.colors.primary }} />
                 Calendário — Por Rever
                 <Badge variant="secondary" className="bg-amber-100 text-amber-800 ml-1">
                   {calendarInbox.length}
@@ -464,7 +461,10 @@ export default function Dashboard() {
                       </Button>
                       <Button
                         size="sm"
-                        className="bg-[#985F97] hover:bg-[#7d4e7c] text-white"
+                        className="text-white"
+                        style={{ backgroundColor: config.colors.primary }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = config.colors.primaryHover; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = config.colors.primary; }}
                         onClick={() => openQuickBooking()}
                       >
                         Criar Sessão

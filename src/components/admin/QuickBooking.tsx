@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTherapist } from "@/lib/config/therapist-context";
 import { Plus, Search, Phone, Copy, MessageCircle, Mail, Check, X, CalendarPlus } from "lucide-react";
 import {
   Sheet,
@@ -55,14 +56,7 @@ interface SelectedClient {
   isNew: boolean;
 }
 
-type ServiceType = "healing_wellness" | "pura_radiancia" | "pure_earth_love" | "home_harmony";
-
-const SERVICE_OPTIONS: { value: ServiceType; label: string; price: string }[] = [
-  { value: "healing_wellness", label: "Healing Touch", price: "150" },
-  { value: "pura_radiancia", label: "Imersão Pura Radiância", price: "450" },
-  { value: "pure_earth_love", label: "Pure Earth Love", price: "80" },
-  { value: "home_harmony", label: "Home Harmony", price: "0" },
-];
+type ServiceType = string;
 
 // ---- useDebounce hook ----
 
@@ -96,7 +90,20 @@ interface QuickBookingProps {
 }
 
 export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
+  const config = useTherapist();
   const queryClient = useQueryClient();
+
+  const serviceOptions = useMemo(
+    () =>
+      config.services
+        .filter((s) => s.id !== "other")
+        .map((s) => ({
+          value: s.id,
+          label: s.namePt,
+          price: s.priceCents > 0 ? String(s.priceCents / 100) : "0",
+        })),
+    [config.services]
+  );
 
   // Form state
   const [searchQuery, setSearchQuery] = useState("");
@@ -361,6 +368,7 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             setScheduledAt={setScheduledAt}
             serviceType={serviceType}
             setServiceType={setServiceType}
+            serviceOptions={serviceOptions}
             isSubmitting={isSubmitting}
             searchInputRef={searchInputRef}
             dropdownRef={dropdownRef}
@@ -368,6 +376,8 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
             onCreateNewClient={handleCreateNewClient}
             onClearClient={handleClearClient}
             onSubmit={handleSubmit}
+            primaryColor={config.colors.primary}
+            primaryHoverColor={config.colors.primaryHover}
           />
         )}
       </SheetContent>
@@ -395,6 +405,7 @@ interface BookingFormProps {
   setScheduledAt: (d: string) => void;
   serviceType: ServiceType;
   setServiceType: (s: ServiceType) => void;
+  serviceOptions: { value: string; label: string; price: string }[];
   isSubmitting: boolean;
   searchInputRef: React.RefObject<HTMLInputElement>;
   dropdownRef: React.RefObject<HTMLDivElement>;
@@ -402,6 +413,8 @@ interface BookingFormProps {
   onCreateNewClient: () => void;
   onClearClient: () => void;
   onSubmit: () => void;
+  primaryColor: string;
+  primaryHoverColor: string;
 }
 
 function BookingForm({
@@ -422,6 +435,7 @@ function BookingForm({
   setScheduledAt,
   serviceType,
   setServiceType,
+  serviceOptions,
   isSubmitting,
   searchInputRef,
   dropdownRef,
@@ -429,6 +443,8 @@ function BookingForm({
   onCreateNewClient,
   onClearClient,
   onSubmit,
+  primaryColor,
+  primaryHoverColor,
 }: BookingFormProps) {
   return (
     <div className="space-y-4 pt-2">
@@ -498,7 +514,7 @@ function BookingForm({
                     onClick={onCreateNewClient}
                     className="flex items-center gap-2 w-full px-3 py-3 text-left hover:bg-accent transition-colors"
                   >
-                    <Plus className="h-4 w-4 text-[#985F97]" />
+                    <Plus className="h-4 w-4" style={{ color: primaryColor }} />
                     <span className="text-sm font-medium">
                       Criar: {searchQuery.trim()}
                     </span>
@@ -549,8 +565,8 @@ function BookingForm({
                     onClick={onCreateNewClient}
                     className="flex items-center gap-2 w-full px-3 py-3 text-left hover:bg-accent transition-colors border-t"
                   >
-                    <Plus className="h-4 w-4 text-[#985F97]" />
-                    <span className="text-sm font-medium text-[#985F97]">
+                    <Plus className="h-4 w-4" style={{ color: primaryColor }} />
+                    <span className="text-sm font-medium" style={{ color: primaryColor }}>
                       Criar: {searchQuery.trim()}
                     </span>
                   </button>
@@ -580,9 +596,14 @@ function BookingForm({
                 onClick={() => setGender("female")}
                 className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
                   gender === "female"
-                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    ? ""
                     : "border-input bg-background text-muted-foreground hover:bg-muted/50"
                 }`}
+                style={
+                  gender === "female"
+                    ? { borderColor: primaryColor, backgroundColor: `${primaryColor}1A`, color: primaryColor }
+                    : undefined
+                }
               >
                 Feminino
               </button>
@@ -591,9 +612,14 @@ function BookingForm({
                 onClick={() => setGender("male")}
                 className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
                   gender === "male"
-                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    ? ""
                     : "border-input bg-background text-muted-foreground hover:bg-muted/50"
                 }`}
+                style={
+                  gender === "male"
+                    ? { borderColor: primaryColor, backgroundColor: `${primaryColor}1A`, color: primaryColor }
+                    : undefined
+                }
               >
                 Masculino
               </button>
@@ -604,9 +630,14 @@ function BookingForm({
                 onClick={() => setPreferredLanguage("pt")}
                 className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
                   preferredLanguage === "pt"
-                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    ? ""
                     : "border-input bg-background text-muted-foreground hover:bg-muted/50"
                 }`}
+                style={
+                  preferredLanguage === "pt"
+                    ? { borderColor: primaryColor, backgroundColor: `${primaryColor}1A`, color: primaryColor }
+                    : undefined
+                }
               >
                 Português
               </button>
@@ -615,9 +646,14 @@ function BookingForm({
                 onClick={() => setPreferredLanguage("en")}
                 className={`flex-1 h-11 rounded-md border text-sm font-medium transition-colors ${
                   preferredLanguage === "en"
-                    ? "border-[#985F97] bg-[#985F97]/10 text-[#985F97]"
+                    ? ""
                     : "border-input bg-background text-muted-foreground hover:bg-muted/50"
                 }`}
+                style={
+                  preferredLanguage === "en"
+                    ? { borderColor: primaryColor, backgroundColor: `${primaryColor}1A`, color: primaryColor }
+                    : undefined
+                }
               >
                 English
               </button>
@@ -650,7 +686,7 @@ function BookingForm({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {SERVICE_OPTIONS.map((option) => (
+            {serviceOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 <span>{option.label}</span>
                 {option.price && (
@@ -668,7 +704,10 @@ function BookingForm({
       <Button
         onClick={onSubmit}
         disabled={isSubmitting || !selectedClient}
-        className="w-full h-12 text-base font-medium bg-[#985F97] hover:bg-[#7d4e7c] text-white"
+        className="w-full h-12 text-base font-medium text-white"
+        style={{ backgroundColor: primaryColor }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = primaryHoverColor; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = primaryColor; }}
       >
         {isSubmitting ? (
           <div className="flex items-center gap-2">
@@ -812,10 +851,14 @@ interface QuickBookingFabProps {
 }
 
 export function QuickBookingFab({ onClick }: QuickBookingFabProps) {
+  const config = useTherapist();
   return (
     <Button
       onClick={onClick}
-      className="fixed bottom-20 right-4 md:bottom-6 h-14 w-14 rounded-full shadow-lg z-50 bg-[#985F97] hover:bg-[#7d4e7c] text-white"
+      className="fixed bottom-20 right-4 md:bottom-6 h-14 w-14 rounded-full shadow-lg z-50 text-white"
+      style={{ backgroundColor: config.colors.primary }}
+      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = config.colors.primaryHover; }}
+      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = config.colors.primary; }}
       size="icon"
       aria-label="Nova marcacao"
     >

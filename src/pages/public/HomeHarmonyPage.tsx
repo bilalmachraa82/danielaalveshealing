@@ -1,4 +1,5 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,12 +7,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Home, Sparkles, Compass, Star, MessageCircle, ArrowLeft, Eye, Palette, Repeat, Check, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const WA_BASE = 'https://wa.me/351914173445?text=';
-const WA_CONSULTA = `${WA_BASE}${encodeURIComponent('Olá Daniela, gostaria de agendar uma Sessão Descoberta para o Home Harmony.')}`;
-const WA_DELUXE = `${WA_BASE}${encodeURIComponent('Olá Daniela, gostaria de saber mais sobre o Home Harmony Deluxe.')}`;
-
 const HomeHarmonyPage = () => {
   const { t } = useLanguage();
+  const config = useTherapist();
+  const homeHarmonyService = config.services.find(s => s.id === 'home_harmony');
+  const WA_BASE = `${config.whatsappBase}?text=`;
+  const WA_CONSULTA = `${WA_BASE}${encodeURIComponent(t(homeHarmonyService?.whatsappMessagePt ?? 'Olá Daniela, gostaria de agendar uma Sessão Descoberta para o Home Harmony.', homeHarmonyService?.whatsappMessageEn ?? 'Hello Daniela, I would like to book a Discovery Session for Home Harmony.'))}`;
+  const WA_DELUXE = `${WA_BASE}${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre o Home Harmony Deluxe.', 'Hello Daniela, I would like to know more about Home Harmony Deluxe.'))}`;
+
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation(0.05);
   const { ref: diffRef, isVisible: diffVisible } = useScrollAnimation();
   const { ref: pillarsRef, isVisible: pillarsVisible } = useScrollAnimation();

@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Volume2, VolumeX } from 'lucide-react';
 
 const Hero = () => {
   const { t } = useLanguage();
+  const config = useTherapist();
   const { ref, isVisible } = useScrollAnimation(0.05);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -82,15 +84,12 @@ const Hero = () => {
         <div className={`relative max-w-xl mx-auto transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <span className="absolute -top-6 -left-4 font-serif text-6xl text-gold/30 select-none leading-none">"</span>
           <p className="font-serif text-sm sm:text-base md:text-lg italic text-white/70 leading-relaxed tracking-wide px-6">
-            {t(
-              'Quando o corpo relaxa e harmoniza, o Ser cria condições para regressar à sua mais genuína Expressão.',
-              'When the body relaxes and harmonizes, the Being creates conditions to return to its most genuine Expression.'
-            )}
+            {t(config.quotes.main.pt, config.quotes.main.en)}
           </p>
           <span className="absolute -bottom-6 -right-4 font-serif text-6xl text-gold/30 select-none leading-none">"</span>
         </div>
         <p className={`text-xs tracking-[0.3em] uppercase text-gold/80 mt-6 transition-all duration-1000 delay-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-          — Daniela Alves
+          — {config.quotes.author}
         </p>
 
         {/* CTA */}

@@ -1,9 +1,11 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const PrivacyPolicy = () => {
   const { t } = useLanguage();
+  const config = useTherapist();
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,8 +33,8 @@ const PrivacyPolicy = () => {
             </h2>
             <p>
               {t(
-                'Daniela Alves Healing & Wellness, com sede em R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra, Portugal. Contacto: daniela@danielaalveshealing.com | +351 914 173 445.',
-                'Daniela Alves Healing & Wellness, located at R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra, Portugal. Contact: daniela@danielaalveshealing.com | +351 914 173 445.'
+                `${config.fullBusinessName}, com sede em ${config.address.full}, ${config.address.country}. Contacto: ${config.email} | ${config.phoneFormatted}.`,
+                `${config.fullBusinessName}, located at ${config.address.full}, ${config.address.country}. Contact: ${config.email} | ${config.phoneFormatted}.`
               )}
             </p>
           </section>
@@ -97,8 +99,8 @@ const PrivacyPolicy = () => {
             </h2>
             <p>
               {t(
-                'Nos termos do RGPD, tem direito a: aceder aos seus dados pessoais, retificar dados incorretos, solicitar a eliminação dos seus dados, limitar o tratamento, portabilidade dos dados e opor-se ao tratamento. Para exercer os seus direitos, contacte-nos através de daniela@danielaalveshealing.com.',
-                'Under the GDPR, you have the right to: access your personal data, rectify incorrect data, request deletion of your data, restrict processing, data portability and object to processing. To exercise your rights, contact us at daniela@danielaalveshealing.com.'
+                `Nos termos do RGPD, tem direito a: aceder aos seus dados pessoais, retificar dados incorretos, solicitar a eliminação dos seus dados, limitar o tratamento, portabilidade dos dados e opor-se ao tratamento. Para exercer os seus direitos, contacte-nos através de ${config.email}.`,
+                `Under the GDPR, you have the right to: access your personal data, rectify incorrect data, request deletion of your data, restrict processing, data portability and object to processing. To exercise your rights, contact us at ${config.email}.`
               )}
             </p>
           </section>
@@ -133,8 +135,8 @@ const PrivacyPolicy = () => {
             </h2>
             <p>
               {t(
-                'Para questões relacionadas com a proteção dos seus dados, contacte daniela@danielaalveshealing.com. Tem o direito de apresentar uma reclamação junto da Comissão Nacional de Proteção de Dados (CNPD) em www.cnpd.pt.',
-                'For questions related to the protection of your data, contact daniela@danielaalveshealing.com. You have the right to file a complaint with the Portuguese Data Protection Authority (CNPD) at www.cnpd.pt.'
+                `Para questões relacionadas com a proteção dos seus dados, contacte ${config.email}. Tem o direito de apresentar uma reclamação junto da Comissão Nacional de Proteção de Dados (CNPD) em www.cnpd.pt.`,
+                `For questions related to the protection of your data, contact ${config.email}. You have the right to file a complaint with the Portuguese Data Protection Authority (CNPD) at www.cnpd.pt.`
               )}
             </p>
           </section>

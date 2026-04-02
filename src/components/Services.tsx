@@ -1,25 +1,30 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Flower2, Sun, Leaf, MessageCircle } from 'lucide-react';
 
-const WA_BASE = 'https://wa.me/351914173445?text=';
-
 const Services = () => {
   const { t } = useLanguage();
+  const config = useTherapist();
+  const WA_BASE = `${config.whatsappBase}?text=`;
   const { ref, isVisible } = useScrollAnimation();
   const [openModal, setOpenModal] = useState<number | null>(null);
+
+  const healingService = config.services.find(s => s.id === 'healing_wellness');
+  const radianciaService = config.services.find(s => s.id === 'pura_radiancia');
+  const earthLoveService = config.services.find(s => s.id === 'pure_earth_love');
 
   const services = [
     {
       icon: Flower2,
-      title: t('Sessão Healing Touch', 'Healing Touch Session'),
+      title: t(healingService?.namePt ?? 'Sessão Healing Touch', healingService?.nameEn ?? 'Healing Touch Session'),
       desc: t(
-        'Sessão terapêutica personalizada para promover um equilíbrio e bem-estar profundos.',
-        'Personalized therapeutic session to promote deep balance and well-being.'
+        healingService?.descriptionPt ?? '',
+        healingService?.descriptionEn ?? ''
       ),
       quote: t(
         '"O corpo sabe como regressar ao equilíbrio. Por vezes, só precisa de apoio para libertar o que ficou retido."',
@@ -31,16 +36,16 @@ const Services = () => {
           'Although many people initially come for a therapeutic massage, the work goes far beyond physical relaxation.\n\nEach session is a unique journey, guided by 17 years of experience, offering a safe space for healing and transformation, where listening, conscious touch and presence support emotional integration and internal alignment.\n\nBased on an initial reading, the session is adjusted to each person\'s needs and moment.\n\nIn an integrative vision of health and well-being, different techniques may be used: massage, manual lymphatic drainage, aromatherapy, sound therapy, meditation, energy techniques or emotional release.'
         ),
         duration: t('Duração: ~2h', 'Duration: ~2h'),
-        price: t('Preço: 150€', 'Price: 150€'),
+        price: t(`Preço: ${healingService?.priceDisplay ?? '150€'}`, `Price: ${healingService?.priceDisplay ?? '150€'}`),
       },
-      wa: encodeURIComponent(t('Olá Daniela, gostaria de agendar uma Sessão Healing Touch.', 'Hello Daniela, I would like to book a Healing Touch Session.')),
+      wa: encodeURIComponent(t(healingService?.whatsappMessagePt ?? '', healingService?.whatsappMessageEn ?? '')),
     },
     {
       icon: Sun,
-      title: t('Imersão Pura Radiância', 'Pure Radiance Immersion'),
+      title: t(radianciaService?.namePt ?? 'Imersão Pura Radiância', radianciaService?.nameEn ?? 'Pure Radiance Immersion'),
       desc: t(
-        'Uma experiência exclusiva de pura nutrição e cuidado, com mais tempo para Relaxar, Recentrar e Reconectar.',
-        'An exclusive experience of pure nourishment and care, with more time to Relax, Recenter and Reconnect.'
+        radianciaService?.descriptionPt ?? '',
+        radianciaService?.descriptionEn ?? ''
       ),
       quote: t('"Mais do que uma sessão, é um tempo Ritual."', '"More than a session, it is a Ritual time."'),
       modal: {
@@ -49,16 +54,16 @@ const Services = () => {
           'The Pure Radiance Immersion is an individual mini-retreat, ideal for those who need a relaxing, transformative and intentional pause.\n\nA longer space, allowing you to more easily step out of the daily rhythm, disconnect from the outside and return to yourself.\n\nHeld in an environment surrounded by nature and serenity, where every detail is designed to support your process and well-being.\n\nMore than a session, it is a Ritual time — an invitation to reconnect with your Essence.'
         ),
         duration: t('Duração: ~4h', 'Duration: ~4h'),
-        price: t('Preço: 450€', 'Price: 450€'),
+        price: t(`Preço: ${radianciaService?.priceDisplay ?? '450€'}`, `Price: ${radianciaService?.priceDisplay ?? '450€'}`),
       },
-      wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre a Imersão Pura Radiância.', 'Hello Daniela, I would like to know more about the Pure Radiance Immersion.')),
+      wa: encodeURIComponent(t(radianciaService?.whatsappMessagePt ?? '', radianciaService?.whatsappMessageEn ?? '')),
     },
     {
       icon: Leaf,
-      title: 'Pure Earth Love',
+      title: t(earthLoveService?.namePt ?? 'Pure Earth Love', earthLoveService?.nameEn ?? 'Pure Earth Love'),
       desc: t(
-        'Produtos de Aromaterapia exclusivos e personalizados. Este é Puro Amor da Terra para si!',
-        'Exclusive and personalized Aromatherapy products. This is Pure Earth Love for you!'
+        earthLoveService?.descriptionPt ?? '',
+        earthLoveService?.descriptionEn ?? ''
       ),
       quote: t(
         '"Que cada gota de Pure Earth Love seja um abraço aromático, inspirando a florescer mais a sua luz interior!"',
@@ -70,9 +75,9 @@ const Services = () => {
           'Pure Earth Love is a personalized aromatherapy line that enhances the benefits of 100% natural essential oils with an intuitive and loving approach.\n\nThrough a brief session (in-person or online), we outline your needs and define a unique formula, designed to support your balance and well-being.\n\nEach product is prepared consciously and intentionally, as an extension of the therapeutic process — a subtle support to integrate and prolong the effects of the work done and a continuous care that you can take with you in your daily life.'
         ),
         duration: t('Duração: ~30 min (presencial ou online)', 'Duration: ~30 min (in-person or online)'),
-        price: t('Preço: 80€ (inclui o produto personalizado)', 'Price: 80€ (includes the personalized product)'),
+        price: t(`Preço: ${earthLoveService?.priceDisplay ?? '80€'} (inclui o produto personalizado)`, `Price: ${earthLoveService?.priceDisplay ?? '80€'} (includes the personalized product)`),
       },
-      wa: encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre os produtos Pure Earth Love.', 'Hello Daniela, I would like to know more about Pure Earth Love products.')),
+      wa: encodeURIComponent(t(earthLoveService?.whatsappMessagePt ?? '', earthLoveService?.whatsappMessageEn ?? '')),
     },
   ];
 

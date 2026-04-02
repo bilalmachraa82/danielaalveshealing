@@ -1,10 +1,12 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const FAQ = () => {
   const { t } = useLanguage();
   const { ref, isVisible } = useScrollAnimation();
+  const config = useTherapist();
 
   const faqs = [
     {
@@ -38,8 +40,8 @@ const FAQ = () => {
     {
       q: t('Onde fica o espaço terapêutico?', 'Where is the therapeutic space?'),
       a: t(
-        'O espaço terapêutico fica em R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra. Fica a cerca de 30 minutos de Lisboa e 20 minutos de Cascais. Estacionamento gratuito disponível. O ambiente é rodeado de natureza e serenidade, pensado para apoiar o seu processo de bem-estar.',
-        'The therapeutic space is located at R. do Regueiro do Tanque 3, Fontanelas, São João das Lampas, 2705-415 Sintra. It is about 30 minutes from Lisbon and 20 minutes from Cascais. Free parking available. The environment is surrounded by nature and serenity, designed to support your well-being process.'
+        `O espaço terapêutico fica em ${config.address.full}. Fica a cerca de 30 minutos de Lisboa e 20 minutos de Cascais. Estacionamento gratuito disponível. O ambiente é rodeado de natureza e serenidade, pensado para apoiar o seu processo de bem-estar.`,
+        `The therapeutic space is located at ${config.address.full}. It is about 30 minutes from Lisbon and 20 minutes from Cascais. Free parking available. The environment is surrounded by nature and serenity, designed to support your well-being process.`
       ),
     },
     {

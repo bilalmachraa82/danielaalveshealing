@@ -1,6 +1,7 @@
 import { MessageCircle } from 'lucide-react';
+import { DEFAULT_CONFIG } from '@/lib/config/therapist';
 
-const WA_LINK = 'https://wa.me/351914173445?text=Olá%20Daniela%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20seus%20serviços.';
+const WA_LINK = `${DEFAULT_CONFIG.whatsappBase}?text=${encodeURIComponent('Olá Daniela, gostaria de saber mais sobre os seus serviços.')}`;
 
 const WhatsAppFloat = () => (
   <a

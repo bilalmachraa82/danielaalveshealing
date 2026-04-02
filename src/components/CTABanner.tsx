@@ -1,12 +1,14 @@
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 
-const WA_LINK = 'https://wa.me/351914173445?text=' + encodeURIComponent('Olá Daniela, gostaria de agendar uma sessão.');
-
 const CTABanner = () => {
   const { t } = useLanguage();
+  const config = useTherapist();
+  const WA_LINK = `${config.whatsappBase}?text=${encodeURIComponent(t('Olá Daniela, gostaria de agendar uma sessão.', 'Hello Daniela, I would like to book a session.'))}`;
+
   const { ref, isVisible } = useScrollAnimation();
 
   return (

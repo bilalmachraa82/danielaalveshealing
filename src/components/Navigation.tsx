@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTherapist } from '@/lib/config/therapist-context';
 import { Menu, X, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const WA_LINK = 'https://wa.me/351914173445?text=Olá%20Daniela%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20seus%20serviços.';
-
 const Navigation = () => {
   const { lang, toggleLang, t } = useLanguage();
+  const config = useTherapist();
+  const WA_LINK = `${config.whatsappBase}?text=${encodeURIComponent(t('Olá Daniela, gostaria de saber mais sobre os seus serviços.', 'Hello Daniela, I would like to know more about your services.'))}`;
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -46,7 +48,7 @@ const Navigation = () => {
               <source srcSet="/images/logo.webp" type="image/webp" />
               <img
                 src="/images/logo.png"
-                alt="Daniela Alves - Terapeuta Holística em Sintra"
+                alt={config.logo.alt}
                 width={160}
                 height={40}
                 className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}

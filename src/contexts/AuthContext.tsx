@@ -5,6 +5,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+import { DEFAULT_CONFIG } from "@/lib/config/therapist";
 
 interface User {
   id: string;
@@ -21,7 +22,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const AUTH_KEY = "daniela-crm-auth";
+const AUTH_KEY = `${DEFAULT_CONFIG.localStoragePrefix}-auth`;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

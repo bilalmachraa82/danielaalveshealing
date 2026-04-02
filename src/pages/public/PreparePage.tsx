@@ -15,6 +15,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTherapist } from "@/lib/config/therapist-context";
 import { downloadICS } from "@/lib/ics";
 import { deriveReturningVariant } from "@/lib/communications/journey";
 
@@ -174,11 +175,6 @@ interface PrepareFormDraft {
 // ============================================================
 // Constants
 // ============================================================
-
-const SESSION_ADDRESS =
-  "R. do Regueiro do Tanque 3, Fontanelas, S\u00e3o Jo\u00e3o das Lampas, 2705-415 Sintra";
-const GOOGLE_MAPS_URL =
-  "https://maps.google.com/?q=R.+do+Regueiro+do+Tanque+3,+Fontanelas,+S%C3%A3o+Jo%C3%A3o+das+Lampas,+2705-415+Sintra";
 
 const REFERRAL_OPTIONS: { value: ReferralSource; pt: string; en: string }[] = [
   { value: "amigo_familiar", pt: "Amigo/Familiar", en: "Friend/Family" },
@@ -431,12 +427,14 @@ function PageHeader({
   lang: "pt" | "en";
   toggleLang: () => void;
 }) {
+  const config = useTherapist();
+
   return (
     <header className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-border">
       <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Leaf className="h-5 w-5 text-primary" strokeWidth={1.5} />
-          <span className="font-serif text-lg text-foreground">Daniela Alves</span>
+          <span className="font-serif text-lg text-foreground">{config.name}</span>
         </div>
         <div className="flex items-center gap-3">
           {clientName && (
@@ -626,17 +624,18 @@ function SuccessScreen({
   t: (pt: string, en: string) => string;
   lang: "pt" | "en";
 }) {
+  const config = useTherapist();
   const sessionDateFormatted = formatSessionDate(session.scheduled_at, lang);
 
   const handleDownloadICS = () => {
     downloadICS({
-      title: t("Sess\u00e3o \u2014 Daniela Alves", "Session \u2014 Daniela Alves"),
+      title: t(`Sess\u00e3o \u2014 ${config.name}`, `Session \u2014 ${config.name}`),
       start: new Date(session.scheduled_at),
       duration: session.duration_minutes,
-      location: SESSION_ADDRESS,
+      location: config.address.full,
       description: t(
-        `Sess\u00e3o com Daniela Alves.\n\nMorada: ${SESSION_ADDRESS}\nEstacionamento: Parque da Aguda\n\nLembre-se: sem perfume, refei\u00e7\u00e3o leve 24h antes, hidrata\u00e7\u00e3o cuidada.`,
-        `Session with Daniela Alves.\n\nAddress: ${SESSION_ADDRESS}\nParking: Parque da Aguda\n\nRemember: no perfume, light meals 24h before, stay hydrated.`
+        `Sess\u00e3o com ${config.name}.\n\nMorada: ${config.address.full}\nEstacionamento: ${config.parking.pt}\n\nLembre-se: sem perfume, refei\u00e7\u00e3o leve 24h antes, hidrata\u00e7\u00e3o cuidada.`,
+        `Session with ${config.name}.\n\nAddress: ${config.address.full}\nParking: ${config.parking.en}\n\nRemember: no perfume, light meals 24h before, stay hydrated.`
       ),
     });
   };
@@ -652,7 +651,7 @@ function SuccessScreen({
 
         <div className="space-y-3">
           <p className="font-serif text-sm font-light tracking-widest text-primary/70 uppercase">
-            Daniela Alves
+            {config.name}
           </p>
           <h1 className="font-serif text-3xl font-light text-foreground leading-tight">
             {t(
@@ -673,12 +672,12 @@ function SuccessScreen({
           <div className="flex items-start gap-3">
             <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
             <a
-              href={GOOGLE_MAPS_URL}
+              href={config.address.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-primary underline underline-offset-2 hover:text-primary/70 transition-colors"
             >
-              {SESSION_ADDRESS}
+              {config.address.full}
             </a>
           </div>
         </div>
@@ -688,12 +687,9 @@ function SuccessScreen({
           <p className="text-xs font-medium text-foreground/70 uppercase tracking-wide">
             {t("Prepara\u00e7\u00e3o", "Preparation")}
           </p>
-          <ul className="text-sm text-foreground/80 space-y-1 list-disc list-inside">
-            <li>{t("Sem perfume no dia da sess\u00e3o", "No perfume on the day of the session")}</li>
-            <li>{t("Refei\u00e7\u00e3o leve nas 24h anteriores", "Light meals in the 24 hours before")}</li>
-            <li>{t("Mantenha-se hidratada e evite estimulantes", "Stay hydrated and avoid stimulants")}</li>
-            <li>{t("N\u00e3o h\u00e1 chuveiro dispon\u00edvel", "No shower available")}</li>
-          </ul>
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            {t(config.preparationTips.pt, config.preparationTips.en)}
+          </p>
         </div>
 
         {/* Calendar button */}
@@ -711,12 +707,12 @@ function SuccessScreen({
         <blockquote className="border-l-2 border-primary/40 pl-4 text-left">
           <p className="font-serif text-base italic text-primary/80 leading-relaxed">
             &ldquo;{t(
-              "Quando o corpo relaxa e harmoniza, o Ser cria condi\u00e7\u00f5es para regressar \u00e0 sua mais genu\u00edna Express\u00e3o.",
-              "When the body relaxes and harmonises, the Being creates the conditions to return to its most genuine Expression."
+              config.quotes.main.pt,
+              config.quotes.main.en
             )}&rdquo;
           </p>
           <footer className="mt-2 font-sans text-xs text-muted-foreground">
-            &mdash; Daniela Alves
+            &mdash; {config.quotes.author}
           </footer>
         </blockquote>
 
@@ -776,6 +772,8 @@ function HealingTouchPracticalInfo({
 }: {
   t: (pt: string, en: string) => string;
 }) {
+  const config = useTherapist();
+
   return (
     <div className="space-y-4 border-t border-border pt-6 mt-6">
       <h3 className="font-serif text-lg text-foreground">
@@ -786,40 +784,31 @@ function HealingTouchPracticalInfo({
         <InfoCard
           icon={<MapPin className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Localiza\u00e7\u00e3o", "Location")}
-          body="Rua Regueiro do Tanque, 3, 2705-415 S\u00e3o Jo\u00e3o das Lampas"
+          body={config.address.full}
         />
         <InfoCard
           icon={<Car className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Estacionamento", "Parking")}
-          body={t("Parque da Aguda", "Parque da Aguda")}
+          body={t(config.parking.pt, config.parking.en)}
         />
         <InfoCard
           icon={<DoorOpen className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Entrada", "Entry")}
-          body={t(
-            "Entre pelo port\u00e3o, n\u00e3o toque na campainha. Siga o caminho at\u00e9 \u00e0 casa de madeira.",
-            "Enter through the gate, no need to ring the doorbell. Follow the path to the wooden house."
-          )}
+          body={t(config.entryInstructions.pt, config.entryInstructions.en)}
         />
         <InfoCard
           icon={<Droplets className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Prepara\u00e7\u00e3o", "Preparation")}
-          body={t(
-            "Sem perfume no dia da sess\u00e3o. Refei\u00e7\u00e3o leve nas 24h anteriores. Mantenha-se hidratada e evite estimulantes (caf\u00e9, \u00e1lcool). N\u00e3o h\u00e1 chuveiro dispon\u00edvel.",
-            "No perfume on the day of the session. Light meals in the 24 hours before. Stay hydrated and avoid stimulants (coffee, alcohol). No shower available."
-          )}
+          body={t(config.preparationTips.pt, config.preparationTips.en)}
         />
       </div>
 
       <blockquote className="border-l-2 border-primary/40 pl-4 mt-4">
         <p className="font-serif text-sm italic text-primary/80 leading-relaxed">
-          &ldquo;{t(
-            "Quando o corpo relaxa e harmoniza, o Ser cria condi\u00e7\u00f5es para regressar \u00e0 sua mais genu\u00edna Express\u00e3o.",
-            "When the body relaxes and harmonises, the Being creates the conditions to return to its most genuine Expression."
-          )}&rdquo;
+          &ldquo;{t(config.quotes.main.pt, config.quotes.main.en)}&rdquo;
         </p>
         <footer className="mt-1 font-sans text-xs text-muted-foreground">
-          &mdash; Daniela Alves
+          &mdash; {config.quotes.author}
         </footer>
       </blockquote>
     </div>
@@ -839,17 +828,18 @@ function ReturningPracticalInfoStep({
   t: (pt: string, en: string) => string;
   lang: "pt" | "en";
 }) {
+  const config = useTherapist();
   const sessionDateFormatted = formatSessionDate(session.scheduled_at, lang);
 
   const handleDownloadICS = () => {
     downloadICS({
-      title: t("Sess\u00e3o \u2014 Daniela Alves", "Session \u2014 Daniela Alves"),
+      title: t(`Sess\u00e3o \u2014 ${config.name}`, `Session \u2014 ${config.name}`),
       start: new Date(session.scheduled_at),
       duration: session.duration_minutes,
-      location: SESSION_ADDRESS,
+      location: config.address.full,
       description: t(
-        `Sess\u00e3o com Daniela Alves.\n\nMorada: ${SESSION_ADDRESS}\nEstacionamento: Parque da Aguda\n\nLembre-se: sem perfume, refei\u00e7\u00e3o leve 24h antes, hidrata\u00e7\u00e3o cuidada.`,
-        `Session with Daniela Alves.\n\nAddress: ${SESSION_ADDRESS}\nParking: Parque da Aguda\n\nRemember: no perfume, light meals 24h before, stay hydrated.`
+        `Sess\u00e3o com ${config.name}.\n\nMorada: ${config.address.full}\nEstacionamento: ${config.parking.pt}\n\nLembre-se: sem perfume, refei\u00e7\u00e3o leve 24h antes, hidrata\u00e7\u00e3o cuidada.`,
+        `Session with ${config.name}.\n\nAddress: ${config.address.full}\nParking: ${config.parking.en}\n\nRemember: no perfume, light meals 24h before, stay hydrated.`
       ),
     });
   };
@@ -875,12 +865,12 @@ function ReturningPracticalInfoStep({
         <div className="flex items-start gap-3">
           <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
           <a
-            href={GOOGLE_MAPS_URL}
+            href={config.address.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-primary underline underline-offset-2 hover:text-primary/70 transition-colors"
           >
-            {SESSION_ADDRESS}
+            {config.address.full}
           </a>
         </div>
       </div>
@@ -889,23 +879,17 @@ function ReturningPracticalInfoStep({
         <InfoCard
           icon={<Car className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Estacionamento", "Parking")}
-          body={t("Parque da Aguda (indicado na chegada).", "Parque da Aguda (signposted on arrival).")}
+          body={t(config.parking.pt, config.parking.en)}
         />
         <InfoCard
           icon={<DoorOpen className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Entrada", "Entry")}
-          body={t(
-            "Entre pelo port\u00e3o, n\u00e3o toque na campainha. Siga o caminho at\u00e9 \u00e0 casa de madeira.",
-            "Enter through the gate, no need to ring the doorbell. Follow the path to the wooden house."
-          )}
+          body={t(config.entryInstructions.pt, config.entryInstructions.en)}
         />
         <InfoCard
           icon={<Droplets className="h-4 w-4 text-primary shrink-0 mt-0.5" />}
           title={t("Prepara\u00e7\u00e3o", "Preparation")}
-          body={t(
-            "Sem perfume no dia da sess\u00e3o. Refei\u00e7\u00e3o leve nas 24h anteriores. Mantenha-se hidratada e evite estimulantes (caf\u00e9, \u00e1lcool). N\u00e3o h\u00e1 chuveiro dispon\u00edvel.",
-            "No perfume on the day of the session. Light meals in the 24 hours before. Stay hydrated and avoid stimulants (coffee, alcohol). No shower available."
-          )}
+          body={t(config.preparationTips.pt, config.preparationTips.en)}
         />
       </div>
 
@@ -929,6 +913,7 @@ function ReturningPracticalInfoStep({
 export default function PreparePage() {
   const { token } = useParams<{ token: string }>();
   const { t, lang, toggleLang } = useLanguage();
+  const config = useTherapist();
 
   const [apiData, setApiData] = useState<PrepareApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -2518,7 +2503,7 @@ Love Is... A Sun.`
                           )}
                         </p>
                         <footer className="mt-2 font-sans text-xs text-muted-foreground">
-                          &mdash; Daniela Alves
+                          &mdash; {config.quotes.author}
                         </footer>
                       </blockquote>
 

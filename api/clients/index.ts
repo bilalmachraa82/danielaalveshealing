@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { getDb } from "../_db.js";
 import { verifyAdmin } from "../_auth.js";
+import { getServerConfig } from "../_config.js";
 import {
   extractAnamnesisFromImages,
   extractSessionNotesFromImages,
@@ -688,10 +689,10 @@ async function handleClientImport(
   try {
     const tagRows = await sql(
       `INSERT INTO tags (name, color)
-       VALUES ('Importado', '#985F97')
+       VALUES ('Importado', $1)
        ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
        RETURNING id`,
-      []
+      [getServerConfig().colors.primary]
     );
     importedTagId = tagRows[0]?.id ?? null;
   } catch {
@@ -1014,10 +1015,10 @@ async function handleOcr(
     try {
       const tagRows = await sql(
         `INSERT INTO tags (name, color)
-         VALUES ('Digitalizado', '#985F97')
+         VALUES ('Digitalizado', $1)
          ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
          RETURNING id`,
-        []
+        [getServerConfig().colors.primary]
       );
       const tagId = tagRows[0]?.id;
       if (tagId && clientId) {

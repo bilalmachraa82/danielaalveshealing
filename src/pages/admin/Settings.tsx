@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useTags } from "@/hooks/useClients";
 import { useEmailLog } from "@/hooks/useDashboard";
+import { useTherapist } from "@/lib/config/therapist-context";
+import { DEFAULT_CONFIG } from "@/lib/config/therapist";
 import {
   Card,
   CardContent,
@@ -98,7 +100,7 @@ const EMAIL_STATUS_CONFIG: Record<
 };
 
 const PRESET_COLORS = [
-  "#985F97", // primary purple
+  DEFAULT_CONFIG.colors.primary, // primary purple
   "#B8860B", // dark goldenrod
   "#2E7D32", // green
   "#1565C0", // blue
@@ -120,6 +122,7 @@ interface AddTagDialogProps {
 }
 
 function AddTagDialog({ open, onOpenChange, onSubmit, isPending }: AddTagDialogProps) {
+  const config = useTherapist();
   const [name, setName] = useState("");
   const [category, setCategory] = useState<string>("custom");
   const [color, setColor] = useState<string>(PRESET_COLORS[0]);
@@ -237,7 +240,7 @@ function AddTagDialog({ open, onOpenChange, onSubmit, isPending }: AddTagDialogP
             <Button
               type="submit"
               disabled={!name.trim() || isPending}
-              style={{ backgroundColor: "#985F97" }}
+              style={{ backgroundColor: config.colors.primary }}
               className="text-white hover:opacity-90"
             >
               {isPending ? "A criar..." : "Criar Etiqueta"}
@@ -287,6 +290,7 @@ function TagGroup({ category, tags }: TagGroupProps) {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function Settings() {
+  const config = useTherapist();
   const [addTagOpen, setAddTagOpen] = useState(false);
   const { data: tags, isLoading: tagsLoading } = useTags();
   const { data: emailLog, isLoading: emailLoading } = useEmailLog();
@@ -347,7 +351,7 @@ export default function Settings() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-4 w-4 text-[#985F97]" />
+              <User className="h-4 w-4" style={{ color: config.colors.primary }} />
               Perfil
             </CardTitle>
             <CardDescription>
@@ -358,7 +362,7 @@ export default function Settings() {
             <div className="flex items-center gap-4">
               <div
                 className="h-14 w-14 rounded-full flex items-center justify-center text-white text-xl font-semibold flex-shrink-0"
-                style={{ backgroundColor: "#985F97" }}
+                style={{ backgroundColor: config.colors.primary }}
                 aria-hidden="true"
               >
                 DA
@@ -398,7 +402,7 @@ export default function Settings() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Mail className="h-4 w-4 text-[#985F97]" />
+              <Mail className="h-4 w-4" style={{ color: config.colors.primary }} />
               Últimos Emails Enviados
             </CardTitle>
             <CardDescription>Os 10 emails mais recentes</CardDescription>
@@ -463,7 +467,7 @@ export default function Settings() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  <Tag className="h-4 w-4 text-[#985F97]" />
+                  <Tag className="h-4 w-4" style={{ color: config.colors.primary }} />
                   Etiquetas
                 </CardTitle>
                 <CardDescription>
@@ -475,7 +479,7 @@ export default function Settings() {
               <Button
                 onClick={() => setAddTagOpen(true)}
                 size="sm"
-                style={{ backgroundColor: "#985F97" }}
+                style={{ backgroundColor: config.colors.primary }}
                 className="text-white hover:opacity-90 flex-shrink-0"
               >
                 <Plus className="h-4 w-4 mr-1.5" />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DEFAULT_CONFIG } from '@/lib/config/therapist';
 
 const LoadingScreen = () => {
   const [visible, setVisible] = useState(true);
@@ -33,7 +34,7 @@ const LoadingScreen = () => {
           animation: 'loading-reveal 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards',
         }}
       >
-        Daniela Alves
+        {DEFAULT_CONFIG.name}
       </h1>
       <p
         className="text-[9px] tracking-[0.4em] uppercase text-gold/70 mb-10"
@@ -42,7 +43,7 @@ const LoadingScreen = () => {
           opacity: 0,
         }}
       >
-        Healing & Wellness
+        {DEFAULT_CONFIG.tagline}
       </p>
 
       {/* Gold line expanding */}
