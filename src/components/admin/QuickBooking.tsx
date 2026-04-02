@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { adminFetch } from "@/lib/api/admin-fetch";
+import type { QuickBookingInitialData } from "@/lib/dashboard/calendar-inbox";
 import { useTherapist } from "@/lib/config/therapist-context";
 import { Plus, Search, Phone, Copy, MessageCircle, Mail, Check, X, CalendarPlus } from "lucide-react";
 import {
@@ -87,9 +89,10 @@ function getDefaultDateTime(): string {
 interface QuickBookingProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialData?: QuickBookingInitialData;
 }
 
-export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
+export function QuickBooking({ open, onOpenChange, initialData }: QuickBookingProps) {
   const config = useTherapist();
   const queryClient = useQueryClient();
 
@@ -140,11 +143,9 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     async function search() {
       setIsSearching(true);
       try {
-        const response = await fetch(
+        const data = await adminFetch<ClientSearchResult[]>(
           `/api/clients/search?q=${encodeURIComponent(debouncedQuery)}`
         );
-        if (!response.ok) throw new Error("Search failed");
-        const data: ClientSearchResult[] = await response.json();
         if (!cancelled) {
           setSearchResults(data);
           setShowDropdown(true);
@@ -186,6 +187,26 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
       resetForm();
     }
   }, [open]);
+
+  // Prefill from calendar inbox initialData
+  useEffect(() => {
+    if (!open || !initialData) return;
+
+    if (initialData.clientName) {
+      setSearchQuery(initialData.clientName);
+      setSelectedClient({
+        id: "calendar-inbox-prefill",
+        name: initialData.clientName,
+        phone: "",
+        email: initialData.clientEmail ?? null,
+        isNew: true,
+      });
+    }
+
+    if (initialData.scheduledAt) {
+      setScheduledAt(initialData.scheduledAt);
+    }
+  }, [open, initialData]);
 
   function resetForm() {
     setSearchQuery("");
@@ -255,9 +276,8 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/sessions/quick", {
+      const result = await adminFetch<QuickBookingResult>("/api/sessions/quick", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           client_name: selectedClient.name,
           client_phone: phone,
@@ -267,13 +287,6 @@ export function QuickBooking({ open, onOpenChange }: QuickBookingProps) {
           service_type: serviceType,
         }),
       });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error ?? `Request failed: ${response.status}`);
-      }
-
-      const result: QuickBookingResult = await response.json();
       setBookingResult(result);
 
       // Invalidate relevant queries so dashboard and session lists refresh

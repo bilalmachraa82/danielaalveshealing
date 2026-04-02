@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useDashboardStats, usePendingForms, useRecentSatisfaction, useCalendarInbox, useResolveInboxItem } from "@/hooks/useDashboard";
 import { useTodaySessions, useUpcomingSessions } from "@/hooks/useSessions";
 import { useQuickBooking } from "@/contexts/QuickBookingContext";
 import { useTherapist } from "@/lib/config/therapist-context";
+import { buildQuickBookingInitialData } from "@/lib/dashboard/calendar-inbox";
 import { getServiceLabel } from "@/lib/config/services";
 import {
   Card,
@@ -90,8 +92,25 @@ export default function Dashboard() {
   const { data: pendingForms, isLoading: formsLoading } = usePendingForms();
   const { data: recentSatisfaction, isLoading: satLoading } = useRecentSatisfaction();
   const { openQuickBooking } = useQuickBooking();
-  const { data: calendarInbox } = useCalendarInbox();
+  const { data: calendarInbox, isLoading: calendarInboxLoading, error: calendarInboxError } = useCalendarInbox();
   const resolveInboxItem = useResolveInboxItem();
+  const [calendarActionId, setCalendarActionId] = useState<string | null>(null);
+
+  async function handleCreateFromInbox(inboxId: string) {
+    setCalendarActionId(inboxId);
+    try {
+      const payload = await resolveInboxItem.mutateAsync({
+        inbox_id: inboxId,
+        action: "get_for_create",
+      });
+
+      if ("summary" in payload) {
+        openQuickBooking(buildQuickBookingInitialData(payload as { summary: string; attendee_email: string | null; start_at: string; end_at: string }));
+      }
+    } finally {
+      setCalendarActionId(null);
+    }
+  }
 
   const totalClients = stats?.clients.total ?? 0;
   const activeClients = stats?.clients.active ?? 0;
@@ -422,7 +441,35 @@ export default function Dashboard() {
         </Card>
 
         {/* Calendário — Por Rever */}
-        {calendarInbox && calendarInbox.length > 0 && (
+        {calendarInboxLoading ? (
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Inbox className="h-4 w-4" style={{ color: config.colors.primary }} />
+                Calendário — Por Rever
+              </CardTitle>
+              <CardDescription>A carregar eventos do Google Calendar…</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {[1, 2].map((item) => (
+                <div key={item} className="flex items-center justify-between rounded-lg border p-3">
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="h-9 w-28" />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ) : calendarInboxError ? (
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Inbox className="h-4 w-4" style={{ color: config.colors.primary }} />
+                Calendário — Por Rever
+              </CardTitle>
+              <CardDescription>Não foi possível carregar a inbox do calendário.</CardDescription>
+            </CardHeader>
+          </Card>
+        ) : calendarInbox && calendarInbox.length > 0 ? (
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -465,9 +512,10 @@ export default function Dashboard() {
                         style={{ backgroundColor: config.colors.primary }}
                         onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = config.colors.primaryHover; }}
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = config.colors.primary; }}
-                        onClick={() => openQuickBooking()}
+                        disabled={resolveInboxItem.isPending || calendarActionId === item.id}
+                        onClick={() => handleCreateFromInbox(item.id)}
                       >
-                        Criar Sessão
+                        {calendarActionId === item.id ? "A carregar…" : "Criar Sessão"}
                       </Button>
                     </div>
                   </div>
@@ -475,7 +523,7 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-        )}
+        ) : null}
       </div>
     </div>
   );

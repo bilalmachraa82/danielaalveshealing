@@ -176,12 +176,31 @@ export async function listCalendarEvents(params: {
   timeMin?: string;
   timeMax?: string;
   syncToken?: string;
-}): Promise<{ events: Array<Record<string, unknown>>; nextSyncToken: string | null }> {
+}): Promise<{
+  events: Array<{
+    id?: string | null;
+    status?: string | null;
+    summary?: string | null;
+    description?: string | null;
+    start?: { dateTime?: string; date?: string } | null;
+    end?: { dateTime?: string; date?: string } | null;
+    attendees?: Array<{ email?: string }> | null;
+  }>;
+  nextSyncToken: string | null;
+}> {
   const client = getCalendarClient();
   if (!client) return { events: [], nextSyncToken: null };
 
   const { calendar, calendarId } = client;
-  const allEvents: Array<Record<string, unknown>> = [];
+  const allEvents: Array<{
+    id?: string | null;
+    status?: string | null;
+    summary?: string | null;
+    description?: string | null;
+    start?: { dateTime?: string; date?: string } | null;
+    end?: { dateTime?: string; date?: string } | null;
+    attendees?: Array<{ email?: string }> | null;
+  }> = [];
   let pageToken: string | undefined;
   let nextSyncToken: string | null = null;
 
@@ -203,7 +222,7 @@ export async function listCalendarEvents(params: {
 
     const response = await calendar.events.list(listParams as Parameters<typeof calendar.events.list>[0]);
     const items = response.data.items ?? [];
-    allEvents.push(...(items as Array<Record<string, unknown>>));
+    allEvents.push(...(items as typeof allEvents));
     pageToken = response.data.nextPageToken ?? undefined;
     if (response.data.nextSyncToken) {
       nextSyncToken = response.data.nextSyncToken;

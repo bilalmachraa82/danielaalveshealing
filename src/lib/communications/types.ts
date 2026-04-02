@@ -8,7 +8,12 @@ export type ClientKind = "new" | "returning";
 
 export type FormVariant = "healing_touch" | "pura_radiancia";
 
-export type ReminderStatus = "pending" | "scheduled" | "sent" | "skipped";
+export type ReminderStatus =
+  | "pending"
+  | "scheduled"
+  | "processing"
+  | "sent"
+  | "skipped";
 
 export type ExtendedServiceType =
   | "healing_wellness"

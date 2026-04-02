@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import { ArrowLeft, Download, Upload, Plus, Trash2, Save, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -151,19 +152,11 @@ function CsvUploadTab() {
     setIsImporting(true);
 
     try {
-      const res = await fetch("/api/clients/import", {
+      const data = await adminFetch<{ imported: number; errors: string[] }>("/api/clients/import", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clients: preview }),
       });
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? `HTTP ${res.status}`);
-      }
-
-      const data: ImportResult = await res.json();
-      setResult(data);
+      setResult(data as unknown as ImportResult);
       setPreview([]);
       if (fileRef.current) fileRef.current.value = "";
       queryClient.invalidateQueries({ queryKey: ["clients"] });
@@ -326,17 +319,13 @@ function QuickEntryTab() {
 
     const results = await Promise.allSettled(
       entries.map((entry) =>
-        fetch("/api/clients", {
+        adminFetch("/api/clients", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             first_name: entry.first_name,
             phone: entry.phone || null,
             source: "manual",
           }),
-        }).then((r) => {
-          if (!r.ok) throw new Error(`HTTP ${r.status}`);
-          return r.json();
         })
       )
     );

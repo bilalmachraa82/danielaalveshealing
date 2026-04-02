@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { adminFetch } from "@/lib/api/admin-fetch";
 import {
   ArrowLeft,
   Camera,
@@ -1159,9 +1160,8 @@ export default function ClientOCRImport() {
           `A processar anamnese (${currentStep} de ${totalSteps})...`
         );
 
-        const response = await fetch("/api/clients/ocr/anamnesis", {
+        const data = await adminFetch<{ extracted: ExtractedData }>("/api/clients/ocr/anamnesis", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             images: anamnesisImages.map((img) => ({
               base64: img.base64,
@@ -1170,14 +1170,7 @@ export default function ClientOCRImport() {
           }),
         });
 
-        if (!response.ok) {
-          const body = await response.json().catch(() => ({}));
-          throw new Error(
-            body.error ?? `Erro ao processar anamnese: HTTP ${response.status}`
-          );
-        }
-
-        const { extracted } = await response.json();
+        const { extracted } = data;
 
         if (extracted.client) {
           result.client = {
@@ -1224,9 +1217,8 @@ export default function ClientOCRImport() {
           `A processar notas de sessao (${currentStep} de ${totalSteps})...`
         );
 
-        const response = await fetch("/api/clients/ocr/session-notes", {
+        const sessionData = await adminFetch<{ extracted: { sessions?: Record<string, unknown>[] } }>("/api/clients/ocr/session-notes", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             images: sessionImages.map((img) => ({
               base64: img.base64,
@@ -1235,15 +1227,7 @@ export default function ClientOCRImport() {
           }),
         });
 
-        if (!response.ok) {
-          const body = await response.json().catch(() => ({}));
-          throw new Error(
-            body.error ??
-              `Erro ao processar notas de sessao: HTTP ${response.status}`
-          );
-        }
-
-        const { extracted } = await response.json();
+        const { extracted } = sessionData;
 
         if (extracted.sessions && Array.isArray(extracted.sessions)) {
           result.sessions = extracted.sessions.map(
@@ -1285,18 +1269,10 @@ export default function ClientOCRImport() {
     setIsSaving(true);
 
     try {
-      const response = await fetch("/api/clients/ocr/save", {
+      const result = await adminFetch<SaveResult>("/api/clients/ocr/save", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(extractedData),
       });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error ?? `Erro ao guardar: HTTP ${response.status}`);
-      }
-
-      const result: SaveResult = await response.json();
       setSaveResult(result);
       setStep(3);
 

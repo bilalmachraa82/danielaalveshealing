@@ -72,3 +72,67 @@ export function reconcileEvents(
 
   return { matched, pending, skipped };
 }
+
+// ---- Reverse sync mutation derivation ----
+
+interface CalendarEventSyncLike {
+  id?: string | null;
+  status?: string | null;
+  summary?: string | null;
+  description?: string | null;
+  start?: { dateTime?: string; date?: string } | null;
+  end?: { dateTime?: string; date?: string } | null;
+  attendees?: Array<{ email?: string }> | null;
+}
+
+interface ReverseSyncSessionLike {
+  id: string;
+  google_calendar_event_id: string | null;
+  scheduled_at: string;
+  status:
+    | "scheduled"
+    | "confirmed"
+    | "in_progress"
+    | "completed"
+    | "cancelled"
+    | "no_show";
+}
+
+export type SessionSyncAction =
+  | { type: "cancel" }
+  | { type: "reschedule"; scheduledAt: string };
+
+export function getEventStartValue(event: CalendarEventSyncLike): string | null {
+  return event.start?.dateTime ?? event.start?.date ?? null;
+}
+
+/**
+ * Derives the CRM session mutation needed for a given Google Calendar event.
+ * Returns null when no action is needed (event matches session, or session is terminal).
+ *
+ * Safety: completed and in_progress sessions are never mutated.
+ */
+export function deriveSessionSyncAction(
+  event: CalendarEventSyncLike,
+  session: ReverseSyncSessionLike
+): SessionSyncAction | null {
+  if (session.status === "completed" || session.status === "in_progress") {
+    return null;
+  }
+
+  if (event.status === "cancelled") {
+    if (session.status === "scheduled" || session.status === "confirmed") {
+      return { type: "cancel" };
+    }
+    return null;
+  }
+
+  const nextStart = getEventStartValue(event);
+  if (!nextStart) return null;
+
+  if (nextStart !== session.scheduled_at) {
+    return { type: "reschedule", scheduledAt: nextStart };
+  }
+
+  return null;
+}

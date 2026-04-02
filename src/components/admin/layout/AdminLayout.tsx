@@ -10,12 +10,18 @@ import {
   SidebarProvider,
   SidebarInset,
 } from "@/components/ui/sidebar";
+import type { QuickBookingInitialData } from "@/lib/dashboard/calendar-inbox";
 
 export function AdminLayout() {
   const { user, isLoading } = useAuth();
   const [quickBookingOpen, setQuickBookingOpen] = useState(false);
+  const [quickBookingInitialData, setQuickBookingInitialData] = useState<QuickBookingInitialData | undefined>(undefined);
 
-  const openQuickBooking = useCallback(() => setQuickBookingOpen(true), []);
+  const openQuickBooking = useCallback((initialData?: QuickBookingInitialData) => {
+    setQuickBookingInitialData(initialData);
+    setQuickBookingOpen(true);
+  }, []);
+
   const quickBookingContextValue = useMemo(
     () => ({ openQuickBooking }),
     [openQuickBooking]
@@ -46,8 +52,15 @@ export function AdminLayout() {
           </SidebarInset>
         </div>
         <MobileBottomNav />
-        <QuickBookingFab onClick={openQuickBooking} />
-        <QuickBooking open={quickBookingOpen} onOpenChange={setQuickBookingOpen} />
+        <QuickBookingFab onClick={() => openQuickBooking()} />
+        <QuickBooking
+          open={quickBookingOpen}
+          onOpenChange={(nextOpen) => {
+            setQuickBookingOpen(nextOpen);
+            if (!nextOpen) setQuickBookingInitialData(undefined);
+          }}
+          initialData={quickBookingInitialData}
+        />
       </SidebarProvider>
     </QuickBookingContext.Provider>
   );

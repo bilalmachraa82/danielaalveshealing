@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { listCalendarEvents } from "../_calendar.js";
-import { reconcileEvents, isAppCreatedEvent } from "../../src/lib/calendar/reverse-sync.ts";
+import { reconcileEvents, isAppCreatedEvent, deriveSessionSyncAction } from "../../src/lib/calendar/reverse-sync.ts";
 import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
 import { createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
 import {
@@ -11,7 +11,11 @@ import {
   formatSessionDateForLanguage,
   getLocalizedServiceLabel,
 } from "../../src/lib/communications/templates.ts";
-import { shouldSendPreSessionReminder } from "../../src/lib/communications/reminders.ts";
+import {
+  getNextReminderDueAt,
+  getReminderRecoveryStatus,
+  shouldSendPreSessionReminder,
+} from "../../src/lib/communications/reminders.ts";
 
 export default async function handler(
   req: VercelRequest,
@@ -60,9 +64,8 @@ export default async function handler(
         return res.status(404).json({ error: "Not found" });
     }
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return res.status(500).json({ error: message });
+    console.error("Cron error:", error instanceof Error ? error.message : error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -74,13 +77,14 @@ async function handlePreSessionReminder(res: VercelResponse) {
   const sql = getDb();
   const appUrl = getAppUrl();
   const sessions = await sql(
-    `SELECT s.id AS session_id, s.client_id, s.scheduled_at, s.service_type, s.reminder_status,
+    `SELECT s.id AS session_id, s.client_id, s.scheduled_at, s.service_type, s.status,
+            s.reminder_status, s.next_reminder_due_at,
             s.manage_token, s.manage_token_expires_at,
             c.first_name, c.email, c.preferred_language, c.preferred_channel
      FROM sessions s
      JOIN clients c ON c.id = s.client_id
      WHERE s.status IN ('scheduled', 'confirmed')
-       AND s.scheduled_at BETWEEN now() + interval '21 hours' AND now() + interval '27 hours'
+       AND s.reminder_status IN ('pending', 'scheduled')
        AND c.email IS NOT NULL`
   );
 
@@ -126,14 +130,29 @@ async function handlePreSessionReminder(res: VercelResponse) {
     const shouldSend = shouldSendPreSessionReminder({
       now: new Date(),
       scheduledAt: new Date(session.scheduled_at),
+      nextReminderDueAt: session.next_reminder_due_at
+        ? new Date(session.next_reminder_due_at as string)
+        : null,
       preferredChannel: profile.preferredChannel,
       emailAvailable: Boolean(session.email),
       smsAvailable: false,
       whatsappAvailable: false,
-      reminderStatus: session.reminder_status ?? "pending",
+      reminderStatus: "pending", // we claimed it, so we treat it as pending for send decision
     });
 
     if (!shouldSend) {
+      await sql(
+        `UPDATE sessions SET reminder_status = $2 WHERE id = $1`,
+        [
+          session.session_id,
+          getReminderRecoveryStatus({
+            now: new Date(),
+            scheduledAt: new Date(session.scheduled_at),
+            sessionStatus: session.status as "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled" | "no_show",
+            emailAvailable: Boolean(session.email),
+          }),
+        ]
+      );
       continue;
     }
 
@@ -157,49 +176,64 @@ async function handlePreSessionReminder(res: VercelResponse) {
       content.ctaUrl
     );
 
-    const result = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: session.email as string,
-      subject: content.subject,
-      html,
-    });
+    try {
+      const result = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: session.email as string,
+        subject: content.subject,
+        html,
+      });
 
-    await sql(
-      `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
-       VALUES ($1, $2, 'pre_session_reminder', $3, 'sent')`,
-      [session.client_id, session.session_id, result.data?.id ?? null]
-    );
+      await sql(
+        `INSERT INTO email_log (client_id, session_id, email_type, resend_id, status)
+         VALUES ($1, $2, 'pre_session_reminder', $3, 'sent')`,
+        [session.client_id, session.session_id, result.data?.id ?? null]
+      );
 
-    await sql(
-      `INSERT INTO communication_log (
-        client_id,
-        session_id,
-        channel,
-        template_key,
-        provider_message_id,
-        status,
-        metadata,
-        sent_at
-      )
-      VALUES ($1, $2, 'email', 'pre_session_reminder', $3, 'sent', $4::jsonb, now())`,
-      [
-        session.client_id,
-        session.session_id,
-        result.data?.id ?? null,
-        JSON.stringify({ manage_url: manageUrl ?? null }),
-      ]
-    );
+      await sql(
+        `INSERT INTO communication_log (
+          client_id,
+          session_id,
+          channel,
+          template_key,
+          provider_message_id,
+          status,
+          metadata,
+          sent_at
+        )
+        VALUES ($1, $2, 'email', 'pre_session_reminder', $3, 'sent', $4::jsonb, now())`,
+        [
+          session.client_id,
+          session.session_id,
+          result.data?.id ?? null,
+          JSON.stringify({ manage_url: manageUrl ?? null }),
+        ]
+      );
 
-    await sql(
-      `UPDATE sessions
-       SET reminder_status = 'sent',
-           last_reminder_sent_at = now(),
-           next_reminder_due_at = NULL
-       WHERE id = $1`,
-      [session.session_id]
-    );
+      await sql(
+        `UPDATE sessions
+         SET reminder_status = 'sent',
+             last_reminder_sent_at = now(),
+             next_reminder_due_at = NULL
+         WHERE id = $1`,
+        [session.session_id]
+      );
 
-    sentCount++;
+      sentCount++;
+    } catch {
+      await sql(
+        `UPDATE sessions SET reminder_status = $2 WHERE id = $1`,
+        [
+          session.session_id,
+          getReminderRecoveryStatus({
+            now: new Date(),
+            scheduledAt: new Date(session.scheduled_at),
+            sessionStatus: session.status as "scheduled" | "confirmed" | "in_progress" | "completed" | "cancelled" | "no_show",
+            emailAvailable: Boolean(session.email),
+          }),
+        ]
+      );
+    }
   }
 
   return res.json({
@@ -736,7 +770,16 @@ async function handleCalendarReverseSync(res: VercelResponse) {
     : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
   // 3. Fetch events from Google Calendar
-  let events: Array<Record<string, unknown>>;
+  type CalendarEventItem = {
+    id?: string | null;
+    status?: string | null;
+    summary?: string | null;
+    description?: string | null;
+    start?: { dateTime?: string; date?: string } | null;
+    end?: { dateTime?: string; date?: string } | null;
+    attendees?: Array<{ email?: string }> | null;
+  };
+  let events: Array<CalendarEventItem>;
   let nextSyncToken: string | null;
   try {
     const fetchResult = await listCalendarEvents({
@@ -777,10 +820,18 @@ async function handleCalendarReverseSync(res: VercelResponse) {
 
   // 4. Load known session event IDs
   const sessionRows = await sql(
-    `SELECT google_calendar_event_id FROM sessions WHERE google_calendar_event_id IS NOT NULL`
+    `SELECT id, client_id, google_calendar_event_id, scheduled_at, status
+     FROM sessions
+     WHERE google_calendar_event_id IS NOT NULL`
   );
   const knownEventIds = new Set(
     sessionRows.map((r: Record<string, unknown>) => String(r.google_calendar_event_id))
+  );
+  const sessionsByEventId = new Map(
+    sessionRows.map((r: Record<string, unknown>) => [
+      String(r.google_calendar_event_id),
+      r,
+    ])
   );
 
   // 5. Load existing inbox event IDs
@@ -791,25 +842,119 @@ async function handleCalendarReverseSync(res: VercelResponse) {
 
   // 6. Reconcile
   const reconcileResult = reconcileEvents(
-    events as Array<{ id?: string | null; summary?: string | null; description?: string | null; start?: { dateTime?: string; date?: string }; end?: { dateTime?: string; date?: string }; attendees?: Array<{ email?: string }> }>,
+    events,
     knownEventIds,
     existingInboxIds
   );
 
-  // 7. Insert matched items and update session sync timestamps
+  // 7. Apply real mutations for app-owned sessions, then record in inbox
   for (const item of reconcileResult.matched) {
+    const session = sessionsByEventId.get(item.google_event_id);
+
+    if (session) {
+      const action = deriveSessionSyncAction(
+        item.raw_event as {
+          id?: string | null;
+          status?: string | null;
+          start?: { dateTime?: string; date?: string } | null;
+          end?: { dateTime?: string; date?: string } | null;
+        },
+        {
+          id: String(session.id),
+          google_calendar_event_id: String(session.google_calendar_event_id),
+          scheduled_at: String(session.scheduled_at),
+          status: session.status as
+            | "scheduled"
+            | "confirmed"
+            | "in_progress"
+            | "completed"
+            | "cancelled"
+            | "no_show",
+        }
+      );
+
+      if (action?.type === "reschedule") {
+        await sql(
+          `UPDATE sessions
+           SET scheduled_at = $2,
+               status = 'scheduled',
+               reschedule_reason = 'Updated from Google Calendar',
+               next_reminder_due_at = $3,
+               calendar_sync_status = 'synced',
+               calendar_last_synced_at = now()
+           WHERE id = $1`,
+          [session.id, action.scheduledAt, getNextReminderDueAt(action.scheduledAt)]
+        );
+
+        await sql(
+          `INSERT INTO session_change_log (
+             session_id, client_id, action, previous_status, new_status,
+             previous_scheduled_at, new_scheduled_at, reason, actor
+           )
+           VALUES ($1, $2, 'rescheduled', $3, 'scheduled', $4, $5, $6, 'system')`,
+          [
+            session.id,
+            session.client_id,
+            session.status,
+            session.scheduled_at,
+            action.scheduledAt,
+            "Google Calendar reverse sync",
+          ]
+        );
+      } else if (action?.type === "cancel") {
+        await sql(
+          `UPDATE sessions
+           SET status = 'cancelled',
+               cancellation_reason = 'Cancelled in Google Calendar',
+               next_reminder_due_at = NULL,
+               calendar_sync_status = 'synced',
+               calendar_last_synced_at = now()
+           WHERE id = $1`,
+          [session.id]
+        );
+
+        await sql(
+          `INSERT INTO session_change_log (
+             session_id, client_id, action, previous_status, new_status,
+             previous_scheduled_at, new_scheduled_at, reason, actor
+           )
+           VALUES ($1, $2, 'cancelled', $3, 'cancelled', $4, $4, $5, 'system')`,
+          [
+            session.id,
+            session.client_id,
+            session.status,
+            session.scheduled_at,
+            "Google Calendar reverse sync",
+          ]
+        );
+      } else {
+        // No action needed — just timestamp the sync
+        await sql(
+          `UPDATE sessions
+           SET calendar_last_synced_at = now(), calendar_sync_status = 'synced'
+           WHERE id = $1`,
+          [session.id]
+        );
+      }
+    }
+
+    // Record in inbox for audit trail
     await sql(
-      `INSERT INTO calendar_inbox (google_event_id, summary, description, start_at, end_at, attendee_email, status, resolved_by, resolved_at, raw_event)
+      `INSERT INTO calendar_inbox (
+         google_event_id, summary, description, start_at, end_at,
+         attendee_email, status, resolved_by, resolved_at, raw_event
+       )
        VALUES ($1, $2, $3, $4, $5, $6, 'matched', 'auto', now(), $7::jsonb)
        ON CONFLICT (google_event_id) DO NOTHING`,
-      [item.google_event_id, item.summary, item.description, item.start_at, item.end_at, item.attendee_email, JSON.stringify(item.raw_event)]
-    );
-
-    // Update session sync timestamp if this event matches a known session
-    await sql(
-      `UPDATE sessions SET calendar_last_synced_at = now(), calendar_sync_status = 'synced'
-       WHERE google_calendar_event_id = $1`,
-      [item.google_event_id]
+      [
+        item.google_event_id,
+        item.summary,
+        item.description,
+        item.start_at,
+        item.end_at,
+        item.attendee_email,
+        JSON.stringify(item.raw_event),
+      ]
     );
   }
 
