@@ -25,17 +25,20 @@ const LoadingScreen = () => {
         background: 'linear-gradient(180deg, hsl(300 20% 14%) 0%, hsl(295 22% 11%) 50%, hsl(290 25% 9%) 100%)',
       }}
     >
-      {/* Logo text */}
-      <h1
-        className={`font-serif text-4xl md:text-5xl font-extralight tracking-[0.2em] text-white/90 mb-3 transition-all duration-1000 ${
-          fadeOut ? 'translate-y-[-10px]' : 'translate-y-0'
-        }`}
-        style={{
-          animation: 'loading-reveal 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards',
-        }}
-      >
-        {DEFAULT_CONFIG.name}
-      </h1>
+      {/* Logo image */}
+      <picture>
+        <source srcSet="/images/logo.webp" type="image/webp" />
+        <img
+          src="/images/logo.png"
+          alt={DEFAULT_CONFIG.name}
+          className={`h-16 md:h-20 w-auto mb-4 transition-all duration-1000 ${
+            fadeOut ? 'translate-y-[-10px]' : 'translate-y-0'
+          }`}
+          style={{
+            animation: 'loading-reveal 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards',
+          }}
+        />
+      </picture>
       <p
         className="text-[9px] tracking-[0.4em] uppercase text-gold/70 mb-10"
         style={{
