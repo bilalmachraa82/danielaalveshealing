@@ -79,7 +79,7 @@ export function buildBookingWhatsAppCopy(input: {
       return [
         `Hello ${input.clientName}!`,
         "",
-        `Welcome to Daniela Alves Healing & Wellness.`,
+        `Welcome to Daniela Alves Healing & Harmony.`,
         `Your ${input.serviceLabel} is booked for ${input.formattedDate}.`,
         "",
         `Please complete this short preparation form:`,
