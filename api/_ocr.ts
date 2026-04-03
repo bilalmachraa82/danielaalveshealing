@@ -63,7 +63,7 @@ Return ONLY valid JSON with this structure:
   "declaration_date": "YYYY-MM-DD" or null
 }`;
 
-const SESSION_NOTES_PROMPT = `You are extracting handwritten therapy session notes in Portuguese from Daniela Alves, Healing & Wellness.
+const SESSION_NOTES_PROMPT = `You are extracting handwritten therapy session notes in Portuguese from Daniela Alves, Healing & Harmony.
 
 Common abbreviations:
 - Em. = Emocao (emotion)

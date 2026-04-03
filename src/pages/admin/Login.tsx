@@ -53,7 +53,7 @@ export default function LoginPage() {
             Daniela Alves
           </CardTitle>
           <CardDescription>
-            Healing & Wellness CRM
+            Healing & Harmony CRM
           </CardDescription>
         </CardHeader>
         <CardContent>
