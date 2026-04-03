@@ -53,8 +53,10 @@ const Navigation = () => {
                 src={scrolled ? '/images/logo-dark.png' : '/images/logo.png'}
                 alt={config.logo.alt}
                 width={160}
-                height={40}
-                className="h-10 w-auto transition-all duration-300"
+                height={56}
+                className={`w-auto transition-all duration-300 ${
+                  scrolled ? 'h-11' : 'h-14 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
+                }`}
                 loading="eager"
               />
             </picture>
