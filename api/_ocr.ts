@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 // Prompts
 // ---------------------------------------------------------------------------
 
-const ANAMNESIS_PROMPT = `You are extracting data from a Portuguese therapy anamnesis form ("Ficha de Identificacao e Avaliacao") from Daniela Alves, Healing & Wellness.
+const ANAMNESIS_PROMPT = `You are extracting data from a Portuguese therapy anamnesis form ("Ficha de Identificacao e Avaliacao") from Daniela Alves, Healing & Harmony.
 
 Extract ALL handwritten answers into JSON. The form has these sections:
 
