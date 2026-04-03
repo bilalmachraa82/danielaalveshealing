@@ -1,80 +1,84 @@
 
 
-# Auditoria Premium — O que falta para elevar o site
+## Rebrand Completo — Healing & Harmony
 
-Analisei cada componente do site em detalhe. Eis o que falta para atingir um verdadeiro look premium editorial:
-
----
-
-## 1. Micro-interações e animações (falta vida ao scroll)
-**Problema**: Todos os elementos usam a mesma animação básica `translate-y + opacity`. Não há variação — parece estático.
-**Solução**: 
-- Adicionar **staggered animations** nos cards de serviço (cada card entra com delay crescente + leve rotação)
-- Parallax subtil nos elementos decorativos (SVGs botânicos, glows) via scroll listener
-- Transição suave entre testemunhos (fade crossfade em vez de corte seco)
-- Hover nos cards de serviço com **scale + shadow elevation** mais pronunciado
-
-## 2. Tipografia — falta hierarquia e "luxo tipográfico"
-**Problema**: Os subtítulos e body text são todos `text-sm` ou `text-base` sem variação. Falta drama tipográfico.
-**Solução**:
-- Adicionar **números estilizados** nos preços (font-variant-numeric: oldstyle-nums)
-- Citações com aspas decorativas maiores e mais visíveis (atualmente `text-gold/[0.06]` — invisível)
-- **Pull quotes** com barra lateral dourada nos testemunhos
-- Letra capitular (drop-cap) mais dramática no About
-
-## 3. Secção "Sobre Mim" — falta uma "assinatura pessoal"
-**Problema**: A foto está bem mas falta um toque pessoal premium.
-**Solução**:
-- Adicionar uma **assinatura manuscrita** da Daniela (SVG ou imagem) abaixo dos parágrafos
-- Usar uma imagem de assinatura do GitHub repo ou criar um SVG elegante
-
-## 4. Cards de serviço — parecem flat
-**Problema**: Os cards usam `glass-card` mas sem profundidade real. Falta textura.
-**Solução**:
-- Adicionar **borda superior dourada com gradiente** (já existe `h-px` mas é subtil demais)
-- Background com gradiente interno subtil (de cream para lilás suave)
-- **Ícone com background gradiente** em vez de apenas border circle
-- Número do serviço em romano (I, II, III) como detalhe editorial
-
-## 5. Transições entre secções — cortes abruptos
-**Problema**: As secções terminam e começam com cores diferentes sem transição suave.
-**Solução**:
-- Adicionar **dividers orgânicos** entre secções (não ondas, mas gradientes de fade com 80-120px de height)
-- Ou usar `mix-blend-mode: multiply` nos limites
-
-## 6. Footer — falta um CTA final (última oportunidade)
-**Problema**: O footer tem informação mas não convida à ação.
-**Solução**:
-- Adicionar um **banner CTA premium** acima do footer: "Pronta para começar a tua jornada?" com botão WhatsApp
-- Estilo: fundo com gradiente gold-to-lilac, tipografia serifada grande
-
-## 7. Mapa ou localização visual (falta confiança)
-**Problema**: O endereço está no footer mas sem contexto visual.
-**Solução**:
-- Adicionar um **mini-mapa estilizado** ou imagem do espaço terapêutico na secção de contacto/footer
-
-## 8. Loading/Page transition (primeira impressão)
-**Problema**: A página carrega de golpe sem elegância.
-**Solução**:
-- Adicionar um **loading screen mínimo** com o logo + fade-out (2-3 segundos) para dar uma entrada cinematográfica
+### Resumo
+Actualizar cores, tagline e referências de marca em todo o projecto para alinhar com o novo logo da Daniela. As fontes (Cormorant Garamond + DM Sans) mantêm-se — já estão alinhadas com o novo branding.
 
 ---
 
-## Ficheiros a modificar
-1. **`src/components/Services.tsx`** — Cards com numeração romana, gradiente interno, ícones mais ricos, hover elevado
-2. **`src/components/Testimonials.tsx`** — Crossfade transition, aspas mais visíveis, pull-quote styling
-3. **`src/components/About.tsx`** — Assinatura manuscrita SVG, drop-cap mais dramático
-4. **`src/components/Footer.tsx`** — CTA banner premium antes do footer
-5. **`src/pages/Index.tsx`** — Novo componente CTABanner + dividers entre secções
-6. **`src/components/Hero.tsx`** — Aspas decorativas mais visíveis no quote
-7. **`src/index.css`** — Novas animações (crossfade, stagger) e utilitários tipográficos
-8. **Novo: `src/components/CTABanner.tsx`** — Banner final de chamada à ação
-9. **Novo: `src/components/LoadingScreen.tsx`** — Ecrã de loading premium com logo
+### 1. Actualizar paleta de cores (`src/index.css`)
 
-## Prioridade de impacto
-1. **CTA Banner** — converte visitantes (alto impacto)
-2. **Loading Screen** — primeira impressão cinematográfica
-3. **Cards mais ricos** — elimina o aspecto flat
-4. **Transições entre secções** — fluidez visual
-5. **Tipografia premium** — detalhes que fazem a diferença
+Ajustar as CSS custom properties para o novo tom lilás mais suave e dourado mais quente:
+
+| Variável | Valor actual | Novo valor |
+|----------|-------------|------------|
+| `--primary` | `301 23% 48%` | `275 22% 55%` |
+| `--primary-light` | `301 28% 62%` | `275 28% 65%` |
+| `--gold` | `37 45% 64%` | `37 48% 56%` |
+| `--gold-dark` | `37 40% 48%` | `37 42% 44%` |
+| `--gold-light` | `37 55% 78%` | `37 55% 72%` |
+| `--ring` | `301 23% 48%` | `275 22% 55%` |
+
+Dark mode: ajustar `--primary` e `--primary-light` proporcionalmente.
+
+### 2. Actualizar config central (`src/lib/config/therapist.ts`)
+
+- `tagline`: `"Healing & Wellness"` → `"Healing & Harmony"`
+- `fullBusinessName`: `"Daniela Alves Healing & Harmony"`
+- `colors.primary`: `"#985F97"` → `"#7B6B99"` (novo lilás)
+- `colors.primaryHover`: `"#7d4e7c"` → `"#655880"`
+- `colors.secondary`: `"#D9AA4F"` → `"#C4A265"` (novo dourado)
+
+### 3. Actualizar PWA config (`vite.config.ts`)
+
+- `description`: `"Healing & Harmony"` 
+- `theme_color`: actualizar para novo hex primary
+- `background_color`: mantém
+
+### 4. Actualizar todas as referências "Healing & Wellness" (9 ficheiros)
+
+Substituir por "Healing & Harmony" em:
+- `index.html` — title, meta tags, JSON-LD (6 ocorrências)
+- `src/components/admin/layout/AdminSidebar.tsx` — linha 78
+- `src/pages/admin/Login.tsx` — linha 56
+- `src/pages/public/ManageSessionPage.tsx` — linha 161
+- `src/components/GiftVoucher.tsx` — alt text
+- `src/lib/communications/templates.ts` — email templates (2 ocorrências)
+- `api/_ocr.ts` — OCR prompts (2 ocorrências)
+
+### 5. Actualizar PWA icons (`public/pwa-192x192.svg`, `public/pwa-512x512.svg`)
+
+- Mudar o `fill` do coração de `#985F97` para o novo hex primary
+- Actualizar `apple-touch-icon.svg` igualmente
+
+### 6. Actualizar `LoadingScreen.tsx`
+
+- Já usa `DEFAULT_CONFIG.name` e `DEFAULT_CONFIG.tagline` — apanha automaticamente a nova tagline
+- Sem alterações necessárias
+
+### 7. Footer e Navigation
+
+- Footer já usa `config.tagline` — actualização automática via config
+- Navigation sem alterações (logo image path mantém-se)
+
+---
+
+### Ficheiros modificados
+
+| # | Ficheiro | Tipo de alteração |
+|---|----------|-------------------|
+| 1 | `src/index.css` | Cores CSS vars |
+| 2 | `src/lib/config/therapist.ts` | Tagline, cores |
+| 3 | `vite.config.ts` | PWA manifest |
+| 4 | `index.html` | Meta tags, JSON-LD |
+| 5 | `src/components/admin/layout/AdminSidebar.tsx` | Tagline CRM |
+| 6 | `src/pages/admin/Login.tsx` | Tagline CRM |
+| 7 | `src/pages/public/ManageSessionPage.tsx` | Brand name |
+| 8 | `src/components/GiftVoucher.tsx` | Alt text |
+| 9 | `src/lib/communications/templates.ts` | Email templates |
+| 10 | `api/_ocr.ts` | OCR prompts |
+| 11 | `public/pwa-192x192.svg` | Cor do icon |
+| 12 | `public/pwa-512x512.svg` | Cor do icon |
+| 13 | `public/apple-touch-icon.svg` | Cor do icon |
 
