@@ -72,8 +72,8 @@ export interface TherapistConfig {
 
 export const DEFAULT_CONFIG: TherapistConfig = {
   name: "Daniela Alves",
-  tagline: "Healing & Wellness",
-  fullBusinessName: "Daniela Alves Healing & Wellness",
+  tagline: "Healing & Harmony",
+  fullBusinessName: "Daniela Alves Healing & Harmony",
   email: "daniela@danielaalveshealing.com",
   phone: "351914173445",
   phoneFormatted: "+351 914 173 445",
