@@ -1,84 +1,56 @@
 
 
-## Rebrand Completo — Healing & Harmony
+## Auditoria Completa do Rebrand — Problemas Encontrados
 
-### Resumo
-Actualizar cores, tagline e referências de marca em todo o projecto para alinhar com o novo logo da Daniela. As fontes (Cormorant Garamond + DM Sans) mantêm-se — já estão alinhadas com o novo branding.
+### Problema 1: Logo NÃO foi substituído
+Os ficheiros `public/images/logo.png` e `public/images/logo.webp` continuam a ser os antigos. As imagens do novo logo foram enviadas mas nunca copiadas para o projecto. O `Navigation.tsx` aponta para `/images/logo.webp` — o mesmo ficheiro antigo.
 
----
+**Solução:** Converter as imagens enviadas (WhatsApp) para `logo.png` e `logo.webp` e substituir em `public/images/`.
 
-### 1. Actualizar paleta de cores (`src/index.css`)
+### Problema 2: `theme-color` no index.html ainda é `#985F97` (antigo)
+Linha 335 do `index.html` ainda tem `content="#985F97"` em vez do novo `#7B6B99`.
 
-Ajustar as CSS custom properties para o novo tom lilás mais suave e dourado mais quente:
+**Solução:** Actualizar para `#7B6B99`.
 
-| Variável | Valor actual | Novo valor |
-|----------|-------------|------------|
-| `--primary` | `301 23% 48%` | `275 22% 55%` |
-| `--primary-light` | `301 28% 62%` | `275 28% 65%` |
-| `--gold` | `37 45% 64%` | `37 48% 56%` |
-| `--gold-dark` | `37 40% 48%` | `37 42% 44%` |
-| `--gold-light` | `37 55% 78%` | `37 55% 72%` |
-| `--ring` | `301 23% 48%` | `275 22% 55%` |
+### Problema 3: Cores CSS já foram actualizadas mas a diferença é subtil
+Os valores CSS em `index.css` já estão com os novos valores (`275 22% 55%`, `37 48% 56%`). A mudança de `301 23% 48%` → `275 22% 55%` é visualmente subtil (ligeira mudança de matiz). Se queres uma diferença mais notória, podemos ajustar a saturação ou luminosidade.
 
-Dark mode: ajustar `--primary` e `--primary-light` proporcionalmente.
+### Problema 4: Cores hardcoded nos dark backgrounds NÃO usam CSS vars
+Vários componentes têm cores de fundo aubergine hardcoded que não mudam com o rebrand:
+- `Index.tsx` linha 21: `bg-[hsl(295_22%_11%)]`
+- `Hero.tsx` linha 56: `from-[hsl(295_22%_11%)]`
+- `Index.tsx` linha 25: `hsl(295 22% 11%)`
+- `Footer.tsx` linha 12: gradiente hardcoded
+- `LoadingScreen.tsx` linha 25: gradiente hardcoded
+- `TrustStrip.tsx` linha 11: gradiente hardcoded
 
-### 2. Actualizar config central (`src/lib/config/therapist.ts`)
-
-- `tagline`: `"Healing & Wellness"` → `"Healing & Harmony"`
-- `fullBusinessName`: `"Daniela Alves Healing & Harmony"`
-- `colors.primary`: `"#985F97"` → `"#7B6B99"` (novo lilás)
-- `colors.primaryHover`: `"#7d4e7c"` → `"#655880"`
-- `colors.secondary`: `"#D9AA4F"` → `"#C4A265"` (novo dourado)
-
-### 3. Actualizar PWA config (`vite.config.ts`)
-
-- `description`: `"Healing & Harmony"` 
-- `theme_color`: actualizar para novo hex primary
-- `background_color`: mantém
-
-### 4. Actualizar todas as referências "Healing & Wellness" (9 ficheiros)
-
-Substituir por "Healing & Harmony" em:
-- `index.html` — title, meta tags, JSON-LD (6 ocorrências)
-- `src/components/admin/layout/AdminSidebar.tsx` — linha 78
-- `src/pages/admin/Login.tsx` — linha 56
-- `src/pages/public/ManageSessionPage.tsx` — linha 161
-- `src/components/GiftVoucher.tsx` — alt text
-- `src/lib/communications/templates.ts` — email templates (2 ocorrências)
-- `api/_ocr.ts` — OCR prompts (2 ocorrências)
-
-### 5. Actualizar PWA icons (`public/pwa-192x192.svg`, `public/pwa-512x512.svg`)
-
-- Mudar o `fill` do coração de `#985F97` para o novo hex primary
-- Actualizar `apple-touch-icon.svg` igualmente
-
-### 6. Actualizar `LoadingScreen.tsx`
-
-- Já usa `DEFAULT_CONFIG.name` e `DEFAULT_CONFIG.tagline` — apanha automaticamente a nova tagline
-- Sem alterações necessárias
-
-### 7. Footer e Navigation
-
-- Footer já usa `config.tagline` — actualização automática via config
-- Navigation sem alterações (logo image path mantém-se)
+Estes estão correctos para a paleta actual (aubergine escuro) — não precisam de mudar a menos que queiras alterar o tom escuro.
 
 ---
 
-### Ficheiros modificados
+## Plano de Implementação
 
-| # | Ficheiro | Tipo de alteração |
-|---|----------|-------------------|
-| 1 | `src/index.css` | Cores CSS vars |
-| 2 | `src/lib/config/therapist.ts` | Tagline, cores |
-| 3 | `vite.config.ts` | PWA manifest |
-| 4 | `index.html` | Meta tags, JSON-LD |
-| 5 | `src/components/admin/layout/AdminSidebar.tsx` | Tagline CRM |
-| 6 | `src/pages/admin/Login.tsx` | Tagline CRM |
-| 7 | `src/pages/public/ManageSessionPage.tsx` | Brand name |
-| 8 | `src/components/GiftVoucher.tsx` | Alt text |
-| 9 | `src/lib/communications/templates.ts` | Email templates |
-| 10 | `api/_ocr.ts` | OCR prompts |
-| 11 | `public/pwa-192x192.svg` | Cor do icon |
-| 12 | `public/pwa-512x512.svg` | Cor do icon |
-| 13 | `public/apple-touch-icon.svg` | Cor do icon |
+### 1. Substituir o logo (prioridade máxima)
+- Processar a imagem do novo logo enviada pelo WhatsApp
+- Criar versões optimizadas: `logo.png` (fallback) e `logo.webp` (principal)
+- Substituir os ficheiros em `public/images/`
+- O `Navigation.tsx`, `Footer.tsx` e `LoadingScreen.tsx` já apontam para estes paths — vão apanhar automaticamente
+
+### 2. Corrigir theme-color no index.html
+- Linha 335: `#985F97` → `#7B6B99`
+
+### 3. Tornar as cores mais distintas (opcional mas recomendado)
+Se queres ver uma diferença mais marcada, posso:
+- Aumentar a saturação do lilás: `275 22% 55%` → `270 28% 52%` (mais roxo/saturado)
+- Tornar o dourado mais quente: `37 48% 56%` → `38 52% 52%` (mais rico/intenso)
+- Ou manter as cores actuais se preferes a subtileza
+
+### Ficheiros a modificar
+
+| # | Ficheiro | Alteração |
+|---|----------|-----------|
+| 1 | `public/images/logo.png` | Novo logo |
+| 2 | `public/images/logo.webp` | Novo logo |
+| 3 | `index.html` | theme-color hex |
+| 4 | `src/index.css` | Ajustar cores (se aprovado) |
 
