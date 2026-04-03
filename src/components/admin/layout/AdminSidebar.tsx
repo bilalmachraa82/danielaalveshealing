@@ -75,7 +75,7 @@ export function AdminSidebar() {
               Daniela Alves
             </p>
             <p className="text-xs text-muted-foreground">
-              Healing & Wellness CRM
+              Healing & Harmony CRM
             </p>
           </div>
         </Link>

@@ -72,8 +72,8 @@ export interface TherapistConfig {
 
 export const DEFAULT_CONFIG: TherapistConfig = {
   name: "Daniela Alves",
-  tagline: "Healing & Wellness",
-  fullBusinessName: "Daniela Alves Healing & Wellness",
+  tagline: "Healing & Harmony",
+  fullBusinessName: "Daniela Alves Healing & Harmony",
   email: "daniela@danielaalveshealing.com",
   phone: "351914173445",
   phoneFormatted: "+351 914 173 445",
@@ -100,9 +100,9 @@ export const DEFAULT_CONFIG: TherapistConfig = {
     en: "No perfume on the day of the session. Light meals in the 24 hours before. Stay hydrated and avoid stimulants (coffee, alcohol). No shower available.",
   },
   colors: {
-    primary: "#985F97",
-    primaryHover: "#7d4e7c",
-    secondary: "#D9AA4F",
+    primary: "#7B6B99",
+    primaryHover: "#655880",
+    secondary: "#C4A265",
     background: "#FAF7F5",
   },
   fonts: {

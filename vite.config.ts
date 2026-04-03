@@ -22,8 +22,8 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: "Daniela Alves CRM",
         short_name: "Daniela CRM",
-        description: "Healing & Wellness - Gestão de Clientes",
-        theme_color: "#985F97",
+        description: "Healing & Harmony - Gestão de Clientes",
+        theme_color: "#7B6B99",
         background_color: "#FAF7F5",
         display: "standalone",
         start_url: "/admin/dashboard",

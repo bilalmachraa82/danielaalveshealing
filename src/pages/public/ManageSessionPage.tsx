@@ -158,7 +158,7 @@ export default function ManageSessionPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3 text-center">
           <p className="text-xs font-medium uppercase tracking-[0.38em] text-primary/75">
-            Daniela Alves Healing & Wellness
+            Daniela Alves Healing & Harmony
           </p>
           <h1 className="font-serif text-4xl font-semibold text-foreground">
             {t("Gerir Marcação", "Manage Your Session")}
