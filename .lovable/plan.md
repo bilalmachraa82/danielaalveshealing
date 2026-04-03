@@ -1,36 +1,18 @@
 
 
-## Splash Screen + Logo no Header — Melhorias
+## Fix: Remover tagline duplicada na Splash Screen
 
-### O que é a "página antes do site"
-Chama-se **Splash Screen** (ou Loading Screen). Está em `src/components/LoadingScreen.tsx`. Actualmente mostra apenas texto ("Daniela Alves" + "Healing & Harmony") — não mostra o logo/imagem.
+### Problema
+O logo (`/images/logo.webp`) já inclui o texto "Healing & Harmony" na própria imagem. Abaixo, a linha 67 do `LoadingScreen.tsx` renderiza `DEFAULT_CONFIG.tagline` que também é "Healing & Harmony" — duplicação.
 
-### Problema no header com fundo branco
-O `logo-dark` (versão escura para fundo branco) foi gerado como preto puro, o que fica duro. A best practice moderna é usar a cor primária da marca (lilás `#6B50A3`) em vez de preto — fica elegante e on-brand.
+### Solução
+Remover o parágrafo da tagline (linhas 58-68) do `LoadingScreen.tsx`. O logo já comunica a marca completa. A splash screen fica mais limpa: apenas logo + linha dourada.
 
----
+Alternativa: substituir a tagline por algo complementar como "Massagem Terapêutica & Holística" ou o slogan curto — mas o mais elegante (best practice luxury) é manter apenas o logo + linha decorativa, sem texto adicional.
 
-### Plano de Implementação
+### Ficheiro a modificar
 
-#### 1. Splash Screen — Mostrar o logo completo
-- Substituir o `<h1>` de texto por uma `<img>` que carrega `/images/logo.webp` (o logo dourado completo)
-- O logo dourado sobre o fundo aubergine escuro ficará premium
-- Manter a tagline "Healing & Harmony" em texto abaixo
-- Manter as animações existentes (fade-in reveal + gold line)
-
-#### 2. Header scrolled — Logo lilás em vez de preto
-Em vez de um logo-dark preto, a best practice actual para sites premium é:
-- **Opção adoptada:** Aplicar um filtro CSS ao logo dourado original para o colorir na cor primária lilás quando o header tem fundo branco — sem precisar de ficheiro separado
-- Usar CSS `filter` + `mix-blend-mode` ou simplesmente um `brightness(0.3)` controlado para escurecer o logo dourado o suficiente para ler no branco, mantendo warmth
-- Alternativa mais limpa: gerar `logo-dark` na cor lilás (#6B50A3) em vez de preto
-
-**Abordagem escolhida:** Regenerar `logo-dark.png` e `logo-dark.webp` com tom lilás da marca em vez de preto puro. Isto é mais fiável cross-browser que filtros CSS.
-
-### Ficheiros a modificar
-
-| # | Ficheiro | Alteração |
-|---|----------|-----------|
-| 1 | `src/components/LoadingScreen.tsx` | Mostrar imagem do logo + manter tagline |
-| 2 | `public/images/logo-dark.png` | Regenerar com tom lilás (#6B50A3) |
-| 3 | `public/images/logo-dark.webp` | Regenerar com tom lilás (#6B50A3) |
+| Ficheiro | Alteração |
+|----------|-----------|
+| `src/components/LoadingScreen.tsx` | Remover bloco da tagline (linhas 58-68), ajustar margin do logo |
 
