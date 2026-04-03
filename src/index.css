@@ -13,9 +13,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 276 8% 17%;
 
-    --primary: 275 22% 55%;
+    --primary: 270 28% 50%;
     --primary-foreground: 300 100% 98%;
-    --primary-light: 275 28% 65%;
+    --primary-light: 270 32% 62%;
 
     --secondary: 37 45% 64%;
     --secondary-foreground: 276 8% 17%;
@@ -31,7 +31,7 @@
 
     --border: 300 10% 90%;
     --input: 300 10% 90%;
-    --ring: 275 22% 55%;
+    --ring: 270 28% 50%;
 
     --radius: 0.75rem;
 
@@ -47,9 +47,9 @@
     --section-warm-soft: 37 42% 94%;
     --section-blush: 322 24% 93%;
 
-    --gold: 37 48% 56%;
-    --gold-light: 37 55% 72%;
-    --gold-dark: 37 42% 44%;
+    --gold: 38 52% 52%;
+    --gold-light: 38 58% 68%;
+    --gold-dark: 38 46% 40%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -68,9 +68,9 @@
     --card-foreground: 300 20% 95%;
     --popover: 276 30% 8%;
     --popover-foreground: 300 20% 95%;
-    --primary: 275 28% 65%;
+    --primary: 270 32% 62%;
     --primary-foreground: 276 30% 6%;
-    --primary-light: 275 22% 55%;
+    --primary-light: 270 28% 50%;
     --secondary: 37 45% 64%;
     --secondary-foreground: 276 30% 6%;
     --muted: 276 20% 15%;
@@ -81,10 +81,10 @@
     --destructive-foreground: 210 40% 98%;
     --border: 276 20% 18%;
     --input: 276 20% 18%;
-    --ring: 275 28% 65%;
-    --gold: 37 48% 56%;
-    --gold-light: 37 55% 72%;
-    --gold-dark: 37 42% 44%;
+    --ring: 270 32% 62%;
+    --gold: 38 52% 52%;
+    --gold-light: 38 58% 68%;
+    --gold-dark: 38 46% 40%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

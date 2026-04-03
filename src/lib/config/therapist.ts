@@ -100,9 +100,9 @@ export const DEFAULT_CONFIG: TherapistConfig = {
     en: "No perfume on the day of the session. Light meals in the 24 hours before. Stay hydrated and avoid stimulants (coffee, alcohol). No shower available.",
   },
   colors: {
-    primary: "#7B6B99",
-    primaryHover: "#655880",
-    secondary: "#C4A265",
+    primary: "#6B50A3",
+    primaryHover: "#5A4389",
+    secondary: "#B8933D",
     background: "#FAF7F5",
   },
   fonts: {

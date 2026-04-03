@@ -51,7 +51,7 @@ const Navigation = () => {
                 alt={config.logo.alt}
                 width={160}
                 height={40}
-                className={`h-10 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
+                className="h-10 w-auto transition-all duration-300"
                 loading="eager"
               />
             </picture>
