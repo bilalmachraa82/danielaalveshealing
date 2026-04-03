@@ -45,9 +45,12 @@ const Navigation = () => {
           {/* Logo */}
           <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <picture>
-              <source srcSet="/images/logo.webp" type="image/webp" />
+              <source
+                srcSet={scrolled ? '/images/logo-dark.webp' : '/images/logo.webp'}
+                type="image/webp"
+              />
               <img
-                src="/images/logo.png"
+                src={scrolled ? '/images/logo-dark.png' : '/images/logo.png'}
                 alt={config.logo.alt}
                 width={160}
                 height={40}
