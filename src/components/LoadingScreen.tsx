@@ -43,7 +43,7 @@ const LoadingScreen = () => {
         <img
           src="/images/logo.png"
           alt={DEFAULT_CONFIG.name}
-          className="w-auto mb-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+          className="w-auto mb-12 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
             height: stage >= 1 ? undefined : 0,
             opacity: stage >= 1 ? 1 : 0,
@@ -54,18 +54,6 @@ const LoadingScreen = () => {
           }}
         />
       </picture>
-
-      {/* Tagline — staggered entrance */}
-      <p
-        className="text-[10px] md:text-xs tracking-[0.45em] uppercase text-gold/70 mb-12 transition-all duration-[800ms] ease-out"
-        style={{
-          opacity: stage >= 2 ? 1 : 0,
-          transform: stage >= 2 ? 'translateY(0)' : 'translateY(12px)',
-          letterSpacing: stage >= 2 ? '0.45em' : '0.2em',
-        }}
-      >
-        {DEFAULT_CONFIG.tagline}
-      </p>
 
       {/* Gold line — expanding with shimmer */}
       <div className="relative">
