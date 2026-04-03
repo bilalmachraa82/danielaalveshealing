@@ -4,59 +4,86 @@ import { DEFAULT_CONFIG } from '@/lib/config/therapist';
 const LoadingScreen = () => {
   const [visible, setVisible] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
+  const [stage, setStage] = useState(0); // 0=hidden, 1=logo, 2=tagline, 3=line
 
   useEffect(() => {
-    const fadeTimer = setTimeout(() => setFadeOut(true), 600);
-    const removeTimer = setTimeout(() => setVisible(false), 1000);
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(removeTimer);
-    };
+    const t1 = setTimeout(() => setStage(1), 100);   // logo appears
+    const t2 = setTimeout(() => setStage(2), 800);   // tagline appears
+    const t3 = setTimeout(() => setStage(3), 1300);  // gold line expands
+    const t4 = setTimeout(() => setFadeOut(true), 2200);
+    const t5 = setTimeout(() => setVisible(false), 2800);
+    return () => { [t1, t2, t3, t4, t5].forEach(clearTimeout); };
   }, []);
 
   if (!visible) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-800 ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-opacity duration-[600ms] ${
         fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       style={{
         background: 'linear-gradient(180deg, hsl(300 20% 14%) 0%, hsl(295 22% 11%) 50%, hsl(290 25% 9%) 100%)',
       }}
     >
-      {/* Logo image */}
+      {/* Subtle radial glow behind logo */}
+      <div
+        className="absolute rounded-full transition-all duration-[1500ms] ease-out"
+        style={{
+          width: stage >= 1 ? 400 : 0,
+          height: stage >= 1 ? 400 : 0,
+          background: 'radial-gradient(circle, hsl(270 28% 50% / 0.12) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+        }}
+      />
+
+      {/* Logo — larger, scale + fade entrance */}
       <picture>
         <source srcSet="/images/logo.webp" type="image/webp" />
         <img
           src="/images/logo.png"
           alt={DEFAULT_CONFIG.name}
-          className={`h-16 md:h-20 w-auto mb-4 transition-all duration-1000 ${
-            fadeOut ? 'translate-y-[-10px]' : 'translate-y-0'
-          }`}
+          className="w-auto mb-6 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
-            animation: 'loading-reveal 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards',
+            height: stage >= 1 ? undefined : 0,
+            opacity: stage >= 1 ? 1 : 0,
+            transform: stage >= 1
+              ? (fadeOut ? 'scale(1.02) translateY(-8px)' : 'scale(1) translateY(0)')
+              : 'scale(0.85) translateY(24px)',
+            maxHeight: '6rem',
           }}
         />
       </picture>
+
+      {/* Tagline — staggered entrance */}
       <p
-        className="text-[9px] tracking-[0.4em] uppercase text-gold/70 mb-10"
+        className="text-[10px] md:text-xs tracking-[0.45em] uppercase text-gold/70 mb-12 transition-all duration-[800ms] ease-out"
         style={{
-          animation: 'loading-reveal 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) 0.3s forwards',
-          opacity: 0,
+          opacity: stage >= 2 ? 1 : 0,
+          transform: stage >= 2 ? 'translateY(0)' : 'translateY(12px)',
+          letterSpacing: stage >= 2 ? '0.45em' : '0.2em',
         }}
       >
         {DEFAULT_CONFIG.tagline}
       </p>
 
-      {/* Gold line expanding */}
-      <div
-        className="h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent"
-        style={{
-          animation: 'loading-line 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) 0.5s forwards',
-          width: 0,
-        }}
-      />
+      {/* Gold line — expanding with shimmer */}
+      <div className="relative">
+        <div
+          className="h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ width: stage >= 3 ? 160 : 0 }}
+        />
+        {stage >= 3 && (
+          <div
+            className="absolute inset-0 h-px animate-gold-shimmer"
+            style={{
+              opacity: 0.4,
+              background: 'linear-gradient(90deg, transparent, hsl(38 52% 52% / 0.8), transparent)',
+              backgroundSize: '200% 100%',
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
