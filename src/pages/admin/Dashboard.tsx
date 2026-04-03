@@ -126,7 +126,7 @@ export default function Dashboard() {
           </p>
         </div>
         <Button
-          onClick={openQuickBooking}
+          onClick={() => openQuickBooking()}
           className="text-white shrink-0"
           style={{ backgroundColor: config.colors.primary }}
           onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = config.colors.primaryHover; }}
