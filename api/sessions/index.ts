@@ -791,18 +791,21 @@ async function handleSessionsList(
     const limit = Math.min(100, Math.max(1, parseInt(String(req.query.limit ?? "50"), 10) || 50));
     const offset = (page - 1) * limit;
 
-    const countRows = await sql(
-      `SELECT COUNT(*)::int AS total FROM sessions s${whereClause}`,
-      params
-    );
-    const total = countRows[0]?.total ?? 0;
-
     const limitIdx = params.length + 1;
     const offsetIdx = params.length + 2;
-    const rows = await sql(
-      `${SESSION_WITH_CLIENT_SELECT}${whereClause} ORDER BY s.scheduled_at DESC LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
-      [...params, limit, offset]
-    );
+
+    const [[countRows], rows] = await Promise.all([
+      sql(
+        `SELECT COUNT(*)::int AS total FROM sessions s${whereClause}`,
+        params
+      ),
+      sql(
+        `${SESSION_WITH_CLIENT_SELECT}${whereClause} ORDER BY s.scheduled_at DESC LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+        [...params, limit, offset]
+      )
+    ]);
+
+    const total = countRows?.total ?? 0;
     return res.json({ data: rows, meta: { total, page, limit } });
   }
 

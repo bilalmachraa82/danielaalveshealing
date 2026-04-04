@@ -12,21 +12,26 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-  if (!ADMIN_PASSWORD) {
-    throw new Error("ADMIN_PASSWORD environment variable is not configured");
+  try {
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+    if (!ADMIN_PASSWORD) {
+      return res.status(500).json({ error: "Server authentication is not configured" });
+    }
+
+    const { email, password } = req.body ?? {};
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      return res.json({
+        id: "admin-1",
+        email: ADMIN_EMAIL,
+        name: "Daniela Alves",
+        token: process.env.ADMIN_API_TOKEN ?? null,
+      });
+    }
+
+    return res.status(401).json({ error: "Credenciais inválidas" });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal server error";
+    return res.status(500).json({ error: message });
   }
-
-  const { email, password } = req.body ?? {};
-
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    return res.json({
-      id: "admin-1",
-      email: ADMIN_EMAIL,
-      name: "Daniela Alves",
-      token: process.env.ADMIN_API_TOKEN ?? null,
-    });
-  }
-
-  return res.status(401).json({ error: "Credenciais inválidas" });
 }

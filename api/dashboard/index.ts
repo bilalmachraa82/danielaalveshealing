@@ -44,6 +44,8 @@ export default async function handler(
         return await handlePendingForms(res, sql);
       case "recent-satisfaction":
         return await handleRecentSatisfaction(res, sql);
+      case "satisfaction":
+        return await handleSatisfaction(res, sql);
       case "email-log":
         return await handleEmailLog(res, sql);
       case "calendar-inbox":
@@ -61,27 +63,27 @@ async function handleStats(
   res: VercelResponse,
   sql: ReturnType<typeof getDb>
 ) {
-  const [clientStats] = await sql(`
-    SELECT
-      COUNT(*) as total,
-      COUNT(*) FILTER (WHERE status = 'active') as active
-    FROM clients
-  `);
-
-  const [sessionStats] = await sql(`
-    SELECT
-      COUNT(*) FILTER (WHERE scheduled_at >= date_trunc('month', now()) AND scheduled_at < date_trunc('month', now()) + interval '1 month') as this_month,
-      COUNT(*) FILTER (WHERE scheduled_at >= now() AND status IN ('scheduled', 'confirmed')) as upcoming
-    FROM sessions
-  `);
-
-  const [npsStats] = await sql(`
-    SELECT
-      ROUND(AVG(nps_score)::numeric, 1) as avg_nps,
-      COUNT(*) as total_responses
-    FROM satisfaction_responses
-    WHERE completed_at IS NOT NULL
-  `);
+  const [[clientStats], [sessionStats], [npsStats]] = await Promise.all([
+    sql(`
+      SELECT
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE status = 'active') as active
+      FROM clients
+    `),
+    sql(`
+      SELECT
+        COUNT(*) FILTER (WHERE scheduled_at >= date_trunc('month', now()) AND scheduled_at < date_trunc('month', now()) + interval '1 month') as this_month,
+        COUNT(*) FILTER (WHERE scheduled_at >= now() AND status IN ('scheduled', 'confirmed')) as upcoming
+      FROM sessions
+    `),
+    sql(`
+      SELECT
+        ROUND(AVG(nps_score)::numeric, 1) as avg_nps,
+        COUNT(*) as total_responses
+      FROM satisfaction_responses
+      WHERE completed_at IS NOT NULL
+    `)
+  ]);
 
   return res.json({
     clients: {
@@ -103,31 +105,32 @@ async function handlePendingForms(
   res: VercelResponse,
   sql: ReturnType<typeof getDb>
 ) {
-  const anamnesisForms = await sql(`
-    SELECT
-      af.id,
-      'anamnesis' AS type,
-      c.first_name || ' ' || COALESCE(c.last_name, '') AS client_name,
-      'anamnese' AS form_type,
-      af.created_at AS sent_at
-    FROM anamnesis_forms af
-    JOIN clients c ON c.id = af.client_id
-    WHERE af.status = 'sent'
-    ORDER BY af.created_at DESC
-  `);
-
-  const intakeForms = await sql(`
-    SELECT
-      sif.id,
-      'intake' AS type,
-      c.first_name || ' ' || COALESCE(c.last_name, '') AS client_name,
-      sif.form_type,
-      sif.created_at AS sent_at
-    FROM session_intake_forms sif
-    JOIN clients c ON c.id = sif.client_id
-    WHERE sif.status = 'sent'
-    ORDER BY sif.created_at DESC
-  `);
+  const [anamnesisForms, intakeForms] = await Promise.all([
+    sql(`
+      SELECT
+        af.id,
+        'anamnesis' AS type,
+        c.first_name || ' ' || COALESCE(c.last_name, '') AS client_name,
+        'anamnese' AS form_type,
+        af.created_at AS sent_at
+      FROM anamnesis_forms af
+      JOIN clients c ON c.id = af.client_id
+      WHERE af.status = 'sent'
+      ORDER BY af.created_at DESC
+    `),
+    sql(`
+      SELECT
+        sif.id,
+        'intake' AS type,
+        c.first_name || ' ' || COALESCE(c.last_name, '') AS client_name,
+        sif.form_type,
+        sif.created_at AS sent_at
+      FROM session_intake_forms sif
+      JOIN clients c ON c.id = sif.client_id
+      WHERE sif.status = 'sent'
+      ORDER BY sif.created_at DESC
+    `)
+  ]);
 
   const combined = [...anamnesisForms, ...intakeForms].sort(
     (a, b) => new Date(b.sent_at).getTime() - new Date(a.sent_at).getTime()
@@ -157,6 +160,54 @@ async function handleRecentSatisfaction(
   `);
 
   return res.json(rows);
+}
+
+async function handleSatisfaction(
+  res: VercelResponse,
+  sql: ReturnType<typeof getDb>
+) {
+  const [statsRows, responses] = await Promise.all([
+    sql(`
+      SELECT
+        COUNT(*) as total_responses,
+        ROUND(AVG(nps_score)::numeric, 1) as avg_nps,
+        ROUND(AVG(comfort_rating)::numeric, 1) as avg_comfort,
+        ROUND(
+          100.0 * COUNT(*) FILTER (WHERE would_rebook = true)
+          / NULLIF(COUNT(*) FILTER (WHERE would_rebook IS NOT NULL), 0),
+          0
+        ) as rebook_rate
+      FROM satisfaction_responses
+      WHERE completed_at IS NOT NULL
+    `),
+    sql(`
+      SELECT
+        sr.id,
+        c.first_name || ' ' || COALESCE(c.last_name, '') AS client_name,
+        s.service_type,
+        sr.nps_score,
+        sr.comfort_rating,
+        sr.would_rebook,
+        sr.completed_at
+      FROM satisfaction_responses sr
+      JOIN sessions s ON s.id = sr.session_id
+      JOIN clients c ON c.id = sr.client_id
+      WHERE sr.completed_at IS NOT NULL
+      ORDER BY sr.completed_at DESC
+    `)
+  ]);
+
+  const row = statsRows[0];
+
+  return res.json({
+    stats: {
+      total_responses: Number(row.total_responses),
+      avg_nps: row.avg_nps ? Number(row.avg_nps) : null,
+      avg_comfort: row.avg_comfort ? Number(row.avg_comfort) : null,
+      rebook_rate: row.rebook_rate ? Number(row.rebook_rate) : null,
+    },
+    responses,
+  });
 }
 
 async function handleEmailLog(
@@ -202,6 +253,11 @@ async function handleCalendarInboxResolve(
 
   if (!inbox_id || !action) {
     return res.status(400).json({ error: "inbox_id and action are required" });
+  }
+
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (typeof inbox_id !== "string" || !UUID_REGEX.test(inbox_id)) {
+    return res.status(400).json({ error: "Invalid inbox_id" });
   }
 
   if (action === "dismiss") {

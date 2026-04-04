@@ -1,4 +1,5 @@
 import type { VercelRequest } from "@vercel/node";
+import { timingSafeEqual } from "crypto";
 
 export function verifyAdmin(req: VercelRequest): boolean {
   const authHeader = req.headers.authorization;
@@ -6,5 +7,6 @@ export function verifyAdmin(req: VercelRequest): boolean {
   const token = authHeader.slice(7);
   const adminToken = process.env.ADMIN_API_TOKEN;
   if (!adminToken) return false;
-  return token === adminToken;
+  if (token.length !== adminToken.length) return false;
+  return timingSafeEqual(Buffer.from(token), Buffer.from(adminToken));
 }

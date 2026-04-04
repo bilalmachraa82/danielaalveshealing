@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { QuickBookingContext } from "@/contexts/QuickBookingContext";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminHeader } from "./AdminHeader";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { MobileBottomNav } from "@/components/admin/MobileBottomNav";
 import { QuickBooking, QuickBookingFab } from "@/components/admin/QuickBooking";
 import {
@@ -47,7 +48,9 @@ export function AdminLayout() {
           <SidebarInset className="flex flex-col flex-1">
             <AdminHeader />
             <main className="flex-1 p-4 md:p-6 overflow-auto pb-20 md:pb-6">
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </main>
           </SidebarInset>
         </div>

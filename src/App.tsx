@@ -21,6 +21,7 @@ const SessionList = lazy(() => import("./pages/admin/SessionList"));
 const SessionCreate = lazy(() => import("./pages/admin/SessionCreate"));
 const SessionDetail = lazy(() => import("./pages/admin/SessionDetail"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
+const SatisfactionList = lazy(() => import("./pages/admin/SatisfactionList"));
 const ClientImport = lazy(() => import("./pages/admin/ClientImport"));
 const ClientOCRImport = lazy(() => import("./pages/admin/ClientOCRImport"));
 const AdminLayout = lazy(() =>
@@ -98,7 +99,7 @@ const App = () => (
                 <Route path="sessoes" element={<SessionList />} />
                 <Route path="sessoes/nova" element={<SessionCreate />} />
                 <Route path="sessoes/:id" element={<SessionDetail />} />
-                <Route path="satisfacao" element={<Dashboard />} />
+                <Route path="satisfacao" element={<SatisfactionList />} />
                 <Route path="configuracoes" element={<Settings />} />
               </Route>
 
