@@ -32,7 +32,7 @@ const Footer = () => {
             <p className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/40 mb-6">{config.tagline}</p>
             <div className="section-divider !mx-0 !w-10 mb-6" />
             <p className="text-xs tracking-wider text-primary-foreground/35 leading-relaxed">
-              {t('Terapias Holísticas em Sintra — Sessões de cura e bem-estar para corpo e alma.', 'Holistic Therapies in Sintra — Healing and wellness sessions for body and soul.')}
+              {t('Terapias Holísticas em Sintra — Sessões de cura e harmonia para corpo e alma.', 'Holistic Therapies in Sintra — Beyond the Body. Healing sessions for body and soul.')}
             </p>
           </div>
 
