@@ -64,6 +64,7 @@ export default {
         cream: "hsl(var(--cream))",
         mist: "hsl(var(--mist))",
         subtle: "hsl(var(--subtle))",
+        "verde-suave": "hsl(var(--verde-suave))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
