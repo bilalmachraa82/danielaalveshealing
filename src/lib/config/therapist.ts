@@ -72,8 +72,8 @@ export interface TherapistConfig {
 
 export const DEFAULT_CONFIG: TherapistConfig = {
   name: "Daniela Alves",
-  tagline: "Healing & Harmony",
-  fullBusinessName: "Daniela Alves Healing & Harmony",
+  tagline: "Beyond the Body",
+  fullBusinessName: "Daniela Alves — Beyond the Body",
   email: "daniela@danielaalveshealing.com",
   phone: "351914173445",
   phoneFormatted: "+351 914 173 445",
@@ -100,14 +100,14 @@ export const DEFAULT_CONFIG: TherapistConfig = {
     en: "No perfume on the day of the session. Light meals in the 24 hours before. Stay hydrated and avoid stimulants (coffee, alcohol). No shower available.",
   },
   colors: {
-    primary: "#6B50A3",
-    primaryHover: "#5A4389",
-    secondary: "#B8933D",
-    background: "#FAF7F5",
+    primary: "#96568A",
+    primaryHover: "#7D4873",
+    secondary: "#B48D53",
+    background: "#F6F5EE",
   },
   fonts: {
-    heading: "Cormorant Garamond",
-    body: "DM Sans",
+    heading: "Quincy CF",
+    body: "Museo Sans",
   },
   logo: {
     src: "/images/logo.webp",
