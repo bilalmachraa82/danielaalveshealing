@@ -23,7 +23,7 @@ const LoadingScreen = () => {
         fadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       style={{
-        background: 'linear-gradient(180deg, hsl(300 20% 14%) 0%, hsl(295 22% 11%) 50%, hsl(290 25% 9%) 100%)',
+        background: 'linear-gradient(180deg, #3B2635 0%, #2E1D28 50%, #231620 100%)',
       }}
     >
       {/* Subtle radial glow behind logo */}
@@ -32,7 +32,7 @@ const LoadingScreen = () => {
         style={{
           width: stage >= 1 ? 400 : 0,
           height: stage >= 1 ? 400 : 0,
-          background: 'radial-gradient(circle, hsl(270 28% 50% / 0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(150, 86, 138, 0.15) 0%, transparent 70%)',
           filter: 'blur(60px)',
         }}
       />
@@ -43,6 +43,7 @@ const LoadingScreen = () => {
         <img
           src="/images/logo.png"
           alt={DEFAULT_CONFIG.name}
+          loading="eager"
           className="w-auto mb-12 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
             height: stage >= 1 ? undefined : 0,
@@ -58,15 +59,18 @@ const LoadingScreen = () => {
       {/* Gold line — expanding with shimmer */}
       <div className="relative">
         <div
-          className="h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{ width: stage >= 3 ? 160 : 0 }}
+          className="h-px transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{
+            width: stage >= 3 ? 160 : 0,
+            background: 'linear-gradient(90deg, transparent, rgba(180, 141, 83, 0.6), transparent)',
+          }}
         />
         {stage >= 3 && (
           <div
             className="absolute inset-0 h-px animate-gold-shimmer"
             style={{
               opacity: 0.4,
-              background: 'linear-gradient(90deg, transparent, hsl(38 52% 52% / 0.8), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(205, 174, 124, 0.8), transparent)',
               backgroundSize: '200% 100%',
             }}
           />
