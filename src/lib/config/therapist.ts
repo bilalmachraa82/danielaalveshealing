@@ -106,8 +106,8 @@ export const DEFAULT_CONFIG: TherapistConfig = {
     background: "#F6F5EE",
   },
   fonts: {
-    heading: "Cormorant Garamond",
-    body: "DM Sans",
+    heading: "Quincy CF",
+    body: "Museo Sans",
   },
   logo: {
     src: "/images/logo.webp",

@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer id="contacto" className="relative pt-20 pb-10 overflow-hidden noise-overlay text-primary-foreground" style={{
-      background: 'linear-gradient(180deg, hsl(300 20% 14%) 0%, hsl(295 22% 11%) 50%, hsl(290 25% 9%) 100%)',
+      background: 'linear-gradient(180deg, #3B2635 0%, #2E1D28 50%, #231620 100%)',
     }}>
       {/* Gold top line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
