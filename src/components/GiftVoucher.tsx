@@ -49,7 +49,7 @@ const GiftVoucher = () => {
                 <source srcSet={voucherWebp} type="image/webp" />
                 <img
                   src={voucherJpg}
-                  alt={t('Cheque-Oferta Daniela Alves Healing & Harmony', 'Gift Voucher Daniela Alves Healing & Harmony')}
+                  alt={t('Cheque-Oferta Daniela Alves Beyond the Body', 'Gift Voucher Daniela Alves Beyond the Body')}
                   className="w-full h-auto"
                   width={600}
                   height={400}

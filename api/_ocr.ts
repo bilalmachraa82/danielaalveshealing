@@ -4,7 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 // Prompts
 // ---------------------------------------------------------------------------
 
-const ANAMNESIS_PROMPT = `You are extracting data from a Portuguese therapy anamnesis form ("Ficha de Identificacao e Avaliacao") from Daniela Alves, Healing & Harmony.
+const ANAMNESIS_PROMPT = `You are extracting data from a Portuguese therapy anamnesis form ("Ficha de Identificacao e Avaliacao") from Daniela Alves, Beyond the Body.
 
 Extract ALL handwritten answers into JSON. The form has these sections:
 
@@ -63,7 +63,7 @@ Return ONLY valid JSON with this structure:
   "declaration_date": "YYYY-MM-DD" or null
 }`;
 
-const SESSION_NOTES_PROMPT = `You are extracting handwritten therapy session notes in Portuguese from Daniela Alves, Healing & Harmony.
+const SESSION_NOTES_PROMPT = `You are extracting handwritten therapy session notes in Portuguese from Daniela Alves, Beyond the Body.
 
 Common abbreviations:
 - Em. = Emocao (emotion)
