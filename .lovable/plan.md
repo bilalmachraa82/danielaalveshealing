@@ -1,97 +1,67 @@
 
 
-## Plano: Rebrand completo alinhado com o Brandbook
+## Auditoria Completa + Plano de Correção Alinhado com o Brandbook
 
-### Resumo
+### Problemas Críticos Identificados
 
-Implementar todas as alterações do brandbook que podem ser feitas agora (cores, tagline "Beyond the Body", splash screen, vídeo), e preparar a tipografia para receber Quincy + Museo quando enviares os ficheiros.
+#### 1. VIDEO SEM SOM — Causa raiz confirmada
+O ficheiro `hero-video.mp4` **não tem faixa de áudio**. O `ffprobe` confirma apenas 1 stream (video: h264). O botão de unmute existe e funciona no código, mas não há áudio no ficheiro. **O vídeo precisa ser substituído por uma versão com áudio.**
 
-### Brandbook — Referência visual confirmada
+#### 2. LOGO NA SPLASH — Bug de height:0
+No `LoadingScreen.tsx` linha 49: `height: stage >= 1 ? undefined : 0` — quando `height` é `undefined` e `maxHeight: '6rem'`, mas sem `height` definido, o `<img>` pode colapsar a 0 se o browser não tiver carregado a imagem a tempo do stage 1 (100ms). O `loading="eager"` ajuda mas 100ms é muito rápido.
 
-```text
-Paleta cromática oficial:
-  Roxo profundo:  #3B2635  (foreground, backgrounds escuros)
-  Off-white:      #F6F5EE  (background claro)
-  Dourado escuro: #B48D53  (gold principal)
-  Lilás rosado:   #96568A  (accent, primary)
-  Dourado suave:  #CDAE7C  (gold-light)
-  Verde suave:    #A9BFA5  (nova cor de accent)
+**Correcção**: Definir `height: '6rem'` quando `stage >= 1` em vez de `undefined`, e aumentar o delay do stage 1 para 300ms para dar tempo ao browser.
 
-Tagline: "Beyond the Body"
-Tipografia: Quincy (títulos) + Museo (textos) — aguarda ficheiros
-```
+#### 3. LOGO NO HEADER — Referência a ficheiros correcta
+Os logos existem (`logo.webp`, `logo-dark.webp`). O problema pode ser timing — o browser troca entre `logo.webp` (fundo escuro) e `logo-dark.webp` (fundo claro com scroll). Ficheiros existem e são ~1MB cada.
 
----
+#### 4. MAIN BACKGROUND — Cor hardcoded errada
+`Index.tsx` linha 21: `bg-[hsl(295_22%_11%)]` — Este é um roxo-escuro genérico, não o roxo profundo do brandbook `#3B2635`. Deve usar o roxo do brandbook.
 
-### Fase 1 — Tagline "Beyond the Body" (6 ficheiros)
+#### 5. SECTION FADES — Cores hardcoded desalinhadas
+Várias `SectionFade` e backgrounds usam HSL hardcoded que não correspondem ao brandbook:
+- `hsl(295 22% 11%)` e `hsl(300 20% 14%)` — devem ser `#3B2635` ou `#2E1D28`
+- `hsl(276 30% 12%)` — idem
+- TrustStrip: `hsl(300 20% 14%)` e `hsl(295 22% 11%)` — idem
 
-| Ficheiro | Alteração |
-|----------|-----------|
-| `src/lib/config/therapist.ts` | `tagline: "Beyond the Body"`, `fullBusinessName: "Daniela Alves — Beyond the Body"` |
-| `index.html` | Substituir todas as ~38 ocorrências de "Healing & Harmony" por "Beyond the Body" nos titles, meta, JSON-LD, SEO |
-| `src/components/Footer.tsx` | Linha 35: actualizar texto EN de "Healing and wellness" para "Healing and harmony" |
-| `docs/guia-sistema.html` | "Healing & Wellness" → "Beyond the Body" (4 ocorrências) |
-| `docs/jornada-app-daniela.html` | "Healing & Wellness" → "Beyond the Body" (1 ocorrência) |
-| `api/_config.ts` | `appUrl` já está correcto, sem alteração necessária |
-
-### Fase 2 — Paleta cromática do brandbook (2 ficheiros)
-
-**`src/index.css`** — Actualizar CSS variables light mode:
-
-| Variável | Antes (HSL) | Depois (convertido de HEX) |
-|----------|-------------|---------------------------|
-| `--background` | `300 100% 100%` (branco) | `47 26% 95%` (#F6F5EE off-white) |
-| `--foreground` | `276 8% 17%` | `320 22% 21%` (#3B2635 roxo profundo) |
-| `--primary` | `270 28% 50%` | `311 26% 44%` (#96568A lilás rosado) |
-| `--primary-light` | `270 32% 62%` | `311 20% 55%` (lilás rosado mais claro) |
-| `--gold` | `38 52% 52%` | `36 39% 52%` (#B48D53 dourado escuro) |
-| `--gold-light` | `38 58% 68%` | `37 42% 65%` (#CDAE7C dourado suave) |
-| `--gold-dark` | `38 46% 40%` | `36 39% 42%` (dourado mais escuro) |
-| `--card` | `0 0% 100%` | `47 26% 95%` (off-white) |
-| `--cream` | `40 60% 98%` | `47 26% 95%` (off-white) |
-
-Adicionar nova variável: `--verde-suave: 148 15% 70%` (#A9BFA5)
-
-Actualizar dark mode com o roxo profundo #3B2635 como base.
-
-**`src/lib/config/therapist.ts`** — Actualizar `colors`:
-- `primary: "#96568A"`, `secondary: "#B48D53"`, `background: "#F6F5EE"`
-
-**`tailwind.config.ts`** — Adicionar cor `verde-suave`
-
-### Fase 3 — Splash screen e backgrounds (3 ficheiros)
-
-**`src/components/LoadingScreen.tsx`**:
-- Actualizar background gradient para usar roxo profundo `#3B2635` em vez de hsl hardcoded
-- Actualizar glow radial para usar lilás rosado
-- Adicionar `loading="eager"` à imagem do logo para garantir carregamento
-- Ajustar gold shimmer para usar o novo dourado `#B48D53`
-
-**`src/components/Hero.tsx`**:
-- Actualizar gradient bottom fade para usar roxo profundo `#3B2635`
-- O botão de unmute está correcto no código (z-20, acima do overlay). Verificar se o overlay (z-10) não bloqueia — está OK, o botão está fora do `ref={ref}` div
-
-**`src/components/Footer.tsx`**:
-- Actualizar background gradient inline para usar roxo profundo `#3B2635`
-- Actualizar texto EN (linha 35)
-
-### Fase 4 — Preparar tipografia (2 ficheiros)
-
-Enquanto aguardamos os ficheiros Quincy/Museo, manter Cormorant Garamond + DM Sans como fallback. Actualizar `therapist.ts` fonts config para indicar as novas fontes pretendidas.
-
-**`src/lib/config/therapist.ts`**: `fonts.heading: "Quincy"`, `fonts.body: "Museo"`
-**`src/index.css`** e **`tailwind.config.ts`**: Adicionar Quincy e Museo ao font stack com fallback para as fontes actuais
-
-### Fase 5 — Restantes ocorrências "Wellness" (1 ficheiro)
-
-**`src/components/Footer.tsx`**: linha 35 — texto EN "Healing and wellness sessions" → "Healing and harmony sessions" (ou "Beyond the Body" aligned)
+#### 6. BOTÃO DO VÍDEO — z-index conflito potencial
+O mute button está `z-20`, o overlay escuro não tem z-index explícito, e o content está `z-10`. O `noise-overlay::before` está `z-1`. Parece OK, mas o botão pode ser obscurecido pela splash screen `z-[9999]` durante os primeiros 2.8s.
 
 ---
 
-### Ficheiros que NÃO mudam
-- Logo images (`/images/logo.webp`, `/images/logo-dark.webp`) — o logo actual já mostra "Healing & Harmony" na imagem. A Daniela precisará fornecer novos logos com "Beyond the Body" (como no brandbook). Por agora, mantemos os actuais.
-- Hero video — o código de unmute está correcto. O vídeo inicia muted (obrigatório pelo browser), o botão funciona.
+### Plano de Implementação
 
-### Nota importante
-Os novos logos do brandbook (com "Beyond the Body") precisam ser fornecidos como ficheiros de imagem. Quando os tiveres, substituímos `logo.webp`, `logo.png`, `logo-dark.webp`, `logo-dark.png`.
+#### Fase 1 — Video + Splash (bugs críticos)
+
+| # | Ficheiro | Alteração |
+|---|----------|-----------|
+| 1 | `src/components/Hero.tsx` | Esconder o botão de mute/unmute porque o vídeo não tem áudio. Adicionar comentário para reactivar quando o vídeo for substituído |
+| 2 | `src/components/LoadingScreen.tsx` | Corrigir: `height: '6rem'` quando stage>=1; aumentar delay do stage 1 de 100ms para 300ms; garantir que o logo aparece de forma fiável |
+
+#### Fase 2 — Cores hardcoded → Brandbook
+
+| # | Ficheiro | Alteração |
+|---|----------|-----------|
+| 3 | `src/pages/Index.tsx` | Substituir `bg-[hsl(295_22%_11%)]` por `bg-[#3B2635]`; actualizar todos os `SectionFade` `from`/`to` com cores do brandbook (`#3B2635`, `#2E1D28`) em vez de HSL genéricos |
+| 4 | `src/components/TrustStrip.tsx` | Substituir `hsl(300 20% 14%)` e `hsl(295 22% 11%)` por `#3B2635` / `#2E1D28` |
+| 5 | `src/components/SpaceHarmony.tsx` | Verificar e alinhar overlay `bg-foreground/80` — OK, usa CSS var |
+
+#### Fase 3 — Polish premium restante
+
+| # | Ficheiro | Alteração |
+|---|----------|-----------|
+| 6 | `src/components/Hero.tsx` | O gradient bottom `from-[#3B2635]` já está correcto. Manter |
+| 7 | `src/components/Footer.tsx` | Já usa `#3B2635`. OK |
+| 8 | `src/components/LoadingScreen.tsx` | Já usa `#3B2635`. OK |
+
+---
+
+### Nota sobre o vídeo
+O ficheiro `hero-video.mp4` (9MB) **não contém faixa de áudio** — apenas vídeo H.264. Para ter som, é necessário fornecer um novo ficheiro `.mp4` com áudio incluído. Enquanto isso, o botão de volume será escondido para não confundir o utilizador.
+
+### Ficheiros a modificar: 4
+1. `src/components/LoadingScreen.tsx` — fix splash logo
+2. `src/components/Hero.tsx` — esconder botão mute (sem áudio)
+3. `src/pages/Index.tsx` — cores brandbook nos backgrounds e fades
+4. `src/components/TrustStrip.tsx` — cores brandbook
 
