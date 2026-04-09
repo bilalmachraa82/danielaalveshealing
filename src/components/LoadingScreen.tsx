@@ -7,7 +7,7 @@ const LoadingScreen = () => {
   const [stage, setStage] = useState(0); // 0=hidden, 1=logo, 2=tagline, 3=line
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStage(1), 100);   // logo appears
+    const t1 = setTimeout(() => setStage(1), 300);   // logo appears (300ms to allow eager image load)
     const t2 = setTimeout(() => setStage(2), 800);   // tagline appears
     const t3 = setTimeout(() => setStage(3), 1300);  // gold line expands
     const t4 = setTimeout(() => setFadeOut(true), 2200);
@@ -46,7 +46,7 @@ const LoadingScreen = () => {
           loading="eager"
           className="w-auto mb-12 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
-            height: stage >= 1 ? undefined : 0,
+            height: stage >= 1 ? '6rem' : 0,
             opacity: stage >= 1 ? 1 : 0,
             transform: stage >= 1
               ? (fadeOut ? 'scale(1.02) translateY(-8px)' : 'scale(1) translateY(0)')

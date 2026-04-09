@@ -7,10 +7,10 @@ const TrustStrip = () => {
   return (
     <section className="relative z-20 -mt-10 pb-6">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto rounded-2xl px-8 py-5 shadow-xl border border-gold/20" style={{
-          background: 'linear-gradient(135deg, hsl(300 20% 14% / 0.92) 0%, hsl(295 22% 11% / 0.95) 100%)',
-          backdropFilter: 'blur(24px)',
-        }}>
+         <div className="max-w-3xl mx-auto rounded-2xl px-8 py-5 shadow-xl border border-gold/20" style={{
+           background: 'linear-gradient(135deg, rgba(59, 38, 53, 0.92) 0%, rgba(46, 29, 40, 0.95) 100%)',
+           backdropFilter: 'blur(24px)',
+         }}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0 text-sm">
             <div className="flex items-center gap-2">
               <div className="flex text-gold">
