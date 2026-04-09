@@ -18,11 +18,11 @@ const Index = () => (
   <>
     <LoadingScreen />
     <Navigation />
-    <main className="bg-[hsl(295_22%_11%)]">
+    <main className="bg-[#3B2635]">
       <Hero />
 
       {/* Dark zone: Hero → TrustStrip → Services */}
-      <div style={{ background: 'linear-gradient(180deg, hsl(295 22% 11%) 0%, hsl(var(--section-lilac-strong)) 100%)' }}>
+      <div style={{ background: 'linear-gradient(180deg, #3B2635 0%, hsl(var(--section-lilac-strong)) 100%)' }}>
         <TrustStrip />
       </div>
 
@@ -31,7 +31,7 @@ const Index = () => (
       {/* Services (warm-soft) → SpaceHarmony (dark) */}
       <SectionFade
         from="hsl(var(--section-warm-soft))"
-        to="hsl(276 30% 12%)"
+        to="#2E1D28"
         height="80px"
       />
 
@@ -39,7 +39,7 @@ const Index = () => (
 
       {/* SpaceHarmony (dark) → GiftVoucher (warm) */}
       <SectionFade
-        from="hsl(276 30% 12%)"
+        from="#2E1D28"
         to="hsl(var(--section-warm))"
         height="80px"
       />
@@ -85,7 +85,7 @@ const Index = () => (
       {/* CTABanner → Footer (dark) */}
       <SectionFade
         from="hsl(var(--section-warm))"
-        to="hsl(300 20% 14%)"
+        to="#3B2635"
         height="80px"
       />
     </main>

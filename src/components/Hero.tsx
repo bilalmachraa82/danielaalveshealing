@@ -40,7 +40,9 @@ const Hero = () => {
         <source src="/images/hero-video.mp4" type="video/mp4" />
       </video>
 
-      {/* Mute/Unmute toggle */}
+      {/* Mute/Unmute toggle — hidden until video has audio track */}
+      {/* TODO: Re-enable when hero-video.mp4 includes an audio stream */}
+      {/*
       <button
         onClick={toggleMute}
         className="absolute top-24 right-6 z-20 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-300"
@@ -48,6 +50,7 @@ const Hero = () => {
       >
         {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
       </button>
+      */}
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-foreground/50" />

@@ -46,7 +46,7 @@ const LoadingScreen = () => {
           loading="eager"
           className="w-auto mb-12 transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{
-            height: stage >= 1 ? undefined : 0,
+            height: stage >= 1 ? '6rem' : 0,
             opacity: stage >= 1 ? 1 : 0,
             transform: stage >= 1
               ? (fadeOut ? 'scale(1.02) translateY(-8px)' : 'scale(1) translateY(0)')
