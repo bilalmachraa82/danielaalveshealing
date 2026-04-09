@@ -43,13 +43,7 @@ const Navigation = () => {
       >
         <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
           {/* Logo */}
-          <a
-            href="#"
-            className={`flex items-center rounded-lg transition-all duration-300 ${
-              scrolled ? '' : 'bg-foreground/60 backdrop-blur-sm px-3 py-1.5'
-            }`}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
+          <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <picture>
               <source
                 srcSet={scrolled ? '/images/logo-dark.webp' : '/images/logo.webp'}
@@ -61,7 +55,7 @@ const Navigation = () => {
                 width={160}
                 height={56}
                 className={`w-auto transition-all duration-300 ${
-                  scrolled ? 'h-11' : 'h-12'
+                  scrolled ? 'h-11' : 'h-14'
                 }`}
                 loading="eager"
               />
