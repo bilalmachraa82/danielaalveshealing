@@ -7,7 +7,7 @@ const LoadingScreen = () => {
   const [stage, setStage] = useState(0); // 0=hidden, 1=logo, 2=tagline, 3=line
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStage(1), 100);   // logo appears
+    const t1 = setTimeout(() => setStage(1), 300);   // logo appears (300ms to allow eager image load)
     const t2 = setTimeout(() => setStage(2), 800);   // tagline appears
     const t3 = setTimeout(() => setStage(3), 1300);  // gold line expands
     const t4 = setTimeout(() => setFadeOut(true), 2200);
