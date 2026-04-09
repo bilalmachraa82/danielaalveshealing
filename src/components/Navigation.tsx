@@ -60,7 +60,7 @@ const Navigation = () => {
                     : 'h-14 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]'
                 }`}
                 style={scrolled ? undefined : {
-                  mixBlendMode: 'screen',
+                  mixBlendMode: 'lighten',
                 }}
                 loading="eager"
               />
