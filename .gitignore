@@ -25,3 +25,4 @@ dist-ssr
 .vercel
 google-service-account.json
 .worktrees/
+.gstack/
