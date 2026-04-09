@@ -55,7 +55,7 @@ const Navigation = () => {
                 width={160}
                 height={56}
                 className={`w-auto transition-all duration-300 ${
-                  scrolled ? 'h-11' : 'h-14 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]'
+                  scrolled ? 'h-11' : 'h-14 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]'
                 }`}
                 loading="eager"
               />
