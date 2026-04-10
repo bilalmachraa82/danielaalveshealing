@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { DEFAULT_CONFIG } from '@/lib/config/therapist';
 
 /**
- * Premium loading screen with 6-stage staggered reveal:
+ * Premium loading screen with staggered reveal:
  * 0 → ambient glow    (200ms)
- * 1 → symbol icon     (500ms)  — scale + fade from below
+ * 1 → symbol icon     (400ms)  — scale + fade from below
  * 2 → brand name      (1000ms) — letter-spacing reveal
- * 3 → gold divider    (1400ms) — expand from center
- * 4 → tagline         (1800ms) — fade up with tracking
- * exit → fade + lift  (2800ms → 3400ms)
+ * 3 → gold divider    (1500ms) — expand from center
+ * 4 → tagline         (1900ms) — fade up with tracking
+ * exit → fade + lift  (3000ms → 3600ms)
  */
 const LoadingScreen = () => {
   const [visible, setVisible] = useState(true);
@@ -18,11 +18,11 @@ const LoadingScreen = () => {
   useEffect(() => {
     const timers = [
       setTimeout(() => setStage(1), 200),
-      setTimeout(() => setStage(2), 700),
-      setTimeout(() => setStage(3), 1200),
-      setTimeout(() => setStage(4), 1600),
-      setTimeout(() => setFadeOut(true), 2800),
-      setTimeout(() => setVisible(false), 3400),
+      setTimeout(() => setStage(2), 800),
+      setTimeout(() => setStage(3), 1400),
+      setTimeout(() => setStage(4), 1800),
+      setTimeout(() => setFadeOut(true), 3000),
+      setTimeout(() => setVisible(false), 3600),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -77,7 +77,7 @@ const LoadingScreen = () => {
             loading="eager"
             className="w-auto select-none"
             style={{
-              height: stage >= 1 ? '6rem' : '0',
+              height: stage >= 1 ? '8rem' : '0',
               opacity: stage >= 1 ? 1 : 0,
               transform: stage >= 1
                 ? (fadeOut ? 'translateY(-6px) scale(1.01)' : 'translateY(0) scale(1)')
@@ -151,17 +151,15 @@ const LoadingScreen = () => {
         </span>
       </div>
 
-      {/* Minimal progress — thin gold line at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] overflow-hidden">
-        <div
-          style={{
-            height: '100%',
-            width: stage >= 1 ? '100%' : '0%',
-            background: 'linear-gradient(90deg, transparent, rgba(205, 174, 124, 0.2), transparent)',
-            transition: `width 2400ms ${ease}`,
-          }}
-        />
-      </div>
+      {/* Subtle gold accent at bottom edge */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        style={{
+          opacity: stage >= 3 ? 0.15 : 0,
+          background: 'linear-gradient(90deg, transparent 10%, rgba(205, 174, 124, 0.5) 50%, transparent 90%)',
+          transition: `opacity 1200ms ${ease}`,
+        }}
+      />
     </div>
   );
 };
