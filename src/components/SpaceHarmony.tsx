@@ -16,7 +16,7 @@ const SpaceHarmony = () => {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }} />
-      <div className="absolute inset-0 bg-foreground/80 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-foreground/60 backdrop-blur-sm" />
 
       {/* Botanical pattern overlay */}
       <div className="absolute inset-0 opacity-[0.04]" style={{

@@ -28,114 +28,105 @@ const GiftVoucher = () => {
 
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Voucher card — CSS-rendered with brand guidelines */}
+          {/* Voucher card — light version */}
           <div className="relative md:-mr-8 lg:-mr-12">
             <div className="absolute -inset-3 border border-gold/20 rounded-2xl" />
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
             <div
               className="relative z-10 rounded-2xl overflow-hidden shadow-2xl"
               style={{
-                background: 'linear-gradient(160deg, #3B2635 0%, #2E1D28 40%, #231620 100%)',
+                background: 'linear-gradient(160deg, #FAF7F2 0%, #F5F0E8 40%, #F0EBE2 100%)',
                 aspectRatio: '3 / 2',
               }}
             >
-              {/* Subtle radial glow inside card */}
-              <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-[rgba(180,141,83,0.06)] rounded-full blur-[60px]" />
-              <div className="absolute bottom-0 right-0 w-[200px] h-[200px] bg-[rgba(150,86,138,0.05)] rounded-full blur-[50px]" />
+              {/* Subtle warm glow */}
+              <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-[rgba(205,174,124,0.08)] rounded-full blur-[60px]" />
+              <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-[rgba(150,86,138,0.04)] rounded-full blur-[50px]" />
 
               {/* Gold border accent */}
-              <div className="absolute inset-3 sm:inset-4 border border-[rgba(205,174,124,0.15)] rounded-lg" />
+              <div className="absolute inset-3 sm:inset-4 border border-[rgba(180,141,83,0.2)] rounded-lg" />
 
               {/* Corner ornaments */}
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-5 h-5 border-t border-l border-[rgba(205,174,124,0.3)]" />
-              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-5 h-5 border-t border-r border-[rgba(205,174,124,0.3)]" />
-              <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-5 h-5 border-b border-l border-[rgba(205,174,124,0.3)]" />
-              <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-5 h-5 border-b border-r border-[rgba(205,174,124,0.3)]" />
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-5 h-5 border-t border-l border-[rgba(180,141,83,0.35)]" />
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-5 h-5 border-t border-r border-[rgba(180,141,83,0.35)]" />
+              <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-5 h-5 border-b border-l border-[rgba(180,141,83,0.35)]" />
+              <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-5 h-5 border-b border-r border-[rgba(180,141,83,0.35)]" />
 
               {/* Content */}
-              <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 sm:px-10 py-8">
-                {/* Symbol */}
-                <img
-                  src="/images/symbol-gold.png"
-                  alt=""
-                  className="w-auto h-10 sm:h-12 mb-4 opacity-70"
-                />
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 sm:px-10 py-6">
+                {/* Symbol — dark version */}
+                <picture>
+                  <source srcSet="/images/logo-h-dark.webp" type="image/webp" />
+                  <img
+                    src="/images/logo-h-dark.png"
+                    alt=""
+                    className="w-auto h-8 sm:h-10 mb-4 object-contain"
+                  />
+                </picture>
 
                 {/* Title */}
                 <h3
                   className="text-center mb-1"
                   style={{
                     fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
+                    fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
                     fontWeight: 300,
                     letterSpacing: '0.15em',
-                    color: 'rgba(245, 240, 230, 0.9)',
+                    color: '#3B2635',
                   }}
                 >
                   {t('Cheque-Oferta', 'Gift Voucher')}
                 </h3>
 
-                {/* Tagline */}
+                {/* Subtitle */}
                 <p
-                  className="text-center mb-4"
+                  className="text-center mb-3"
                   style={{
                     fontFamily: '"Cormorant Garamond", serif',
                     fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
-                    fontWeight: 300,
-                    fontStyle: 'italic',
-                    letterSpacing: '0.3em',
-                    color: 'rgba(205, 174, 124, 0.6)',
+                    fontWeight: 400,
+                    letterSpacing: '0.12em',
+                    color: '#3B2635',
+                    opacity: 0.6,
                   }}
                 >
-                  {t('Sessão Healing Touch', 'Healing Touch Session')}
+                  {t('Massagem Integrativa & Terapia Holística', 'Integrative Massage & Holistic Therapy')}
                 </p>
 
                 {/* Gold divider */}
-                <div className="w-16 h-px mb-5" style={{ background: 'linear-gradient(90deg, transparent, rgba(205,174,124,0.5), transparent)' }} />
+                <div className="w-16 h-px mb-4" style={{ background: 'linear-gradient(90deg, transparent, rgba(180,141,83,0.5), transparent)' }} />
 
                 {/* From / To fields */}
-                <div className="w-full max-w-[260px] space-y-3 mb-5">
+                <div className="w-full max-w-[240px] space-y-2.5 mb-4">
                   <div className="flex items-baseline gap-3">
-                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(205,174,124,0.5)', letterSpacing: '0.15em', fontWeight: 300 }}>
-                      {t('De', 'From')}
+                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(59,38,53,0.45)', letterSpacing: '0.1em', fontWeight: 400 }}>
+                      {t('De', 'From')}:
                     </span>
-                    <div className="flex-1 border-b border-[rgba(205,174,124,0.15)]" />
+                    <div className="flex-1 border-b border-[rgba(59,38,53,0.12)]" />
                   </div>
                   <div className="flex items-baseline gap-3">
-                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(205,174,124,0.5)', letterSpacing: '0.15em', fontWeight: 300 }}>
-                      {t('Para', 'To')}
+                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(59,38,53,0.45)', letterSpacing: '0.1em', fontWeight: 400 }}>
+                      {t('Para', 'To')}:
                     </span>
-                    <div className="flex-1 border-b border-[rgba(205,174,124,0.15)]" />
+                    <div className="flex-1 border-b border-[rgba(59,38,53,0.12)]" />
                   </div>
                 </div>
 
                 {/* Gold divider */}
-                <div className="w-10 h-px mb-4" style={{ background: 'linear-gradient(90deg, transparent, rgba(205,174,124,0.3), transparent)' }} />
+                <div className="w-10 h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, rgba(180,141,83,0.3), transparent)' }} />
 
-                {/* Brand */}
-                <p
-                  style={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: '0.75rem',
-                    fontWeight: 300,
-                    letterSpacing: '0.18em',
-                    color: 'rgba(245, 240, 230, 0.45)',
-                  }}
-                >
-                  {config.name}
-                </p>
-                <p
-                  style={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: '0.55rem',
-                    fontWeight: 300,
-                    fontStyle: 'italic',
-                    letterSpacing: '0.25em',
-                    color: 'rgba(205, 174, 124, 0.35)',
-                  }}
-                >
-                  {config.tagline}
-                </p>
+                {/* Contact info */}
+                <div className="text-center space-y-0.5">
+                  <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.6rem', color: 'rgba(59,38,53,0.5)', letterSpacing: '0.05em' }}>
+                    {config.phoneFormatted} | {config.email}
+                  </p>
+                  <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.6rem', color: 'rgba(59,38,53,0.5)', letterSpacing: '0.05em' }}>
+                    danielaalveshealing.com | IG @danielaalves_healing
+                  </p>
+                  <p style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.55rem', fontStyle: 'italic', color: 'rgba(180,141,83,0.55)', letterSpacing: '0.08em', marginTop: '4px' }}>
+                    {t('Válido até 3 meses após aquisição.', 'Valid 3 months after purchase.')}
+                  </p>
+                </div>
               </div>
             </div>
             {/* Overlap accent */}
