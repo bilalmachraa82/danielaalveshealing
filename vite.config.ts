@@ -20,13 +20,13 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "Daniela Alves CRM",
-        short_name: "Daniela CRM",
-        description: "Healing & Harmony - Gestão de Clientes",
-        theme_color: "#7B6B99",
-        background_color: "#FAF7F5",
+        name: "Daniela Alves — Beyond the Body",
+        short_name: "Daniela Alves",
+        description: "Terapia Holística em Sintra — Sessões de cura e harmonia para corpo e alma.",
+        theme_color: "#3B2635",
+        background_color: "#3B2635",
         display: "standalone",
-        start_url: "/admin/dashboard",
+        start_url: "/",
         icons: [
           {
             src: "/pwa-192x192.png",
