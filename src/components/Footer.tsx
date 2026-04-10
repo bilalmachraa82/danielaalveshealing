@@ -28,8 +28,17 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-12 lg:gap-20">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-3xl font-extralight tracking-[0.15em] mb-2">{config.name}</h3>
-            <p className="text-[9px] tracking-[0.3em] uppercase text-primary-foreground/40 mb-6">{config.tagline}</p>
+            <picture>
+              <source srcSet="/images/logo-h-light.webp" type="image/webp" />
+              <img
+                src="/images/logo-h-light.png"
+                alt={config.name}
+                width={600}
+                height={210}
+                className="w-auto h-12 md:h-14 object-contain mb-6"
+                loading="lazy"
+              />
+            </picture>
             <div className="section-divider !mx-0 !w-10 mb-6" />
             <p className="text-xs tracking-wider text-primary-foreground/35 leading-relaxed">
               {t('Terapias Holísticas em Sintra — Sessões de cura e harmonia para corpo e alma.', 'Holistic Therapies in Sintra — Beyond the Body. Healing sessions for body and soul.')}

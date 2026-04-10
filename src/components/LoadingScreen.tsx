@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { DEFAULT_CONFIG } from '@/lib/config/therapist';
 
 /**
- * Premium loading screen with 5-stage staggered reveal:
+ * Premium loading screen with 6-stage staggered reveal:
  * 0 → ambient glow    (200ms)
- * 1 → logo icon       (500ms)  — scale + fade from below
- * 2 → brand name      (900ms)  — letter-spacing reveal
- * 3 → gold divider    (1300ms) — expand from center
- * 4 → tagline         (1700ms) — fade up with tracking
- * exit → fade + lift  (2600ms → 3200ms)
+ * 1 → symbol icon     (500ms)  — scale + fade from below
+ * 2 → brand name      (1000ms) — letter-spacing reveal
+ * 3 → gold divider    (1400ms) — expand from center
+ * 4 → tagline         (1800ms) — fade up with tracking
+ * exit → fade + lift  (2800ms → 3400ms)
  */
 const LoadingScreen = () => {
   const [visible, setVisible] = useState(true);
@@ -18,11 +18,11 @@ const LoadingScreen = () => {
   useEffect(() => {
     const timers = [
       setTimeout(() => setStage(1), 200),
-      setTimeout(() => setStage(2), 600),
-      setTimeout(() => setStage(3), 1100),
-      setTimeout(() => setStage(4), 1500),
-      setTimeout(() => setFadeOut(true), 2600),
-      setTimeout(() => setVisible(false), 3200),
+      setTimeout(() => setStage(2), 700),
+      setTimeout(() => setStage(3), 1200),
+      setTimeout(() => setStage(4), 1600),
+      setTimeout(() => setFadeOut(true), 2800),
+      setTimeout(() => setVisible(false), 3400),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -41,7 +41,7 @@ const LoadingScreen = () => {
         transitionTimingFunction: ease,
       }}
     >
-      {/* Ambient radial glow — appears first */}
+      {/* Ambient radial glow */}
       <div
         className="absolute transition-all duration-[2000ms]"
         style={{
@@ -53,7 +53,7 @@ const LoadingScreen = () => {
         }}
       />
 
-      {/* Secondary ambient — softer, offset */}
+      {/* Secondary ambient */}
       <div
         className="absolute transition-all duration-[2500ms]"
         style={{
@@ -68,28 +68,46 @@ const LoadingScreen = () => {
 
       {/* Content column */}
       <div className="relative flex flex-col items-center">
-        {/* Logo image — icon + name */}
+        {/* Symbol icon — standalone for better visual weight */}
         <picture>
-          <source srcSet="/images/logo.webp" type="image/webp" />
+          <source srcSet="/images/symbol-gold.webp" type="image/webp" />
           <img
-            src="/images/logo.png"
-            alt={DEFAULT_CONFIG.name}
+            src="/images/symbol-gold.png"
+            alt=""
             loading="eager"
             className="w-auto select-none"
             style={{
-              height: stage >= 1 ? '8rem' : '0',
+              height: stage >= 1 ? '6rem' : '0',
               opacity: stage >= 1 ? 1 : 0,
               transform: stage >= 1
                 ? (fadeOut ? 'translateY(-6px) scale(1.01)' : 'translateY(0) scale(1)')
-                : 'translateY(20px) scale(0.92)',
+                : 'translateY(20px) scale(0.88)',
               transition: `all 1200ms ${ease}`,
-              imageRendering: '-webkit-optimize-contrast' as React.CSSProperties['imageRendering'],
             }}
           />
         </picture>
 
+        {/* Brand name — text reveal */}
+        <h1
+          className="select-none mt-5"
+          style={{
+            fontFamily: '"Cormorant Garamond", serif',
+            fontSize: 'clamp(1.6rem, 5vw, 2.2rem)',
+            fontWeight: 300,
+            letterSpacing: stage >= 2 ? '0.18em' : '0.05em',
+            color: 'rgba(245, 240, 230, 0.9)',
+            opacity: stage >= 2 ? 1 : 0,
+            transform: stage >= 2
+              ? (fadeOut ? 'translateY(-4px)' : 'translateY(0)')
+              : 'translateY(12px)',
+            transition: `all 1000ms ${ease}`,
+          }}
+        >
+          {DEFAULT_CONFIG.name}
+        </h1>
+
         {/* Gold divider line with shimmer */}
-        <div className="relative mt-5 mb-4">
+        <div className="relative mt-3 mb-3">
           <div
             className="h-[0.5px]"
             style={{
@@ -111,7 +129,7 @@ const LoadingScreen = () => {
           )}
         </div>
 
-        {/* Tagline — "Beyond the Body" */}
+        {/* Tagline */}
         <span
           className="select-none"
           style={{

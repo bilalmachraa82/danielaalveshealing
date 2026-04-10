@@ -46,16 +46,16 @@ const Navigation = () => {
           <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <picture>
               <source
-                srcSet={scrolled ? '/images/logo-dark.webp' : '/images/logo.webp'}
+                srcSet={scrolled ? '/images/logo-h-dark.webp' : '/images/logo-h-light.webp'}
                 type="image/webp"
               />
               <img
-                src={scrolled ? '/images/logo-dark.png' : '/images/logo.png'}
+                src={scrolled ? '/images/logo-h-dark.png' : '/images/logo-h-light.png'}
                 alt={config.logo.alt}
-                width={160}
-                height={56}
-                className={`w-auto transition-all duration-300 ${
-                  scrolled ? 'h-11' : 'h-14'
+                width={600}
+                height={207}
+                className={`w-auto object-contain transition-all duration-300 ${
+                  scrolled ? 'h-9 md:h-11' : 'h-10 md:h-12'
                 }`}
                 loading="eager"
               />
