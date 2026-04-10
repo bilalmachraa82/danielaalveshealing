@@ -134,7 +134,7 @@ const LoadingScreen = () => {
           className="select-none"
           style={{
             fontFamily: '"Cormorant Garamond", serif',
-            fontSize: '0.85rem',
+            fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)',
             fontWeight: 300,
             fontStyle: 'italic',
             letterSpacing: stage >= 4 ? '0.35em' : '0.15em',
