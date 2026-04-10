@@ -42,24 +42,33 @@ const Navigation = () => {
         }`}
       >
         <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
-          {/* Logo */}
-          <a href="#" className="flex items-center" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          {/* Logo — inline symbol + name, no tagline */}
+          <a
+            href="#"
+            className="flex items-center gap-2.5"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <picture>
-              <source
-                srcSet={scrolled ? '/images/logo-h-dark.webp' : '/images/logo-h-light.webp'}
-                type="image/webp"
-              />
+              <source srcSet="/images/symbol-gold.webp" type="image/webp" />
               <img
-                src={scrolled ? '/images/logo-h-dark.png' : '/images/logo-h-light.png'}
-                alt={config.logo.alt}
-                width={600}
-                height={207}
+                src="/images/symbol-gold.png"
+                alt=""
                 className={`w-auto object-contain transition-all duration-300 ${
-                  scrolled ? 'h-9 md:h-11' : 'h-10 md:h-12'
+                  scrolled ? 'h-7 md:h-8' : 'h-8 md:h-9'
                 }`}
                 loading="eager"
               />
             </picture>
+            <span
+              className={`font-serif font-light tracking-[0.08em] transition-all duration-300 ${
+                scrolled
+                  ? 'text-foreground text-base md:text-lg'
+                  : 'text-white/90 text-lg md:text-xl'
+              }`}
+              style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            >
+              {config.name}
+            </span>
           </a>
 
           {/* Desktop links */}
