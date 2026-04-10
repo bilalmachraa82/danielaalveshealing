@@ -34,7 +34,7 @@ const Footer = () => {
                 src="/images/logo-h-light.png"
                 alt={config.name}
                 width={600}
-                height={210}
+                height={207}
                 className="w-auto h-12 md:h-14 object-contain mb-6"
                 loading="lazy"
               />
