@@ -13,9 +13,13 @@ const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(!isMuted);
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+    // Mobile browsers require play() from user gesture to unlock audio
+    if (!video.muted) {
+      video.play().catch(() => {});
     }
   };
 
