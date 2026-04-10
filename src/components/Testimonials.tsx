@@ -71,7 +71,7 @@ const Testimonials = () => {
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4">{t('Testemunhos', 'Testimonials')}</p>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-extralight text-foreground tracking-wider mb-6">
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-foreground tracking-wider mb-6">
             {t('Palavras que Tocam', 'Words that Touch')}
           </h2>
           <div className="section-divider" />
@@ -101,7 +101,7 @@ const Testimonials = () => {
                 {/* Quote with visible decorative quotes */}
                 <div className="relative px-6">
                   <span className="absolute -top-4 -left-1 font-serif text-5xl text-gold/30 select-none leading-none">"</span>
-                  <p className="font-serif italic text-foreground leading-relaxed text-lg md:text-xl">
+                  <p className="font-serif italic text-foreground leading-[1.8] text-lg md:text-xl tracking-wide" style={{ fontWeight: 400 }}>
                     {lang === 'pt' ? item.text.pt : item.text.en}
                   </p>
                   <span className="absolute -bottom-6 -right-1 font-serif text-5xl text-gold/30 select-none leading-none">"</span>

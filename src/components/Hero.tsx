@@ -67,7 +67,7 @@ const Hero = () => {
             return (
               <p
                 key={i}
-                className={`font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extralight tracking-[0.15em] text-white/90 transition-all duration-1000 ${
+                className={`font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light tracking-[0.15em] text-white/90 transition-all duration-1000 ${
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                 }`}
                 style={{ transitionDelay: `${i * 200}ms` }}

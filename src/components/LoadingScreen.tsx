@@ -52,6 +52,8 @@ const LoadingScreen = () => {
               ? (fadeOut ? 'scale(1.02) translateY(-8px)' : 'scale(1) translateY(0)')
               : 'scale(0.85) translateY(24px)',
             maxHeight: '6rem',
+            imageRendering: '-webkit-optimize-contrast',
+            transformOrigin: 'center center',
           }}
         />
       </picture>
