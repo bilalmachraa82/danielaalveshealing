@@ -106,17 +106,38 @@ const LoadingScreen = () => {
           {DEFAULT_CONFIG.name}
         </h1>
 
-        {/* Gold divider line with shimmer */}
-        <div className="relative mt-3 mb-3">
+        {/* Tagline */}
+        <span
+          className="select-none mt-3"
+          style={{
+            fontFamily: '"Cormorant Garamond", serif',
+            fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)',
+            fontWeight: 300,
+            fontStyle: 'italic',
+            letterSpacing: stage >= 3 ? '0.35em' : '0.15em',
+            color: 'rgba(205, 174, 124, 0.65)',
+            textTransform: 'lowercase',
+            opacity: stage >= 3 ? 1 : 0,
+            transform: stage >= 3
+              ? (fadeOut ? 'translateY(-3px)' : 'translateY(0)')
+              : 'translateY(8px)',
+            transition: `all 1000ms ${ease}`,
+          }}
+        >
+          {DEFAULT_CONFIG.tagline}
+        </span>
+
+        {/* Gold divider line with shimmer — below tagline */}
+        <div className="relative mt-4">
           <div
             className="h-[0.5px]"
             style={{
-              width: stage >= 3 ? 80 : 0,
+              width: stage >= 4 ? 80 : 0,
               background: 'linear-gradient(90deg, transparent, rgba(205, 174, 124, 0.7), transparent)',
               transition: `width 1000ms ${ease}`,
             }}
           />
-          {stage >= 3 && (
+          {stage >= 4 && (
             <div
               className="absolute inset-0 h-[0.5px]"
               style={{
@@ -128,27 +149,6 @@ const LoadingScreen = () => {
             />
           )}
         </div>
-
-        {/* Tagline */}
-        <span
-          className="select-none"
-          style={{
-            fontFamily: '"Cormorant Garamond", serif',
-            fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)',
-            fontWeight: 300,
-            fontStyle: 'italic',
-            letterSpacing: stage >= 4 ? '0.35em' : '0.15em',
-            color: 'rgba(205, 174, 124, 0.65)',
-            textTransform: 'lowercase',
-            opacity: stage >= 4 ? 1 : 0,
-            transform: stage >= 4
-              ? (fadeOut ? 'translateY(-3px)' : 'translateY(0)')
-              : 'translateY(8px)',
-            transition: `all 1000ms ${ease}`,
-          }}
-        >
-          {DEFAULT_CONFIG.tagline}
-        </span>
       </div>
 
       {/* Subtle gold accent at bottom edge */}

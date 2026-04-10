@@ -75,7 +75,7 @@ const Hero = () => {
               >
                 <span className="text-gold font-light">{word[0]}</span>
                 <span className="italic">{word.slice(1)}</span>
-                {i < words.length - 1 && <span className="text-gold/40">.</span>}
+                <span className="text-gold/40">.</span>
               </p>
             );
           })}

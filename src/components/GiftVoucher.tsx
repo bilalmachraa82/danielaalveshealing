@@ -5,14 +5,11 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 
 const GiftVoucher = () => {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const config = useTherapist();
   const WA_LINK = `${config.whatsappBase}?text=${encodeURIComponent(t('Olá Daniela, gostaria de adquirir um Cheque-Oferta.', 'Hello Daniela, I would like to purchase a Gift Voucher.'))}`;
 
   const { ref, isVisible } = useScrollAnimation();
-
-  const voucherWebp = lang === 'pt' ? '/images/cheque-oferta-pt.webp' : '/images/cheque-oferta-en.webp';
-  const voucherJpg = lang === 'pt' ? '/images/cheque-oferta-pt.jpg' : '/images/cheque-oferta-en.jpg';
 
   return (
     <section
@@ -28,34 +25,118 @@ const GiftVoucher = () => {
       {/* Floating gold accents */}
       <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />
       <div className="absolute bottom-1/4 left-10 w-1.5 h-1.5 rounded-full bg-gold/20 animate-float-gentle" style={{ animationDelay: '1.5s' }} />
-      <div className="absolute top-1/5 left-1/3 w-1 h-1 rounded-full bg-gold/25 animate-float-gentle" style={{ animationDelay: '3s' }} />
-
-      {/* Botanical SVG */}
-      <svg className="absolute bottom-16 right-0 w-48 h-48 text-gold/[0.04] pointer-events-none" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.4">
-        <path d="M100 20C100 60 60 100 20 100C60 100 100 140 100 180C100 140 140 100 180 100C140 100 100 60 100 20Z" />
-        <circle cx="100" cy="100" r="30" />
-      </svg>
 
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Image with gold border effect — editorial overlap */}
+          {/* Voucher card — CSS-rendered with brand guidelines */}
           <div className="relative md:-mr-8 lg:-mr-12">
-            {/* Outer decorative frame */}
             <div className="absolute -inset-3 border border-gold/20 rounded-2xl" />
-            {/* Gold gradient shadow */}
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
-            <div className="rounded-2xl overflow-hidden shadow-2xl relative z-10">
-              <picture>
-                <source srcSet={voucherWebp} type="image/webp" />
+            <div
+              className="relative z-10 rounded-2xl overflow-hidden shadow-2xl"
+              style={{
+                background: 'linear-gradient(160deg, #3B2635 0%, #2E1D28 40%, #231620 100%)',
+                aspectRatio: '3 / 2',
+              }}
+            >
+              {/* Subtle radial glow inside card */}
+              <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-[rgba(180,141,83,0.06)] rounded-full blur-[60px]" />
+              <div className="absolute bottom-0 right-0 w-[200px] h-[200px] bg-[rgba(150,86,138,0.05)] rounded-full blur-[50px]" />
+
+              {/* Gold border accent */}
+              <div className="absolute inset-3 sm:inset-4 border border-[rgba(205,174,124,0.15)] rounded-lg" />
+
+              {/* Corner ornaments */}
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-5 h-5 border-t border-l border-[rgba(205,174,124,0.3)]" />
+              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-5 h-5 border-t border-r border-[rgba(205,174,124,0.3)]" />
+              <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-5 h-5 border-b border-l border-[rgba(205,174,124,0.3)]" />
+              <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-5 h-5 border-b border-r border-[rgba(205,174,124,0.3)]" />
+
+              {/* Content */}
+              <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 sm:px-10 py-8">
+                {/* Symbol */}
                 <img
-                  src={voucherJpg}
-                  alt={t('Cheque-Oferta Daniela Alves Beyond the Body', 'Gift Voucher Daniela Alves Beyond the Body')}
-                  className="w-full h-auto"
-                  width={600}
-                  height={400}
-                  loading="lazy"
+                  src="/images/symbol-gold.png"
+                  alt=""
+                  className="w-auto h-10 sm:h-12 mb-4 opacity-70"
                 />
-              </picture>
+
+                {/* Title */}
+                <h3
+                  className="text-center mb-1"
+                  style={{
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
+                    fontWeight: 300,
+                    letterSpacing: '0.15em',
+                    color: 'rgba(245, 240, 230, 0.9)',
+                  }}
+                >
+                  {t('Cheque-Oferta', 'Gift Voucher')}
+                </h3>
+
+                {/* Tagline */}
+                <p
+                  className="text-center mb-4"
+                  style={{
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+                    fontWeight: 300,
+                    fontStyle: 'italic',
+                    letterSpacing: '0.3em',
+                    color: 'rgba(205, 174, 124, 0.6)',
+                  }}
+                >
+                  {t('Sessão Healing Touch', 'Healing Touch Session')}
+                </p>
+
+                {/* Gold divider */}
+                <div className="w-16 h-px mb-5" style={{ background: 'linear-gradient(90deg, transparent, rgba(205,174,124,0.5), transparent)' }} />
+
+                {/* From / To fields */}
+                <div className="w-full max-w-[260px] space-y-3 mb-5">
+                  <div className="flex items-baseline gap-3">
+                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(205,174,124,0.5)', letterSpacing: '0.15em', fontWeight: 300 }}>
+                      {t('De', 'From')}
+                    </span>
+                    <div className="flex-1 border-b border-[rgba(205,174,124,0.15)]" />
+                  </div>
+                  <div className="flex items-baseline gap-3">
+                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(205,174,124,0.5)', letterSpacing: '0.15em', fontWeight: 300 }}>
+                      {t('Para', 'To')}
+                    </span>
+                    <div className="flex-1 border-b border-[rgba(205,174,124,0.15)]" />
+                  </div>
+                </div>
+
+                {/* Gold divider */}
+                <div className="w-10 h-px mb-4" style={{ background: 'linear-gradient(90deg, transparent, rgba(205,174,124,0.3), transparent)' }} />
+
+                {/* Brand */}
+                <p
+                  style={{
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontSize: '0.75rem',
+                    fontWeight: 300,
+                    letterSpacing: '0.18em',
+                    color: 'rgba(245, 240, 230, 0.45)',
+                  }}
+                >
+                  {config.name}
+                </p>
+                <p
+                  style={{
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontSize: '0.55rem',
+                    fontWeight: 300,
+                    fontStyle: 'italic',
+                    letterSpacing: '0.25em',
+                    color: 'rgba(205, 174, 124, 0.35)',
+                  }}
+                >
+                  {config.tagline}
+                </p>
+              </div>
             </div>
             {/* Overlap accent */}
             <div className="absolute -bottom-6 -right-6 w-40 h-40 bg-gold/[0.06] rounded-full blur-2xl" />
@@ -63,7 +144,6 @@ const GiftVoucher = () => {
 
           {/* Text */}
           <div className="relative">
-            {/* Large decorative quote mark */}
             <span className="absolute -top-8 -left-6 font-serif text-[10rem] leading-none text-gold/[0.06] select-none pointer-events-none">"</span>
 
             <p className="text-[11px] tracking-[0.3em] uppercase text-gold mb-4 relative z-10">{t('Oferta Especial', 'Special Gift')}</p>
