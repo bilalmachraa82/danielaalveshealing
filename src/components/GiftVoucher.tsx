@@ -18,122 +18,187 @@ const GiftVoucher = () => {
         background: 'radial-gradient(circle at 24% 45%, hsl(var(--gold) / 0.20) 0%, transparent 30%), radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.14) 0%, transparent 28%), linear-gradient(135deg, hsl(var(--section-warm)) 0%, hsl(var(--section-warm-soft)) 48%, hsl(var(--section-blush)) 100%)',
       }}
     >
-      {/* Radial gold glow */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-gold/[0.12] rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary/[0.10] rounded-full blur-3xl pointer-events-none" />
-
-      {/* Floating gold accents */}
       <div className="absolute top-1/3 right-8 w-2 h-2 rounded-full bg-gold/15 animate-float-gentle" />
       <div className="absolute bottom-1/4 left-10 w-1.5 h-1.5 rounded-full bg-gold/20 animate-float-gentle" style={{ animationDelay: '1.5s' }} />
 
       <div ref={ref} className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {/* Voucher card — light version */}
+
+          {/* Cards stack — front + back (verso) */}
           <div className="relative md:-mr-8 lg:-mr-12">
+            {/* Outer decorative frame */}
             <div className="absolute -inset-3 border border-gold/20 rounded-2xl" />
             <div className="absolute -inset-1 bg-gradient-to-br from-gold/10 via-transparent to-gold/5 rounded-2xl blur-sm" />
+
+            {/* === VERSO (back) — visible behind front card === */}
+            <div
+              className="absolute top-3 left-3 right-0 bottom-0 z-0 rounded-2xl shadow-lg"
+              style={{
+                background: 'linear-gradient(160deg, #3B2635 0%, #2E1D28 50%, #231620 100%)',
+              }}
+            >
+              <div className="absolute inset-0 flex items-center justify-center">
+                <picture>
+                  <source srcSet="/images/logo-h-light.webp" type="image/webp" />
+                  <img
+                    src="/images/logo-h-light.png"
+                    alt=""
+                    className="w-auto h-10 object-contain opacity-40"
+                  />
+                </picture>
+              </div>
+            </div>
+
+            {/* === FRENTE (front) — main display === */}
             <div
               className="relative z-10 rounded-2xl overflow-hidden shadow-2xl"
               style={{
-                background: 'linear-gradient(160deg, #FAF7F2 0%, #F5F0E8 40%, #F0EBE2 100%)',
+                background: 'linear-gradient(170deg, #FDFAF5 0%, #F8F4ED 50%, #F4EFE6 100%)',
                 aspectRatio: '3 / 2',
               }}
             >
-              {/* Subtle warm glow */}
-              <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-[rgba(205,174,124,0.08)] rounded-full blur-[60px]" />
-              <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-[rgba(150,86,138,0.04)] rounded-full blur-[50px]" />
+              {/* Soft ambient glows */}
+              <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-[rgba(205,174,124,0.06)] rounded-full blur-[50px]" />
+              <div className="absolute bottom-0 left-0 w-[180px] h-[180px] bg-[rgba(150,86,138,0.03)] rounded-full blur-[40px]" />
 
-              {/* Gold border accent */}
-              <div className="absolute inset-3 sm:inset-4 border border-[rgba(180,141,83,0.2)] rounded-lg" />
+              {/* Inner border */}
+              <div className="absolute inset-[14px] sm:inset-[18px] border border-[rgba(180,141,83,0.18)] rounded-md pointer-events-none" />
 
-              {/* Corner ornaments */}
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 w-5 h-5 border-t border-l border-[rgba(180,141,83,0.35)]" />
-              <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-5 h-5 border-t border-r border-[rgba(180,141,83,0.35)]" />
-              <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-5 h-5 border-b border-l border-[rgba(180,141,83,0.35)]" />
-              <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 w-5 h-5 border-b border-r border-[rgba(180,141,83,0.35)]" />
+              {/* Content — structured vertical layout */}
+              <div className="relative z-10 flex flex-col items-center justify-between h-full px-8 sm:px-12 py-6 sm:py-8">
 
-              {/* Content */}
-              <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 sm:px-10 py-6">
-                {/* Symbol — dark version */}
+                {/* Top: Logo */}
                 <picture>
                   <source srcSet="/images/logo-h-dark.webp" type="image/webp" />
                   <img
                     src="/images/logo-h-dark.png"
-                    alt=""
-                    className="w-auto h-8 sm:h-10 mb-4 object-contain"
+                    alt={config.name}
+                    className="w-auto h-7 sm:h-9 object-contain"
                   />
                 </picture>
 
-                {/* Title */}
-                <h3
-                  className="text-center mb-1"
-                  style={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
-                    fontWeight: 300,
-                    letterSpacing: '0.15em',
-                    color: '#3B2635',
-                  }}
-                >
-                  {t('Cheque-Oferta', 'Gift Voucher')}
-                </h3>
+                {/* Center block */}
+                <div className="flex flex-col items-center text-center -mt-1">
+                  {/* Title */}
+                  <h3
+                    style={{
+                      fontFamily: '"Cormorant Garamond", serif',
+                      fontSize: 'clamp(1.8rem, 5vw, 2.6rem)',
+                      fontWeight: 300,
+                      fontStyle: 'italic',
+                      letterSpacing: '0.12em',
+                      color: '#3B2635',
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {t('Cheque-Oferta', 'Gift Voucher')}
+                  </h3>
 
-                {/* Subtitle */}
-                <p
-                  className="text-center mb-3"
-                  style={{
-                    fontFamily: '"Cormorant Garamond", serif',
-                    fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
-                    fontWeight: 400,
-                    letterSpacing: '0.12em',
-                    color: '#3B2635',
-                    opacity: 0.6,
-                  }}
-                >
-                  {t('Massagem Integrativa & Terapia Holística', 'Integrative Massage & Holistic Therapy')}
-                </p>
-
-                {/* Gold divider */}
-                <div className="w-16 h-px mb-4" style={{ background: 'linear-gradient(90deg, transparent, rgba(180,141,83,0.5), transparent)' }} />
-
-                {/* From / To fields */}
-                <div className="w-full max-w-[240px] space-y-2.5 mb-4">
-                  <div className="flex items-baseline gap-3">
-                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(59,38,53,0.45)', letterSpacing: '0.1em', fontWeight: 400 }}>
-                      {t('De', 'From')}:
-                    </span>
-                    <div className="flex-1 border-b border-[rgba(59,38,53,0.12)]" />
+                  {/* Gold divider dot pattern */}
+                  <div className="flex items-center gap-2 my-2.5">
+                    <div className="w-8 h-px bg-[rgba(180,141,83,0.4)]" />
+                    <div className="w-1 h-1 rounded-full bg-[rgba(180,141,83,0.5)]" />
+                    <div className="w-8 h-px bg-[rgba(180,141,83,0.4)]" />
                   </div>
-                  <div className="flex items-baseline gap-3">
-                    <span style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.8rem', color: 'rgba(59,38,53,0.45)', letterSpacing: '0.1em', fontWeight: 400 }}>
-                      {t('Para', 'To')}:
-                    </span>
-                    <div className="flex-1 border-b border-[rgba(59,38,53,0.12)]" />
+
+                  {/* Subtitle — service name */}
+                  <p
+                    style={{
+                      fontFamily: '"Cormorant Garamond", serif',
+                      fontSize: 'clamp(0.75rem, 2vw, 0.95rem)',
+                      fontWeight: 400,
+                      letterSpacing: '0.15em',
+                      color: 'rgba(59,38,53,0.55)',
+                    }}
+                  >
+                    {t('Sessão Healing Touch', 'Healing Touch Session')}
+                  </p>
+
+                  {/* From / To fields */}
+                  <div className="w-full max-w-[220px] sm:max-w-[260px] space-y-2 mt-5">
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className="shrink-0"
+                        style={{
+                          fontFamily: '"Cormorant Garamond", serif',
+                          fontSize: '0.85rem',
+                          color: 'rgba(59,38,53,0.4)',
+                          letterSpacing: '0.08em',
+                          fontWeight: 400,
+                        }}
+                      >
+                        {t('De', 'From')}:
+                      </span>
+                      <div className="flex-1 border-b border-[rgba(59,38,53,0.1)] min-w-0" />
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className="shrink-0"
+                        style={{
+                          fontFamily: '"Cormorant Garamond", serif',
+                          fontSize: '0.85rem',
+                          color: 'rgba(59,38,53,0.4)',
+                          letterSpacing: '0.08em',
+                          fontWeight: 400,
+                        }}
+                      >
+                        {t('Para', 'To')}:
+                      </span>
+                      <div className="flex-1 border-b border-[rgba(59,38,53,0.1)] min-w-0" />
+                    </div>
                   </div>
                 </div>
 
-                {/* Gold divider */}
-                <div className="w-10 h-px mb-3" style={{ background: 'linear-gradient(90deg, transparent, rgba(180,141,83,0.3), transparent)' }} />
-
-                {/* Contact info */}
-                <div className="text-center space-y-0.5">
-                  <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.6rem', color: 'rgba(59,38,53,0.5)', letterSpacing: '0.05em' }}>
-                    {config.phoneFormatted} | {config.email}
+                {/* Bottom: contacts + validity */}
+                <div className="flex flex-col items-center text-center gap-1">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-6 h-px bg-[rgba(180,141,83,0.3)]" />
+                    <div className="w-0.5 h-0.5 rounded-full bg-[rgba(180,141,83,0.4)]" />
+                    <div className="w-6 h-px bg-[rgba(180,141,83,0.3)]" />
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: '0.55rem',
+                      color: 'rgba(59,38,53,0.45)',
+                      letterSpacing: '0.04em',
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {config.phoneFormatted} &nbsp;|&nbsp; danielaalveshealing.com
                   </p>
-                  <p style={{ fontFamily: '"DM Sans", sans-serif', fontSize: '0.6rem', color: 'rgba(59,38,53,0.5)', letterSpacing: '0.05em' }}>
-                    danielaalveshealing.com | IG @danielaalves_healing
+                  <p
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: '0.55rem',
+                      color: 'rgba(59,38,53,0.45)',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    IG @danielaalves_healing &nbsp;|&nbsp; FB Daniela Alves Healing
                   </p>
-                  <p style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '0.55rem', fontStyle: 'italic', color: 'rgba(180,141,83,0.55)', letterSpacing: '0.08em', marginTop: '4px' }}>
+                  <p
+                    style={{
+                      fontFamily: '"Cormorant Garamond", serif',
+                      fontSize: '0.5rem',
+                      fontStyle: 'italic',
+                      color: 'rgba(180,141,83,0.5)',
+                      letterSpacing: '0.06em',
+                      marginTop: '2px',
+                    }}
+                  >
                     {t('Válido até 3 meses após aquisição.', 'Valid 3 months after purchase.')}
                   </p>
                 </div>
               </div>
             </div>
-            {/* Overlap accent */}
+
             <div className="absolute -bottom-6 -right-6 w-40 h-40 bg-gold/[0.06] rounded-full blur-2xl" />
           </div>
 
-          {/* Text */}
+          {/* Text column */}
           <div className="relative">
             <span className="absolute -top-8 -left-6 font-serif text-[10rem] leading-none text-gold/[0.06] select-none pointer-events-none">"</span>
 
