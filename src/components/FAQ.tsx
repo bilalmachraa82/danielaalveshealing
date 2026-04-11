@@ -33,8 +33,8 @@ const FAQ = () => {
     {
       q: t('Quais as técnicas usadas na terapia holística?', 'What techniques are used in holistic therapy?'),
       a: t(
-        'Numa abordagem integrativa, as sessões podem incluir massagem terapêutica, drenagem linfática manual, aromaterapia com óleos essenciais 100% naturais, terapia de som, meditação guiada, técnicas energéticas e técnicas de libertação emocional. Cada sessão é personalizada — as técnicas são escolhidas com base numa leitura inicial das necessidades de cada pessoa.',
-        'In an integrative approach, sessions may include therapeutic massage, manual lymphatic drainage, aromatherapy with 100% natural essential oils, sound therapy, guided meditation, energy techniques and emotional release techniques. Each session is personalized — techniques are chosen based on an initial reading of each person\'s needs.'
+        'Numa abordagem integrativa, as sessões podem incluir massagem terapêutica, drenagem linfática manual, aromaterapia com óleos essenciais 100% naturais, terapia de som, meditação guiada, técnicas energéticas, kinesiologia holística e técnicas de libertação emocional. Cada sessão é personalizada — as técnicas são escolhidas com base numa leitura inicial das necessidades de cada pessoa.',
+        'In an integrative approach, sessions may include therapeutic massage, manual lymphatic drainage, aromatherapy with 100% natural essential oils, sound therapy, guided meditation, energy techniques, holistic kinesiology and emotional release techniques. Each session is personalized — techniques are chosen based on an initial reading of each person\'s needs.'
       ),
     },
     {
@@ -54,8 +54,8 @@ const FAQ = () => {
     {
       q: t('É necessária alguma preparação antes da sessão?', 'Is any preparation needed before the session?'),
       a: t(
-        'Recomenda-se vir com roupa confortável e evitar refeições pesadas nas 2 horas anteriores à sessão. É importante chegar com alguns minutos de antecedência para poder relaxar e fazer a transição do ritmo do dia-a-dia. Não é necessário trazer nada específico — tudo o que precisa será fornecido no espaço.',
-        'It is recommended to come in comfortable clothing and avoid heavy meals in the 2 hours before the session. It is important to arrive a few minutes early to relax and transition from the daily rhythm. There is no need to bring anything specific — everything you need will be provided at the space.'
+        'Recomenda-se evitar refeições pesadas e o consumo de estimulantes no dia da sessão. Recomenda-se estar bem hidratado. Evitar o uso de perfumes ou produtos com fragrâncias intensas. Vir com roupa confortável e chegar com alguns minutos de antecedência para poder relaxar e fazer a transição do ritmo do dia-a-dia. Não é necessário trazer nada específico — tudo o que precisa será fornecido no espaço.',
+        'It is recommended to avoid heavy meals and stimulants on the day of the session. Stay well hydrated. Avoid wearing perfumes or products with intense fragrances. Come in comfortable clothing and arrive a few minutes early to relax and transition from the daily rhythm. There is no need to bring anything specific — everything you need will be provided at the space.'
       ),
     },
     {
