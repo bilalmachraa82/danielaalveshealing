@@ -10,24 +10,32 @@ const About = () => {
 
   const paragraphs = [
     t(
-      'A linguagem do toque, escuta e cuidado do outro, sempre fez parte de mim. Desde cedo, descobri uma conexão natural com a arte de cuidar e uma profunda sensibilidade para compreender as necessidades de cada pessoa.',
-      'The language of touch, listening and caring for others has always been a part of me. From an early age, I discovered a natural connection with the art of caring and a deep sensitivity to understand each person\'s needs.'
+      'Estudei Engenharia do Ambiente e o encontro com o yoga e a meditação fizeram-me alterar o meu rumo e transformar a minha vida!',
+      'I studied Environmental Engineering, and my encounter with yoga and meditation led me to change my path and transform my life!'
     ),
     t(
-      'Ao longo de 17 anos de prática, formei-me em diversas modalidades terapêuticas: massagem terapêutica, drenagem linfática manual (método Leduc), aromaterapia, terapia de som com taças tibetanas, meditação guiada, técnicas xamânicas, energéticas e de libertação emocional.',
-      'Over 17 years of practice, I trained in various therapeutic modalities: therapeutic massage, manual lymphatic drainage (Leduc method), aromatherapy, sound therapy with Tibetan bowls, guided meditation, shamanic, energy and emotional release techniques.'
+      'A linguagem do toque, escuta e cuidado do outro sempre fizeram parte da minha forma de ser, pelo que, com naturalidade, iniciei o estudo de massagem.',
+      'The language of touch, listening and caring for others has always been part of who I am, so I naturally began studying massage.'
     ),
     t(
-      'Este percurso tem-me proporcionado um olhar mais abrangente da realidade: o olhar científico é uma via externa e o olhar para dentro é uma via interna de conhecimento. Muito do conhecimento que busco sei agora que está também dentro, bastando para isso dar-lhe espaço e boas condições para se revelar.',
-      'This journey has given me a broader view of reality: the scientific view is an external path and looking inward is an internal path of knowledge. Much of the knowledge I seek I now know is also within, just needing space and good conditions to reveal itself.'
+      'Ao longo de mais de 17 anos, fui aprofundando o estudo do ser humano — através do toque, do som, do trabalho energético, do desenvolvimento pessoal, da aromaterapia, da kinesiologia holística e de outras abordagens terapêuticas.',
+      'Over more than 17 years, I have deepened my study of the human being — through touch, sound, energy work, personal development, aromatherapy, holistic kinesiology and other therapeutic approaches.'
     ),
     t(
-      'A minha filosofia terapêutica assenta na integração corpo-mente-alma. Acredito que o corpo possui uma sabedoria inata para se equilibrar e regenerar — o meu papel é criar as condições ideais para que esse processo aconteça naturalmente. Cada pessoa é única, e cada sessão é uma viagem personalizada, guiada pela intuição e pela experiência.',
-      'My therapeutic philosophy is based on body-mind-soul integration. I believe the body has an innate wisdom to balance and regenerate itself — my role is to create the ideal conditions for this process to happen naturally. Each person is unique, and each session is a personalized journey, guided by intuition and experience.'
+      'Hoje, integro esse percurso numa prática integrativa e intuitiva que vai além da técnica, criando experiências terapêuticas profundas e personalizadas.',
+      'Today, I integrate this journey into an integrative and intuitive practice that goes beyond technique, creating deep and personalized therapeutic experiences.'
     ),
     t(
-      'Através de uma abordagem integrativa, combino diversas técnicas terapêuticas, incluindo massagem, xamanismo e canto, criando um espaço sagrado onde a transformação acontece naturalmente. O meu espaço em Fontanelas, Sintra, rodeado de natureza, foi pensado para oferecer um refúgio de paz e serenidade — o cenário ideal para o trabalho terapêutico profundo.',
-      'Through an integrative approach, I combine various therapeutic techniques, including massage, shamanism and chanting, creating a sacred space where transformation happens naturally. My space in Fontanelas, Sintra, surrounded by nature, was designed to offer a refuge of peace and serenity — the ideal setting for deep therapeutic work.'
+      'Procuro proporcionar uma ampliação da Consciência e uma saúde e bem-estar nos vários níveis: físico, mental, emocional e espiritual.',
+      'I seek to provide an expansion of Consciousness and health and well-being on various levels: physical, mental, emotional and spiritual.'
+    ),
+    t(
+      'Através de sessões individuais ou em grupo, produtos naturais, harmonização de espaços e experiências imersivas, sustento processos de transformação e harmonização.',
+      'Through individual or group sessions, natural products, space harmonization and immersive experiences, I support processes of transformation and harmonization.'
+    ),
+    t(
+      'Acredito que estamos interligados e que quanto mais Consciência, Amor e Harmonia experienciamos tanto maior é a nossa contribuição para um mundo mais leve, compassivo e amoroso.',
+      'I believe we are all interconnected, and that the more Consciousness, Love and Harmony we experience, the greater our contribution to a lighter, more compassionate and loving world.'
     ),
   ];
 
