@@ -77,18 +77,6 @@ const GiftVoucher = () => {
                   <div className="absolute top-0 right-0 w-[260px] h-[260px] bg-[hsl(var(--gold)/0.10)] rounded-full blur-[70px] pointer-events-none" />
                   <div className="absolute -bottom-12 -left-12 w-[220px] h-[220px] bg-[hsl(var(--primary)/0.06)] rounded-full blur-[70px] pointer-events-none" />
 
-                  {/* Watermark logo */}
-                  <picture>
-                    <source srcSet="/images/logo-dark.webp" type="image/webp" />
-                    <img
-                      src="/images/logo-dark.png"
-                      alt=""
-                      aria-hidden
-                      className="absolute -right-8 -bottom-8 w-[60%] max-w-[340px] opacity-[0.05] pointer-events-none select-none"
-                      loading="lazy"
-                    />
-                  </picture>
-
                   <div className="absolute inset-[14px] border-[0.5px] border-[hsl(var(--gold)/0.22)] rounded-lg pointer-events-none" />
                   <div className="absolute top-4 left-4 w-5 h-5 border-t border-l border-gold/50 pointer-events-none" />
                   <div className="absolute top-4 right-4 w-5 h-5 border-t border-r border-gold/50 pointer-events-none" />
@@ -146,11 +134,6 @@ const GiftVoucher = () => {
                     </div>
 
                     <div className="mt-auto">
-                      <div className="flex items-center justify-center gap-2 mb-2.5">
-                        <span className="w-8 h-px bg-gold/40" />
-                        <span className="w-1 h-1 rounded-full bg-gold/55" />
-                        <span className="w-8 h-px bg-gold/40" />
-                      </div>
                       <div className="font-sans text-[0.72rem] sm:text-[0.76rem] text-foreground/75 flex flex-col items-center gap-1">
                         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
                           <span className="inline-flex items-center gap-1.5">
@@ -200,41 +183,18 @@ const GiftVoucher = () => {
                   <div className="absolute bottom-4 left-4 w-5 h-5 border-b border-l border-gold/40 pointer-events-none" />
                   <div className="absolute bottom-4 right-4 w-5 h-5 border-b border-r border-gold/40 pointer-events-none" />
 
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/[0.07] rounded-full blur-[80px] pointer-events-none" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] bg-gold/[0.06] rounded-full blur-[90px] pointer-events-none" />
 
-                  {/* Watermark logo (symbol, large, faded) */}
-                  <picture>
-                    <source srcSet="/images/logo.webp" type="image/webp" />
-                    <img
-                      src="/images/logo.png"
-                      alt=""
-                      aria-hidden
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] max-w-[420px] opacity-[0.06] pointer-events-none select-none"
-                      loading="lazy"
-                    />
-                  </picture>
-
-                  <div className="relative z-10 flex flex-col items-center justify-center text-center px-8">
+                  <div className="relative z-10 flex items-center justify-center w-full h-full px-6 sm:px-10">
                     <picture>
                       <source srcSet="/images/logo-h-light.webp" type="image/webp" />
                       <img
                         src="/images/logo-h-light.png"
                         alt={config.name}
-                        className="w-44 sm:w-60 h-auto object-contain opacity-95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+                        className="w-[82%] max-w-[480px] h-auto object-contain"
                         loading="lazy"
                       />
                     </picture>
-                    <div className="flex items-center gap-2 mt-5">
-                      <span className="w-12 h-px bg-gold/55" />
-                      <span className="w-1 h-1 rounded-full bg-gold/75" />
-                      <span className="w-12 h-px bg-gold/55" />
-                    </div>
-                    <p className="font-serif italic text-gold text-sm sm:text-base mt-4 tracking-[0.2em] uppercase">
-                      {t('Beyond the Body', 'Beyond the Body')}
-                    </p>
-                    <p className="font-sans text-[0.7rem] sm:text-[0.78rem] text-white/60 mt-5 tracking-[0.15em] uppercase">
-                      danielaalveshealing.com
-                    </p>
                   </div>
                 </div>
               </button>
