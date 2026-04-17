@@ -6,7 +6,7 @@ import {
   extractAnamnesisFromImages,
   extractSessionNotesFromImages,
 } from "../_ocr.js";
-import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.js";
 import {
   createClientSchema,
   updateClientSchema,
@@ -15,7 +15,7 @@ import {
   buildClientTimeline,
   getEmailTimelineTitle,
   getSessionActionTimelineTitle,
-} from "../../src/lib/communications/timeline.ts";
+} from "../../src/lib/communications/timeline.js";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 function isValidUUID(str: string): boolean {

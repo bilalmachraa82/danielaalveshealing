@@ -3,19 +3,19 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
 import { listCalendarEvents } from "../_calendar.js";
-import { reconcileEvents, isAppCreatedEvent, deriveSessionSyncAction } from "../../src/lib/calendar/reverse-sync.ts";
-import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
-import { createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
+import { reconcileEvents, isAppCreatedEvent, deriveSessionSyncAction } from "../../src/lib/calendar/reverse-sync.js";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.js";
+import { createManageTokenExpiry } from "../../src/lib/communications/manage.js";
 import {
   buildPreSessionReminderEmailContent,
   formatSessionDateForLanguage,
   getLocalizedServiceLabel,
-} from "../../src/lib/communications/templates.ts";
+} from "../../src/lib/communications/templates.js";
 import {
   getNextReminderDueAt,
   getReminderRecoveryStatus,
   shouldSendPreSessionReminder,
-} from "../../src/lib/communications/reminders.ts";
+} from "../../src/lib/communications/reminders.js";
 
 export default async function handler(
   req: VercelRequest,

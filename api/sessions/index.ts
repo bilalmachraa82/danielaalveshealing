@@ -1,18 +1,18 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import crypto from "node:crypto";
 
-import { buildSessionManageState, createManageTokenExpiry } from "../../src/lib/communications/manage.ts";
-import { deriveClientJourney } from "../../src/lib/communications/journey.ts";
-import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
+import { buildSessionManageState, createManageTokenExpiry } from "../../src/lib/communications/manage.js";
+import { deriveClientJourney } from "../../src/lib/communications/journey.js";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.js";
 import {
   buildBookingWhatsAppCopy,
   formatSessionDateForLanguage,
   getLocalizedServiceLabel,
-} from "../../src/lib/communications/templates.ts";
+} from "../../src/lib/communications/templates.js";
 import type {
   ClientGender,
   PreferredLanguage,
-} from "../../src/lib/communications/types.ts";
+} from "../../src/lib/communications/types.js";
 import {
   createCalendarEvent,
   deleteCalendarEvent,
@@ -177,8 +177,8 @@ function getNextReminderDueAt(scheduledAt: string) {
   ).toISOString();
 }
 
-function normalizeOptionalText(value: unknown) {
-  if (typeof value !== "string") return value ?? null;
+function normalizeOptionalText(value: unknown): string | null {
+  if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
 }

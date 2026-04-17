@@ -26,6 +26,8 @@ export const createClientSchema = z.object({
   marketing_consent_email: z.boolean().default(false),
   marketing_consent_sms: z.boolean().default(false),
   marketing_consent_whatsapp: z.boolean().default(false),
+  consent_version: z.string().optional(),
+  consent_given_at: z.string().optional(),
   notes: z.string().optional(),
 });
 

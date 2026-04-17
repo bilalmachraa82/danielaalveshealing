@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "./therapist";
-import type { ServiceConfig } from "./therapist";
+import { DEFAULT_CONFIG } from "./therapist.js";
+import type { ServiceConfig } from "./therapist.js";
 
 type Lang = "pt" | "en";
 

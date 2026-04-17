@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "../src/lib/config/therapist";
-import type { TherapistConfig } from "../src/lib/config/therapist";
+import { DEFAULT_CONFIG } from "../src/lib/config/therapist.js";
+import type { TherapistConfig } from "../src/lib/config/therapist.js";
 
 export type ServerConfig = TherapistConfig & {
   readonly fromEmail: string;
@@ -24,4 +24,4 @@ export {
   getServiceCalendarColor,
   getServiceLabelsRecord,
   getServiceColorsRecord,
-} from "../src/lib/config/services";
+} from "../src/lib/config/services.js";

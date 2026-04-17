@@ -4,7 +4,7 @@ import type {
   PreferredChannel,
   PreferredLanguage,
   ReminderStatus,
-} from "@/lib/communications/types";
+} from "../communications/types.js";
 
 // ============================================================
 // Database Types - Daniela Alves CRM

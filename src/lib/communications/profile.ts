@@ -2,7 +2,7 @@ import type {
   ClientGender,
   PreferredChannel,
   PreferredLanguage,
-} from "./types";
+} from "./types.js";
 
 export function buildClientCommunicationProfile(input: {
   preferred_language?: PreferredLanguage | null;

@@ -1,4 +1,4 @@
-import type { SessionStatus } from "@/lib/types/database.types";
+import type { SessionStatus } from "../types/database.types.js";
 
 export function canClientManageSession(input: {
   now: Date;

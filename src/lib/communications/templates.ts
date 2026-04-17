@@ -5,7 +5,7 @@ import type {
   ClientGender,
   ExtendedServiceType,
   PreferredLanguage,
-} from "./types";
+} from "./types.js";
 
 const SERVICE_LABELS: Record<
   ExtendedServiceType,

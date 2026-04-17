@@ -20,15 +20,15 @@ import { randomUUID } from "crypto";
 import { getDb } from "../_db.js";
 import { verifyAdmin } from "../_auth.js";
 import { getResend, getAppUrl, FROM_EMAIL, buildEmailHtml } from "../_email.js";
-import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.ts";
-import { deriveConsentFlags } from "../../src/lib/communications/consents.ts";
-import { deriveClientJourney } from "../../src/lib/communications/journey.ts";
+import { buildClientCommunicationProfile } from "../../src/lib/communications/profile.js";
+import { deriveConsentFlags } from "../../src/lib/communications/consents.js";
+import { deriveClientJourney } from "../../src/lib/communications/journey.js";
 import {
   buildAnamnesisEmailContent,
   buildPreparationEmailContent,
   getLocalizedServiceLabel,
-} from "../../src/lib/communications/templates.ts";
-import type { ExtendedServiceType } from "../../src/lib/communications/types.ts";
+} from "../../src/lib/communications/templates.js";
+import type { ExtendedServiceType } from "../../src/lib/communications/types.js";
 
 export default async function handler(
   req: VercelRequest,

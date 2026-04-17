@@ -1,4 +1,4 @@
-import type { PreferredChannel, ReminderStatus } from "./types";
+import type { PreferredChannel, ReminderStatus } from "./types.js";
 
 type ReminderSessionStatus =
   | "scheduled"

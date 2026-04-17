@@ -1,4 +1,4 @@
-import type { ClientTimelineEvent } from "@/lib/types/database.types";
+import type { ClientTimelineEvent } from "../types/database.types.js";
 
 const SESSION_ACTION_LABELS: Record<string, string> = {
   created: "Sessão criada",

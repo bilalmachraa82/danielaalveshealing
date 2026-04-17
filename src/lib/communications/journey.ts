@@ -3,7 +3,7 @@ import type {
   ExtendedServiceType,
   FormVariant,
   ReturningFlowVariant,
-} from "./types";
+} from "./types.js";
 
 export function deriveClientJourney(input: {
   completedSessions: number;

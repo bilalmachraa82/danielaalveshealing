@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+import { google, type calendar_v3 } from "googleapis";
 import { GoogleAuth } from "google-auth-library";
 import { getServerConfig, getServiceLabel, getServiceCalendarColor } from "./_config.js";
 
@@ -205,7 +205,7 @@ export async function listCalendarEvents(params: {
   let nextSyncToken: string | null = null;
 
   do {
-    const listParams: Record<string, unknown> = {
+    const listParams: calendar_v3.Params$Resource$Events$List = {
       calendarId,
       maxResults: 250,
       singleEvents: true,
@@ -220,7 +220,7 @@ export async function listCalendarEvents(params: {
       listParams.orderBy = "startTime";
     }
 
-    const response = await calendar.events.list(listParams as Parameters<typeof calendar.events.list>[0]);
+    const response = await calendar.events.list(listParams);
     const items = response.data.items ?? [];
     allEvents.push(...(items as typeof allEvents));
     pageToken = response.data.nextPageToken ?? undefined;
