@@ -47,7 +47,7 @@ const About = () => {
 
       {/* Ambient background layer */}
       <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-[0.05]" style={{
-        backgroundImage: `url("/images/moi.webp")`,
+        backgroundImage: `url("/images/daniela-portrait.webp")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         filter: 'blur(30px) saturate(0.2)',
@@ -90,20 +90,20 @@ const About = () => {
           {/* Photo with artistic double frame */}
           <div className="order-1 md:order-2 flex justify-center">
             <div className="relative">
-              <div className="absolute -inset-4 border border-gold/15 rounded-t-[140px] rounded-b-3xl" />
-              <div className="rounded-t-[120px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
+              <div className="absolute -inset-4 border border-gold/15 rounded-t-[100px] rounded-b-3xl" />
+              <div className="rounded-t-[80px] rounded-b-2xl overflow-hidden border-2 border-gold/40 shadow-2xl max-w-sm relative z-10">
                 <picture>
                   <source
                     type="image/webp"
-                    srcSet="/images/moi-400w.webp 400w, /images/moi-800w.webp 800w, /images/moi.webp 1022w"
+                    srcSet="/images/daniela-portrait-400w.webp 400w, /images/daniela-portrait-800w.webp 800w, /images/daniela-portrait.webp 1024w"
                     sizes="(max-width: 768px) 100vw, 384px"
                   />
                   <img
-                    src="/images/moi.jpg"
-                    alt="Daniela Alves - Terapeuta Holística com 17 anos de experiência em Sintra"
+                    src="/images/daniela-portrait.jpg"
+                    alt="Daniela Alves - Terapeuta Holística com 17 anos de experiência, à entrada do espaço terapêutico em Fontanelas, Sintra"
                     className="w-full h-auto"
                     width={384}
-                    height={512}
+                    height={576}
                     loading="lazy"
                   />
                 </picture>
